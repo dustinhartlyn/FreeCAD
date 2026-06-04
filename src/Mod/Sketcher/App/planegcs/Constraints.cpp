@@ -37,6 +37,8 @@
 
 #include <boost/graph/graph_concepts.hpp>
 
+#include <Eigen/Core>
+
 #include "Constraints.h"
 
 
@@ -691,33 +693,40 @@ ConstraintType ConstraintP2PDistance::getTypeId()
 
 double ConstraintP2PDistance::value()
 {
-    double dx = (*p1x() - *p2x());
-    double dy = (*p1y() - *p2y());
-    return sqrt(dx * dx + dy * dy);
+    Eigen::Vector2d p1(*p1x(), *p1y());
+    Eigen::Vector2d p2(*p2x(), *p2y());
+    return (p1 - p2).norm();
 }
 double ConstraintP2PDistance::error()
 {
-    return scale * (value() - *distance());
+    Eigen::Vector2d p1(*p1x(), *p1y());
+    Eigen::Vector2d p2(*p2x(), *p2y());
+    return scale * ((p1 - p2).norm() - *distance());
 }
 
 double ConstraintP2PDistance::grad(double* param)
 {
+    Eigen::Vector2d p1(*p1x(), *p1y());
+    Eigen::Vector2d p2(*p2x(), *p2y());
+    Eigen::Vector2d diff = p1 - p2;
+    double d = diff.norm();
+
     double deriv = 0.;
     if (param == p1x() || param == p1y() || param == p2x() || param == p2y()) {
-        double dx = (*p1x() - *p2x());
-        double dy = (*p1y() - *p2y());
-        double d = sqrt(dx * dx + dy * dy);
-        if (param == p1x()) {
-            deriv += dx / d;
-        }
-        if (param == p1y()) {
-            deriv += dy / d;
-        }
-        if (param == p2x()) {
-            deriv += -dx / d;
-        }
-        if (param == p2y()) {
-            deriv += -dy / d;
+        if (d > 1e-15) {
+            Eigen::Vector2d dir = diff / d;
+            if (param == p1x()) {
+                deriv += dir.x();
+            }
+            if (param == p1y()) {
+                deriv += dir.y();
+            }
+            if (param == p2x()) {
+                deriv += -dir.x();
+            }
+            if (param == p2y()) {
+                deriv += -dir.y();
+            }
         }
     }
     if (param == distance()) {
