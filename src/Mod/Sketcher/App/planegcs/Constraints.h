@@ -216,12 +216,6 @@ public:
     // on ellipse's b (radmin), but b will be included within the constraint anyway.
     // Returns -1 if not found.
     int findParamInPvec(double* param);
-
-    /// Returns a const reference to the raw parameter pointer vector.
-    const VEC_pD& getPvec() const { return pvec; }
-
-    /// Returns the scale factor applied to this constraint's error and grad.
-    double getScale() const { return scale; }
 };
 
 // Equal

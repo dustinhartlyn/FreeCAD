@@ -28,7 +28,6 @@
 
 #include <iostream>
 #include <iterator>
-#include <unordered_map>
 
 #include "SubSystem.h"
 
@@ -255,90 +254,12 @@ void SubSystem::calcResidual(Eigen::VectorXd& r, double& err)
 void SubSystem::calcJacobi(VEC_pD& params, Eigen::MatrixXd& jacobi)
 {
     jacobi.setZero(csize, params.size());
-
-    // Build reverse-map: pvals pointer → column index in jacobi
-    std::unordered_map<double*, int> param_col;
-    param_col.reserve(params.size());
-    for (int j = 0; j < int(params.size()); ++j) {
+    for (int j = 0; j < int(params.size()); j++) {
         MAP_pD_pD::const_iterator pmapfind = pmap.find(params[j]);
         if (pmapfind != pmap.end()) {
-            param_col[pmapfind->second] = j;
-        }
-    }
-
-    int n = csize;
-
-    // ── 1) Batch-vectorized analytical Jacobian for P2PDistance constraints ──
-    std::vector<int> p2p_indices;
-    p2p_indices.reserve(n);
-    for (int i = 0; i < n; ++i) {
-        if (clist[i]->getTypeId() == P2PDistance) {
-            p2p_indices.push_back(i);
-        }
-    }
-
-    int num_p2p = static_cast<int>(p2p_indices.size());
-    if (num_p2p > 0) {
-        Eigen::VectorXd x1(num_p2p), y1(num_p2p), x2(num_p2p), y2(num_p2p);
-        Eigen::VectorXd scaleVec(num_p2p);
-        std::vector<int> col_p1x(num_p2p), col_p1y(num_p2p);
-        std::vector<int> col_p2x(num_p2p), col_p2y(num_p2p);
-        std::vector<int> col_dist(num_p2p);
-
-        auto get_col = [&](double* pval_ptr) -> int {
-            auto it = param_col.find(pval_ptr);
-            return (it != param_col.end()) ? it->second : -1;
-        };
-
-        for (int k = 0; k < num_p2p; ++k) {
-            int idx = p2p_indices[k];
-            Constraint* constr = clist[idx];
-            x1[k] = *(constr->getPvec()[0]);
-            y1[k] = *(constr->getPvec()[1]);
-            x2[k] = *(constr->getPvec()[2]);
-            y2[k] = *(constr->getPvec()[3]);
-            scaleVec[k] = constr->getScale();
-
-            col_p1x[k] = get_col(constr->getPvec()[0]);
-            col_p1y[k] = get_col(constr->getPvec()[1]);
-            col_p2x[k] = get_col(constr->getPvec()[2]);
-            col_p2y[k] = get_col(constr->getPvec()[3]);
-            col_dist[k] = get_col(constr->getPvec()[4]);
-        }
-
-        // Vectorized analytical derivatives:
-        //   f = scale * (||p1 - p2|| - dist)
-        //   df/dp1 =  scale * (dx/d, dy/d)
-        //   df/dp2 = -scale * (dx/d, dy/d)
-        //   df/d(dist) = -scale
-        Eigen::VectorXd dx = x1 - x2;
-        Eigen::VectorXd dy = y1 - y2;
-        Eigen::VectorXd d = (dx.array().square() + dy.array().square()).sqrt();
-        Eigen::VectorXd inv_d = (d.array() > 1e-15).select(d.array().inverse(), 0.0);
-
-        Eigen::VectorXd grad_p1x = scaleVec.array() * dx.array() * inv_d.array();
-        Eigen::VectorXd grad_p1y = scaleVec.array() * dy.array() * inv_d.array();
-        Eigen::VectorXd grad_p2x = -grad_p1x;
-        Eigen::VectorXd grad_p2y = -grad_p1y;
-        Eigen::VectorXd grad_dist = -scaleVec;
-
-        for (int k = 0; k < num_p2p; ++k) {
-            int row = p2p_indices[k];
-            if (col_p1x[k] >= 0)  { jacobi(row, col_p1x[k]) = grad_p1x[k]; }
-            if (col_p1y[k] >= 0)  { jacobi(row, col_p1y[k]) = grad_p1y[k]; }
-            if (col_p2x[k] >= 0)  { jacobi(row, col_p2x[k]) = grad_p2x[k]; }
-            if (col_p2y[k] >= 0)  { jacobi(row, col_p2y[k]) = grad_p2y[k]; }
-            if (col_dist[k] >= 0) { jacobi(row, col_dist[k]) = grad_dist[k]; }
-        }
-    }
-
-    // ── 2) Per-constraint grad() for all other constraint types ──
-    for (int i = 0; i < n; ++i) {
-        if (clist[i]->getTypeId() == P2PDistance) {
-            continue;  // already handled in the batch path above
-        }
-        for (const auto& entry : param_col) {
-            jacobi(i, entry.second) = clist[i]->grad(entry.first);
+            for (int i = 0; i < csize; i++) {
+                jacobi(i, j) = clist[i]->grad(pmapfind->second);
+            }
         }
     }
 }

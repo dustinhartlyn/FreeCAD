@@ -26,6 +26,9 @@
 # pragma warning(disable : 4251)
 #endif
 
+#include <cmath>
+#include <numbers>
+
 #include <algorithm>
 #define DEBUG_DERIVS 0
 #if DEBUG_DERIVS
@@ -34,14 +37,8 @@
 
 #include <boost/graph/graph_concepts.hpp>
 
-#include <Eigen/Core>
-
 #include "Constraints.h"
 
-namespace {
-// Portable Pi constant — replaces std::numbers::pi (C++20) for C++17 compatibility
-constexpr double kGcsPi = 3.14159265358979323846;
-} // namespace
 
 namespace GCS
 {
@@ -694,37 +691,34 @@ ConstraintType ConstraintP2PDistance::getTypeId()
 
 double ConstraintP2PDistance::value()
 {
-    Eigen::Vector2d p1(*p1x(), *p1y());
-    Eigen::Vector2d p2(*p2x(), *p2y());
-    return (p1 - p2).norm();
+    double dx = (*p1x() - *p2x());
+    double dy = (*p1y() - *p2y());
+    return sqrt(dx * dx + dy * dy);
 }
 double ConstraintP2PDistance::error()
 {
-    Eigen::Vector2d p1(*p1x(), *p1y());
-    Eigen::Vector2d p2(*p2x(), *p2y());
-    return scale * ((p1 - p2).norm() - *distance());
+    return scale * (value() - *distance());
 }
 
 double ConstraintP2PDistance::grad(double* param)
 {
-    Eigen::Vector2d p1(*p1x(), *p1y());
-    Eigen::Vector2d p2(*p2x(), *p2y());
-    Eigen::Vector2d diff = p1 - p2;
-    double dist = diff.norm();
-    Eigen::Vector2d dir = (dist > 1e-12) ? Eigen::Vector2d(diff / dist) : Eigen::Vector2d::Zero();
-
     double deriv = 0.;
-    if (param == p1x()) {
-        deriv += dir.x();
-    }
-    if (param == p1y()) {
-        deriv += dir.y();
-    }
-    if (param == p2x()) {
-        deriv += -dir.x();
-    }
-    if (param == p2y()) {
-        deriv += -dir.y();
+    if (param == p1x() || param == p1y() || param == p2x() || param == p2y()) {
+        double dx = (*p1x() - *p2x());
+        double dy = (*p1y() - *p2y());
+        double d = sqrt(dx * dx + dy * dy);
+        if (param == p1x()) {
+            deriv += dx / d;
+        }
+        if (param == p1y()) {
+            deriv += dy / d;
+        }
+        if (param == p2x()) {
+            deriv += -dx / d;
+        }
+        if (param == p2y()) {
+            deriv += -dy / d;
+        }
     }
     if (param == distance()) {
         deriv += -1.;
@@ -845,7 +839,7 @@ double ConstraintP2PAngle::grad(double* param)
 
 double ConstraintP2PAngle::maxStep(MAP_pD_D& dir, double lim)
 {
-    constexpr double pi_18 = kGcsPi / 18;
+    constexpr double pi_18 = std::numbers::pi / 18;
 
     MAP_pD_D::iterator it = dir.find(angle());
     if (it != dir.end()) {
@@ -1415,7 +1409,7 @@ double ConstraintL2LAngle::grad(double* param)
 
 double ConstraintL2LAngle::maxStep(MAP_pD_D& dir, double lim)
 {
-    constexpr double pi_18 = kGcsPi / 18;
+    constexpr double pi_18 = std::numbers::pi / 18;
 
     MAP_pD_D::iterator it = dir.find(angle());
     if (it != dir.end()) {
@@ -3201,10 +3195,10 @@ void ConstraintArcLength::normalizedAngles(double& start, double& end) const
 
     // Assume positive angles and CCW arc
     while (start < 0.) {
-        start += 2. * kGcsPi;
+        start += 2. * std::numbers::pi;
     }
     while (end < start) {
-        end += 2. * kGcsPi;
+        end += 2. * std::numbers::pi;
     }
 }
 void ConstraintArcLength::errorgrad(double* err, double* grad, double* param)
