@@ -46,6 +46,8 @@ private:
                      //        JacobianMatrix jacobi;  // jacobi matrix of the residuals
     std::map<Constraint*, VEC_pD> c2p;                // constraint to parameter adjacency list
     std::map<double*, std::vector<Constraint*>> p2c;  // parameter to constraint adjacency list
+    std::vector<int> pval_col_index_;    // pvals index -> jacobian column index, -1 = unmapped
+    std::vector<bool> is_equal_constraint_;  // cached Equal-constraint mask (built once per solve)
     void initialize(VEC_pD& params, MAP_pD_pD& reductionmap);  // called by the constructors
 public:
     SubSystem(std::vector<Constraint*>& clist_, VEC_pD& params);

@@ -1,0 +1,76 @@
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.0
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+[0/2] Re-checking globbed directories...
+[1/11] Generating version_file
+fatal: Not a valid object name upstream/main
+git
+C:/Users/dusti/.roo/worktrees/feature/planegcs-cpp-solver/build/debug/src/Build/Version.h.out written
+[2/7] Automatic MOC and UIC for target Sketcher
+[3/6] Building CXX object src\Mod\Sketcher\App\CMakeFiles\Sketcher.dir\planegcs\GCS.cpp.obj
+[4/6] Linking CXX shared library Mod\Sketcher\Sketcher.pyd
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.0
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+Test project C:/Users/dusti/.roo/worktrees/feature/planegcs-cpp-solver/build/debug
+      Start  1: App_tests_run
+ 1/22 Test  #1: App_tests_run ....................   Passed    4.68 sec
+      Start  2: Base_tests_run
+ 2/22 Test  #2: Base_tests_run ...................   Passed    0.91 sec
+      Start  3: Misc_tests_run
+ 3/22 Test  #3: Misc_tests_run ...................   Passed    0.08 sec
+      Start  4: Zipios_tests_run
+ 4/22 Test  #4: Zipios_tests_run .................   Passed    0.09 sec
+      Start  5: Gui_tests_run
+ 5/22 Test  #5: Gui_tests_run ....................   Passed    0.63 sec
+      Start  6: Assembly_tests_run
+ 6/22 Test  #6: Assembly_tests_run ...............   Passed    0.43 sec
+      Start  7: Material_tests_run
+ 7/22 Test  #7: Material_tests_run ...............   Passed    1.49 sec
+      Start  8: Measure_tests_run
+ 8/22 Test  #8: Measure_tests_run ................   Passed    0.82 sec
+      Start  9: Mesh_tests_run
+ 9/22 Test  #9: Mesh_tests_run ...................   Passed    0.41 sec
+      Start 10: MeshPart_tests_run
+10/22 Test #10: MeshPart_tests_run ...............   Passed    1.29 sec
+      Start 11: Part_tests_run
+11/22 Test #11: Part_tests_run ...................   Passed   13.23 sec
+      Start 12: PartDesign_tests_run
+12/22 Test #12: PartDesign_tests_run .............   Passed    1.15 sec
+      Start 13: Points_tests_run
+13/22 Test #13: Points_tests_run .................   Passed    0.39 sec
+      Start 14: Sketcher_tests_run
+14/22 Test #14: Sketcher_tests_run ...............   Passed    1.18 sec
+      Start 15: Spreadsheet_tests_run
+15/22 Test #15: Spreadsheet_tests_run ............   Passed    0.32 sec
+      Start 16: Start_tests_run
+16/22 Test #16: Start_tests_run ..................   Passed    0.32 sec
+      Start 17: TechDraw_tests_run
+17/22 Test #17: TechDraw_tests_run ...............   Passed    0.37 sec
+      Start 18: InventorBuilder_Tests_run
+18/22 Test #18: InventorBuilder_Tests_run ........   Passed    0.15 sec
+      Start 19: QuantitySpinBox_Tests_run
+19/22 Test #19: QuantitySpinBox_Tests_run ........Exit code 0xc0000409***Exception:   3.93 sec
+      Start 20: DlgVersionMigrator_Tests_run
+20/22 Test #20: DlgVersionMigrator_Tests_run .....Exit code 0xc0000409***Exception:   0.88 sec
+      Start 21: DlgExpressionInput_Tests_run
+21/22 Test #21: DlgExpressionInput_Tests_run .....Exit code 0xc0000409***Exception:   0.71 sec
+      Start 22: PropertyItem_Tests_run
+22/22 Test #22: PropertyItem_Tests_run ...........Exit code 0xc0000409***Exception:   0.74 sec
+
+82% tests passed, 4 tests failed out of 22
+
+Label Time Summary:
+Qt    =   6.41 sec*proc (5 tests)
+
+Total Test time (real) =  35.40 sec
+
+The following tests FAILED:
+	 19 - QuantitySpinBox_Tests_run (Exit code 0xc0000409)  Qt
+	 20 - DlgVersionMigrator_Tests_run (Exit code 0xc0000409) Qt
+	 21 - DlgExpressionInput_Tests_run (Exit code 0xc0000409) Qt
+	 22 - PropertyItem_Tests_run (Exit code 0xc0000409)     Qt

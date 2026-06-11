@@ -49,10 +49,13 @@
 #endif
 
 #include <algorithm>
+#define _USE_MATH_DEFINES
+#include <cmath>
+#include <cstdlib>
 #include <future>
 #include <iostream>
 #include <limits>
-#include <numbers>
+#include <stdexcept>
 
 #include "GCS.h"
 #include "qp_eq.h"
@@ -488,7 +491,7 @@ System::System()
     , qrAlgorithm(EigenSparseQR)
     , autoChooseAlgorithm(true)
     , autoQRThreshold(1000)
-    , dogLegGaussStep(FullPivLU)
+    , dogLegGaussStep(std::getenv("GCS_SPARSE_LDLT") ? SparseLDLT : FullPivLU)
     , qrpivotThreshold(1E-13)
     , debugMode(Minimal)
     , LM_eps(1E-10)
@@ -583,10 +586,12 @@ int System::addConstraint(Constraint* constr)
 
 void System::removeConstraint(Constraint* constr)
 {
-    if (std::erase(clist, constr) == 0) {
+    auto it = std::remove(clist.begin(), clist.end(), constr);
+    if (it == clist.end()) {
         return;
     }
-    std::erase(drivenConstraints, constr);
+    clist.erase(it, clist.end());
+    drivenConstraints.erase(std::remove(drivenConstraints.begin(), drivenConstraints.end(), constr), drivenConstraints.end());
 
     if (constr->getTag() >= 0) {
         hasDiagnosis = false;
@@ -594,7 +599,7 @@ void System::removeConstraint(Constraint* constr)
     clearSubSystems();
 
     for (const auto& param : c2p[constr]) {
-        p2c[param].erase(std::ranges::find(p2c[param], constr));
+        p2c[param].erase(std::find(p2c[param].begin(), p2c[param].end(), constr));
     }
     c2p.erase(constr);
 
@@ -1040,7 +1045,6 @@ int System::addConstraintPointOnArc(Point& p, Arc& a, int tagId, bool driving)
 
 int System::addConstraintPerpendicularLine2Arc(Point& p1, Point& p2, Arc& a, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PCoincident(p2, a.start, tagId, driving);
     double dx = *(p2.x) - *(p1.x);
@@ -1049,13 +1053,12 @@ int System::addConstraintPerpendicularLine2Arc(Point& p1, Point& p2, Arc& a, int
         return addConstraintP2PAngle(p1, p2, a.startAngle, 0, tagId, driving);
     }
     else {
-        return addConstraintP2PAngle(p1, p2, a.startAngle, pi, tagId, driving);
+        return addConstraintP2PAngle(p1, p2, a.startAngle, M_PI, tagId, driving);
     }
 }
 
 int System::addConstraintPerpendicularArc2Line(Arc& a, Point& p1, Point& p2, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PCoincident(p1, a.end, tagId, driving);
     double dx = *(p2.x) - *(p1.x);
@@ -1064,16 +1067,15 @@ int System::addConstraintPerpendicularArc2Line(Arc& a, Point& p1, Point& p2, int
         return addConstraintP2PAngle(p1, p2, a.endAngle, 0, tagId, driving);
     }
     else {
-        return addConstraintP2PAngle(p1, p2, a.endAngle, pi, tagId, driving);
+        return addConstraintP2PAngle(p1, p2, a.endAngle, M_PI, tagId, driving);
     }
 }
 
 int System::addConstraintPerpendicularCircle2Arc(Point& center, double* radius, Arc& a, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PDistance(a.start, center, radius, tagId, driving);
-    double incrAngle = *(a.startAngle) < *(a.endAngle) ? pi / 2 : -pi / 2;
+    double incrAngle = *(a.startAngle) < *(a.endAngle) ? M_PI / 2 : -M_PI / 2;
     double tangAngle = *a.startAngle + incrAngle;
     double dx = *(a.start.x) - *(center.x);
     double dy = *(a.start.y) - *(center.y);
@@ -1087,10 +1089,9 @@ int System::addConstraintPerpendicularCircle2Arc(Point& center, double* radius, 
 
 int System::addConstraintPerpendicularArc2Circle(Arc& a, Point& center, double* radius, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PDistance(a.end, center, radius, tagId, driving);
-    double incrAngle = *(a.startAngle) < *(a.endAngle) ? -pi / 2 : pi / 2;
+    double incrAngle = *(a.startAngle) < *(a.endAngle) ? -M_PI / 2 : M_PI / 2;
     double tangAngle = *a.endAngle + incrAngle;
     double dx = *(a.end.x) - *(center.x);
     double dy = *(a.end.y) - *(center.y);
@@ -1767,12 +1768,12 @@ void System::initSolution(Algorithm alg)
 
     std::vector<Constraint*> clistR;
     if (!redundant.empty()) {
-        std::ranges::copy_if(clist, std::back_inserter(clistR), [this](auto constr) {
+        std::copy_if(clist.begin(), clist.end(), std::back_inserter(clistR), [this](auto constr) {
             return this->redundant.count(constr) == 0 && constr->isDriving();
         });
     }
     else {
-        std::ranges::copy_if(clist, std::back_inserter(clistR), [](auto constr) {
+        std::copy_if(clist.begin(), clist.end(), std::back_inserter(clistR), [](auto constr) {
             return constr->isDriving();
         });
     }
@@ -1820,7 +1821,7 @@ void System::initSolution(Algorithm alg)
             reducedConstrs.insert(constr);
             double* p_kept = reducedParams[it1->second];
             double* p_replaced = reducedParams[it2->second];
-            std::ranges::replace(reducedParams, p_replaced, p_kept);
+            std::replace(reducedParams.begin(), reducedParams.end(), p_replaced, p_kept);
         }
         for (size_t i = 0; i < plist.size(); ++i) {
             if (plist[i] != reducedParams[i]) {
@@ -1857,8 +1858,8 @@ void System::initSolution(Algorithm alg)
     subSystemsAux.resize(clists.size(), nullptr);
     for (std::size_t cid = 0; cid < clists.size(); ++cid) {
         std::vector<Constraint*> clist0, clist1;
-        std::ranges::partition_copy(
-            clists[cid],
+        std::partition_copy(
+            clists[cid].begin(), clists[cid].end(),
             std::back_inserter(clist0),
             std::back_inserter(clist1),
             [](auto constr) { return constr->getTag() >= 0; }
@@ -2266,6 +2267,680 @@ int System::solve_LM(SubSystem* subsys, bool isRedundantsolving)
     return (stop == 1) ? Success : Failed;
 }
 
+///////////////////////////////////////
+// Pebble Game Implementation (§2.2)
+///////////////////////////////////////
+
+void PebbleGameState::buildVertexSet(SubSystem* subsys)
+{
+    // Collect all parameters known to the subsystem
+    VEC_pD plist;
+    subsys->getParamList(plist);
+    std::set<double*> plist_set(plist.begin(), plist.end());
+
+    // Collect all constraints for scanning
+    std::vector<Constraint*> constraints;
+    subsys->getConstraintList(constraints);
+
+    // Map: parameter pointer → vertex index
+    // Each vertex represents one geometric Point object (2 scalar DOF)
+    std::map<double*, int> param_to_vertex;
+
+    for (auto* constraint : constraints) {
+        // Skip non-driving constraints and Equal/Difference (already reduced)
+        if (!constraint->isDriving()) {
+            continue;
+        }
+        ConstraintType ctype = constraint->getTypeId();
+        if (ctype == Equal || ctype == Difference) {
+            continue;
+        }
+
+        const VEC_pD& pvec = constraint->params();
+        int n = static_cast<int>(pvec.size());
+
+        // Point parameters always appear in consecutive (x,y) even–odd pairs.
+        // Pair indices (2k, 2k+1) for k = 0, 1, ..., floor((n-1)/2).
+        // Any unpaired trailing parameter (e.g. distance scalar) is ignored.
+        for (int i = 0; i + 1 < n; i += 2) {
+            double* px = pvec[i];
+            double* py = pvec[i + 1];
+
+            // Only treat as Point pair if both parameters exist in plist
+            bool px_in = (plist_set.find(px) != plist_set.end());
+            bool py_in = (plist_set.find(py) != plist_set.end());
+            if (!px_in || !py_in) {
+                continue;
+            }
+
+            auto it_x = param_to_vertex.find(px);
+            auto it_y = param_to_vertex.find(py);
+
+            if (it_x == param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                // Neither parameter mapped — create a new vertex
+                int v = static_cast<int>(param_to_vertex.size()) / 2;
+                param_to_vertex[px] = v;
+                param_to_vertex[py] = v;
+            }
+            else if (it_x != param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                param_to_vertex[py] = it_x->second;
+            }
+            else if (it_x == param_to_vertex.end() && it_y != param_to_vertex.end()) {
+                param_to_vertex[px] = it_y->second;
+            }
+            // else: both already mapped — nothing to do
+        }
+    }
+
+    num_vertices = static_cast<int>(param_to_vertex.size()) / 2;
+
+    // Pre-allocate vertex state
+    vertex_pebbles.assign(num_vertices, 2);       // 2 pebbles per 2D point (Laman condition)
+
+    // Pebble ownership: pebble j (0 ≤ j < 2*num_vertices) is owned by vertex j/2
+    pebble_owner.resize(2 * num_vertices);
+    for (int v = 0; v < num_vertices; v++) {
+        pebble_owner[2 * v]     = v;
+        pebble_owner[2 * v + 1] = v;
+    }
+
+    // Build reverse mapping: vertex index -> {px, py} for ClusterInfo construction (§4.2)
+    vertex_params.assign(num_vertices, {nullptr, nullptr});
+    for (const auto& [param, v] : param_to_vertex) {
+        if (vertex_params[v].first == nullptr) {
+            vertex_params[v].first = param;
+        } else {
+            vertex_params[v].second = param;
+        }
+    }
+
+    // Pre-allocate DFS workspace
+    dfs_parent.assign(num_vertices, -1);
+    dfs_edge_to_parent.assign(num_vertices, -1);
+    dfs_visited.assign(num_vertices, false);
+    dfs_stack.assign(num_vertices, 0);
+}
+
+void PebbleGameState::buildEdgeSet(SubSystem* subsys)
+{
+    // Collect all parameters known to the subsystem
+    VEC_pD plist;
+    subsys->getParamList(plist);
+    std::set<double*> plist_set(plist.begin(), plist.end());
+
+    // Collect all constraints
+    std::vector<Constraint*> constraints;
+    subsys->getConstraintList(constraints);
+
+    // Build vertex-to-param reverse map: vertex_index → {px, py}
+    // needed to determine which vertices are incident to each edge
+    // Re-scan constraints to build the reverse map
+    std::map<double*, int> param_to_vertex;
+    for (auto* constraint : constraints) {
+        if (!constraint->isDriving()) {
+            continue;
+        }
+        ConstraintType ctype = constraint->getTypeId();
+        if (ctype == Equal || ctype == Difference) {
+            continue;
+        }
+        const VEC_pD& pvec = constraint->params();
+        int n = static_cast<int>(pvec.size());
+        for (int i = 0; i + 1 < n; i += 2) {
+            double* px = pvec[i];
+            double* py = pvec[i + 1];
+            if (plist_set.find(px) != plist_set.end()
+                && plist_set.find(py) != plist_set.end()) {
+                auto it_x = param_to_vertex.find(px);
+                auto it_y = param_to_vertex.find(py);
+                if (it_x == param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                    int v = static_cast<int>(param_to_vertex.size()) / 2;
+                    param_to_vertex[px] = v;
+                    param_to_vertex[py] = v;
+                }
+                else if (it_x != param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                    param_to_vertex[py] = it_x->second;
+                }
+                else if (it_x == param_to_vertex.end() && it_y != param_to_vertex.end()) {
+                    param_to_vertex[px] = it_y->second;
+                }
+            }
+        }
+    }
+
+    // Now build edge set
+    edge_vertices.clear();
+    edge_vertices.reserve(constraints.size());
+    edge_constraint_index.clear();
+    edge_constraint_index.reserve(constraints.size());
+
+    int cidx = 0;  // index into subsys->clist
+    for (auto* constraint : constraints) {
+        if (!constraint->isDriving()) {
+            cidx++;
+            continue;
+        }
+        ConstraintType ctype = constraint->getTypeId();
+        if (ctype == Equal || ctype == Difference) {
+            cidx++;
+            continue;
+        }
+
+        const VEC_pD& pvec = constraint->params();
+        int n = static_cast<int>(pvec.size());
+
+        // Collect unique vertex indices incident to this edge
+        std::set<int> incident_vertices;
+        for (int i = 0; i + 1 < n; i += 2) {
+            double* px = pvec[i];
+            double* py = pvec[i + 1];
+            auto it_x = param_to_vertex.find(px);
+            auto it_y = param_to_vertex.find(py);
+            if (it_x != param_to_vertex.end()) {
+                incident_vertices.insert(it_x->second);
+            }
+            else if (it_y != param_to_vertex.end()) {
+                incident_vertices.insert(it_y->second);
+            }
+        }
+
+        if (!incident_vertices.empty()) {
+            edge_vertices.push_back(
+                std::vector<int>(incident_vertices.begin(), incident_vertices.end()));
+            edge_constraint_index.push_back(cidx);  // persist constraint index for ClusterInfo (§4.2)
+        }
+
+        cidx++;
+    }
+
+    num_edges = static_cast<int>(edge_vertices.size());
+
+    // Allocate edge state
+    edge_covered.assign(num_edges, false);
+    edge_pebble.assign(num_edges, -1);
+    edge_donor_vertex.assign(num_edges, -1);
+    overconstrained_edges.clear();
+}
+
+void PebbleGameState::initialize(SubSystem* subsys)
+{
+    // 1. Build vertex set from subsys->plist (geometric points only)
+    buildVertexSet(subsys);
+
+    // 2. Build edge set from subsys->clist (exclude Equal/Difference already reduced)
+    buildEdgeSet(subsys);
+
+    // 3. Greedy orientation: for each edge, try to collect 1 pebble from incident vertices
+    for (int e = 0; e < num_edges; e++) {
+        bool found = false;
+        for (int v : edge_vertices[e]) {
+            if (vertex_pebbles[v] > 0) {
+                // Assign one pebble from vertex v to edge e
+                vertex_pebbles[v]--;
+                edge_covered[e]     = true;
+                edge_donor_vertex[e] = v;
+
+                // Find a pebble owned by vertex v (not on any edge)
+                for (int p = 0; p < 2 * num_vertices; p++) {
+                    if (pebble_owner[p] == v) {
+                        // Verify it's not already on an edge
+                        bool on_edge = false;
+                        for (int ee = 0; ee < num_edges; ee++) {
+                            if (edge_pebble[ee] == p) {
+                                on_edge = true;
+                                break;
+                            }
+                        }
+                        if (!on_edge) {
+                            edge_pebble[e] = p;
+                            pebble_owner[p] = -1;  // pebble now held by edge
+                            break;
+                        }
+                    }
+                }
+                found = true;
+                break;
+            }
+        }
+        // If no free pebble found, edge remains uncovered
+    }
+
+    // 4. DFS flip phase: attempt to cover remaining uncovered edges
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) {
+            collectPebble(e);
+        }
+    }
+
+    // 5. Detect overconstrained edges
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) {
+            overconstrained_edges.push_back(e);
+        }
+    }
+
+    // Pre-size DAG construction workspace (upper bound: num_components ≤ num_vertices)
+    free_pebbles_per_cluster.reserve(num_vertices);
+    dag_insert_ptr.reserve(num_vertices + 1);
+    kahn_queue.reserve(num_vertices);
+    kahn_in_degree.reserve(num_vertices);
+    recip.reserve(num_vertices);
+}
+
+bool PebbleGameState::collectPebble(int target_edge)
+{
+    // ---- Phase 1: DFS from target_edge incident vertices ----
+    // Reset DFS workspace (no heap allocation; reuse pre-allocated vectors)
+    std::fill(dfs_visited.begin(), dfs_visited.end(), false);
+    std::fill(dfs_parent.begin(), dfs_parent.end(), -1);
+    std::fill(dfs_edge_to_parent.begin(), dfs_edge_to_parent.end(), -1);
+
+    // Seed DFS from all incident vertices of target_edge as DFS roots
+    int dfs_stack_top = 0;
+    for (int v : edge_vertices[target_edge]) {
+        dfs_visited[v]       = true;
+        dfs_parent[v]         = -1;  // root of DFS tree
+        dfs_stack[dfs_stack_top++] = v;
+    }
+
+    int src_vertex = -1;  // vertex WITH free pebbles found by DFS (the "leaf")
+
+    while (dfs_stack_top > 0) {
+        int u = dfs_stack[--dfs_stack_top];
+
+        // v3 FIX: Check CURRENT vertex (u) for free pebbles
+        if (vertex_pebbles[u] > 0) {
+            src_vertex = u;
+            break;
+        }
+
+        // Explore covered edges incident to u
+        for (int e = 0; e < num_edges; e++) {
+            if (!edge_covered[e]) {
+                continue;  // only traverse covered edges
+            }
+
+            // Check if u is incident to this edge
+            bool u_in_edge = false;
+            for (int w : edge_vertices[e]) {
+                if (w == u) {
+                    u_in_edge = true;
+                    break;
+                }
+            }
+            if (!u_in_edge) {
+                continue;
+            }
+
+            // Traverse to the other endpoint(s) of this edge
+            for (int w : edge_vertices[e]) {
+                if (w == u || dfs_visited[w]) {
+                    continue;
+                }
+                dfs_visited[w]        = true;
+                dfs_parent[w]          = u;
+                dfs_edge_to_parent[w]  = e;
+                dfs_stack[dfs_stack_top++] = w;
+            }
+        }
+    }
+
+    if (src_vertex == -1) {
+        return false;  // No pebble found; edge is overconstrained
+    }
+
+    // ---- Phase 2: Pebble flip cascade (v3: leaf→root direction) ----
+    // Walk from src_vertex (leaf, has pebbles) toward the DFS root.
+    // At each step:
+    //   1. Take a free pebble from `current` (guaranteed to have one)
+    //   2. Move it to edge `dfs_edge_to_parent[current]`
+    //   3. Move the old edge pebble to `parent`
+    //
+    // Net effect after cascade: src loses 1 pebble, DFS root gains 1 pebble.
+    // All intermediate vertices keep their original pebble counts.
+    int current = src_vertex;
+    while (dfs_parent[current] != -1) {
+        int parent   = dfs_parent[current];
+        int edge_idx = dfs_edge_to_parent[current];
+
+        // Find a FREE pebble owned by `current` (not on any edge)
+        int current_free_pebble = -1;
+        for (int p = 0; p < 2 * num_vertices; p++) {
+            if (pebble_owner[p] == current) {
+                // Verify it's not on any edge
+                bool on_edge = false;
+                for (int ee = 0; ee < num_edges; ee++) {
+                    if (edge_pebble[ee] == p) {
+                        on_edge = true;
+                        break;
+                    }
+                }
+                if (!on_edge) {
+                    current_free_pebble = p;
+                    break;
+                }
+            }
+        }
+        // Invariant: current has free pebbles (guaranteed by DFS)
+#ifndef NDEBUG
+        assert(current_free_pebble != -1);
+#endif
+        if (current_free_pebble == -1) {
+            // Should not happen; defensive fallback
+            return false;
+        }
+
+        // The old pebble on the edge will move to parent
+        int old_edge_pebble = edge_pebble[edge_idx];
+
+        // ---- ATOMIC OWNERSHIP TRANSFER (v3 FIX) ----
+        // current's free pebble → edge
+        pebble_owner[current_free_pebble] = -1;
+        edge_pebble[edge_idx]              = current_free_pebble;
+        vertex_pebbles[current]--;
+
+        // Old edge pebble → parent
+        pebble_owner[old_edge_pebble] = parent;
+        vertex_pebbles[parent]++;
+
+        current = parent;
+    }
+    // After loop: `current` is the DFS root (an incident vertex of target_edge).
+    // The root now has +1 pebble from the cascade.
+
+    int dfs_root = current;  // incident vertex of target_edge that gained a pebble
+
+    // ---- Phase 3: Cover target_edge using the root's pebble ----
+    for (int p = 0; p < 2 * num_vertices; p++) {
+        if (pebble_owner[p] == dfs_root) {
+            // Verify it's not on any edge
+            bool on_edge = false;
+            for (int ee = 0; ee < num_edges; ee++) {
+                if (edge_pebble[ee] == p) {
+                    on_edge = true;
+                    break;
+                }
+            }
+            if (!on_edge) {
+                pebble_owner[p]        = -1;
+                edge_pebble[target_edge] = p;
+                edge_covered[target_edge] = true;
+                edge_donor_vertex[target_edge] = dfs_root;
+                vertex_pebbles[dfs_root]--;
+                return true;
+            }
+        }
+    }
+
+    return false;  // Should not reach here if cascade succeeded
+}
+
+// ---- §3: Cluster Decomposition & DAG Construction ----
+
+bool PebbleGameState::buildClusterDAG(std::vector<int>& solve_order)
+{
+    solve_order.clear();
+
+    if (num_vertices == 0 || num_edges == 0) {
+        return false;
+    }
+
+    // ---- §3.1: Connected Components on Covered Subgraph ----
+    // Assign each vertex to a cluster via BFS over covered edges.
+    component_id.assign(num_vertices, -1);
+    num_components = 0;
+
+    // Pre-allocate BFS queue (sized once, no realloc in loop)
+    bfs_queue.resize(num_vertices);
+
+    for (int v = 0; v < num_vertices; v++) {
+        if (component_id[v] != -1) continue;
+
+        // Seed new component with vertex v
+        component_id[v] = num_components;
+        int head = 0;
+        int tail = 0;
+        bfs_queue[tail++] = v;
+
+        while (head < tail) {
+            int u = bfs_queue[head++];
+
+            // Walk all covered edges incident to u
+            for (int e = 0; e < num_edges; e++) {
+                if (!edge_covered[e]) continue;
+
+                bool u_in = false;
+                for (int w : edge_vertices[e]) {
+                    if (w == u) { u_in = true; break; }
+                }
+                if (!u_in) continue;
+
+                // Add unvisited neighbors in this edge
+                for (int w : edge_vertices[e]) {
+                    if (component_id[w] == -1) {
+                        component_id[w] = num_components;
+                        bfs_queue[tail++] = w;
+                    }
+                }
+            }
+        }
+        num_components++;
+    }
+
+    // ---- §3.3.2: Free Pebble Counting per Cluster ----
+    free_pebbles_per_cluster.assign(num_components, 0);
+    for (int p = 0; p < 2 * num_vertices; p++) {
+        int owner = pebble_owner[p];
+        if (owner < 0 || owner >= num_vertices) continue;
+        int cid = component_id[owner];
+        if (cid < 0) continue;
+
+        // Verify this pebble is not on any edge
+        bool on_edge = false;
+        for (int e = 0; e < num_edges; e++) {
+            if (edge_pebble[e] == p) {
+                on_edge = true;
+                break;
+            }
+        }
+        if (!on_edge) {
+            free_pebbles_per_cluster[cid]++;
+        }
+    }
+
+    // ---- §3.2: DAG Construction — Inter-Cluster Dependencies ----
+    // Covered edges spanning multiple clusters create directed dependencies.
+    // The donor cluster (edge_donor_vertex's cluster) is solved first.
+
+    // Phase 2a: Count out-degrees per cluster
+    dag_in_degree.assign(num_components, 0);
+    dag_out_degree.assign(num_components, 0);
+
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) continue;
+
+        int donor_vertex = edge_donor_vertex[e];
+        if (donor_vertex < 0) continue;  // defensive: no donor recorded
+
+        int donor_cluster = component_id[donor_vertex];
+        if (donor_cluster < 0) continue;
+
+        // Collect unique recipient clusters
+        for (int v : edge_vertices[e]) {
+            int c = component_id[v];
+            if (c >= 0 && c != donor_cluster) {
+                // Check if this dependency is already counted for this edge
+                // (multiple vertices in same recipient cluster = still one dependency)
+                // We guard against double-counting by checking dag_in_degree increment.
+                // Since we only count out-degree per cluster per edge once, use a
+                // simple duplicate guard: mark recipient clusters locally.
+            }
+        }
+
+        // Second pass over edge vertices to count unique recipients.
+        // recip[] is a pre-allocated member (PebbleGameState::recip) sized
+        // to num_components — no per-call allocation.
+        recip.assign(num_components, -1);
+        int nrecip = 0;
+
+        for (int v : edge_vertices[e]) {
+            int c = component_id[v];
+            if (c >= 0 && c != donor_cluster) {
+                bool dup = false;
+                for (int r = 0; r < nrecip; r++) {
+                    if (recip[r] == c) { dup = true; break; }
+                }
+                if (!dup && nrecip < num_components) {
+                    recip[nrecip++] = c;
+                }
+            }
+        }
+
+        for (int r = 0; r < nrecip; r++) {
+            dag_out_degree[donor_cluster]++;
+            dag_in_degree[recip[r]]++;
+        }
+    }
+
+    // Phase 2b: Build CSR layout
+    dag_out_start.assign(num_components + 1, 0);
+    for (int c = 0; c < num_components; c++) {
+        dag_out_start[c + 1] = dag_out_start[c] + dag_out_degree[c];
+    }
+    int total_out_edges = dag_out_start[num_components];
+    dag_out_edges.assign(total_out_edges, -1);
+
+    // Reset working copy of out-degree for insertion pointer
+    dag_insert_ptr = dag_out_start;  // copy prefix offsets
+
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) continue;
+
+        int donor_vertex = edge_donor_vertex[e];
+        if (donor_vertex < 0) continue;
+
+        int donor_cluster = component_id[donor_vertex];
+        if (donor_cluster < 0) continue;
+
+        recip.assign(num_components, -1);
+        int nrecip = 0;
+
+        for (int v : edge_vertices[e]) {
+            int c = component_id[v];
+            if (c >= 0 && c != donor_cluster) {
+                bool dup = false;
+                for (int r = 0; r < nrecip; r++) {
+                    if (recip[r] == c) { dup = true; break; }
+                }
+                if (!dup && nrecip < num_components) {
+                    recip[nrecip++] = c;
+                }
+            }
+        }
+
+        for (int r = 0; r < nrecip; r++) {
+            dag_out_edges[dag_insert_ptr[donor_cluster]++] = recip[r];
+        }
+    }
+
+    // ---- §3.3.1: Kahn Topological Sort ----
+    // Pre-allocated fixed-size queue with head/tail pointers.
+    // No std::queue — zero allocations in sort path.
+    kahn_queue.assign(num_components, 0);
+    int qhead = 0;
+    int qtail = 0;
+
+    // Working copy of in-degree (mutated by Kahn)
+    kahn_in_degree = dag_in_degree;
+
+    // Enqueue all clusters with zero in-degree
+    for (int c = 0; c < num_components; c++) {
+        if (kahn_in_degree[c] == 0) {
+            kahn_queue[qtail++] = c;
+        }
+    }
+
+    while (qhead < qtail) {
+        int c = kahn_queue[qhead++];
+        solve_order.push_back(c);
+
+        // Decrement in-degree of all successors
+        int edge_start = dag_out_start[c];
+        int edge_end   = dag_out_start[c + 1];
+        for (int ei = edge_start; ei < edge_end; ei++) {
+            int next_c = dag_out_edges[ei];
+            kahn_in_degree[next_c]--;
+            if (kahn_in_degree[next_c] == 0) {
+                kahn_queue[qtail++] = next_c;
+            }
+        }
+    }
+
+    // ---- §3.3.3: Cycle Detection ----
+    if (static_cast<int>(solve_order.size()) < num_components) {
+        solve_order.clear();
+#ifndef NDEBUG
+        throw std::logic_error(
+            "GCS: Cyclic inter-cluster dependency detected in pebble game DAG");
+#endif
+        return false;
+    }
+
+    // ---- Overconstrained/Underconstrained Fallback ----
+    // Check per-cluster pebble counts for early bail-out signals.
+    // These are advisory; the caller may still choose to proceed.
+    // Well-constrained = exactly 3 free pebbles in 2D.
+    for (int c = 0; c < num_components; c++) {
+        if (free_pebbles_per_cluster[c] < 3) {
+            // Overconstrained: fewer than 3 pebbles (redundant constraints)
+            // The caller maps these to System::redundant
+            return false;
+        }
+        if (free_pebbles_per_cluster[c] > 3) {
+            // Underconstrained: more than 3 pebbles (conflicting DOF)
+            // The caller maps these to System::conflictingTags
+            return false;
+        }
+    }
+
+    // ---- §4.2: Populate ClusterInfo metadata ----
+    // Map component_id → ClusterInfo with param_pointers and constraint_indices.
+    // Built after Kahn sort succeeds so clusters are exactly the well-constrained
+    // components with 3 free pebbles each.
+    clusters.resize(num_components);
+    for (int c = 0; c < num_components; c++) {
+        ClusterInfo& ci = clusters[c];
+        ci.free_pebbles = free_pebbles_per_cluster[c];
+
+        // Count vertices and collect geometric-point parameters for this cluster
+        int vertex_count = 0;
+        for (int v = 0; v < num_vertices; v++) {
+            if (component_id[v] == c) {
+                vertex_count++;
+                ci.param_pointers.push_back(vertex_params[v].first);
+                ci.param_pointers.push_back(vertex_params[v].second);
+            }
+        }
+        ci.vertex_count = vertex_count;
+        ci.param_count = static_cast<int>(ci.param_pointers.size());
+
+        // Collect constraint indices for edges fully contained in this cluster.
+        // An edge belongs to the cluster iff all its incident vertices are in it.
+        for (int e = 0; e < num_edges; e++) {
+            if (!edge_covered[e]) continue;
+            bool all_in = true;
+            for (int v : edge_vertices[e]) {
+                if (component_id[v] != c) { all_in = false; break; }
+            }
+            if (all_in) {
+                ci.constraint_indices.push_back(edge_constraint_index[e]);
+            }
+        }
+    }
+
+    return !solve_order.empty();
+}
+
 int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 {
 #ifdef _GCS_EXTRACT_SOLVER_SUBSYSTEM_
@@ -2299,8 +2974,10 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                << ", dogLegGaussStep: "
                << (dogLegGaussStep == FullPivLU
                        ? "FullPivLU"
-                       : (dogLegGaussStep == LeastNormFullPivLU ? "LeastNormFullPivLU"
-                                                                : "LeastNormLdlt"))
+                       : (dogLegGaussStep == LeastNormFullPivLU
+                              ? "LeastNormFullPivLU"
+                              : (dogLegGaussStep == LeastNormLdlt ? "LeastNormLdlt"
+                                                                  : "SparseLDLT")))
                << ", xsize: " << xsize << ", csize: " << csize << ", maxIter: " << maxIterNumber
                << "\n";
 
@@ -2308,10 +2985,292 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
         Base::Console().log(tmp.c_str());
     }
 
+    // Pure-sparse LDLT solver infrastructure (zero dense/heap allocations in hot loop)
+    Eigen::SparseMatrix<double> A_sparse;
+    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> sparse_ldlt;
+    bool sparse_pattern_locked = false;   // true after first analyzePattern()
+    std::vector<int> diag_offsets;        // flat indices of diagonal elements in A_sparse.valuePtr()
+    std::vector<Eigen::Triplet<double>> pattern_triplets;  // pre-computed non-zero pattern of J^T J
+    double mu = 1e-6;  // Levenberg-Marquardt damping factor (lifts rigid-body nullspace)
+
     Eigen::VectorXd x(xsize), x_new(xsize);
     Eigen::VectorXd fx(csize), fx_new(csize);
     Eigen::MatrixXd Jx(csize, xsize), Jx_new(csize, xsize);
     Eigen::VectorXd g(xsize), h_sd(xsize), h_gn(xsize), h_dl(xsize);
+
+    PebbleGameState pg;
+    pg.initialize(subsys);
+
+    // ---- PHASE 4a INJECTION POINT (Strategy B §4.1) ----
+    // Attempt pebble-game cluster decomposition BEFORE redirectParams().
+    // If DAG construction succeeds, the cluster-local solve path (Phase 4a.4)
+    // is taken. Otherwise, fall through to the existing monolithic path.
+    std::vector<int> solve_order;  // topological ordering of clusters
+    bool use_clusters = pg.buildClusterDAG(solve_order);
+
+    // ---- Cluster-local workspace (pre-allocated, zero heap in hot loop) ----
+    std::vector<std::pair<double*, int>> param_to_pval_index;  // flat lookup buffer (§4.4)
+    std::vector<int> cl_pval_indices;     // cluster-local param → pvals index
+
+    if (use_clusters) {
+        // ================================================================
+        // Phase 4a §4: Cluster-Local Dogleg — Decoupled Per-Cluster Solve
+        // ================================================================
+
+        // One-time redirectParams() to set up constraint pvec → pvals mapping.
+        // Per the v3 cluster-transparent policy (§1.2 invariant 4), pmap is
+        // mutated only once here (same as the monolithic path) and never
+        // touched per-cluster or per-iteration.
+        subsys->redirectParams();
+
+        // ---- Flat param-to-pval lookup buffer (§4.4 mitigation 2) ----
+        // Sorted vector of {param_ptr, pval_index} for O(log n) binary search.
+        // Superior cache locality vs std::map red-black tree traversal.
+        {
+            VEC_pD plist_local;
+            subsys->getParamList(plist_local);
+            param_to_pval_index.assign(xsize, {nullptr, -1});
+            for (int pi = 0; pi < xsize; pi++) {
+                param_to_pval_index[pi] = {plist_local[pi], pi};
+            }
+            std::sort(param_to_pval_index.begin(), param_to_pval_index.end(),
+                      [](const auto& a, const auto& b) { return a.first < b.first; });
+        }
+
+        auto pval_lookup = [&](double* param) -> int {
+            auto it = std::lower_bound(
+                param_to_pval_index.begin(), param_to_pval_index.end(), param,
+                [](const std::pair<double*, int>& entry, double* key) {
+                    return entry.first < key;
+                });
+            if (it != param_to_pval_index.end() && it->first == param) {
+                return it->second;
+            }
+            return -1;
+        };
+
+        // ---- Pre-allocate max-cluster workspace (§4.2 constraint) ----
+        int max_cl_xsize = 0, max_cl_csize = 0;
+        for (int ci_idx : solve_order) {
+            const ClusterInfo& ci = pg.clusters[ci_idx];
+            max_cl_xsize = std::max(max_cl_xsize, ci.param_count);
+            max_cl_csize = std::max(max_cl_csize,
+                                    static_cast<int>(ci.constraint_indices.size()));
+        }
+        Eigen::MatrixXd Jx_c(max_cl_csize, max_cl_xsize);
+        Eigen::VectorXd fx_c(max_cl_csize), fx_new_c(max_cl_csize);
+        Eigen::VectorXd x_c(max_cl_xsize), x_new_c(max_cl_xsize), g_c(max_cl_xsize);
+        Eigen::VectorXd h_sd_c(max_cl_xsize), h_gn_c(max_cl_xsize), h_dl_c(max_cl_xsize);
+        Eigen::VectorXd b_work(max_cl_xsize);  // dogleg blending workspace
+
+        int overall_stop = 0;
+
+        for (int ci_idx : solve_order) {
+            const ClusterInfo& ci = pg.clusters[ci_idx];
+
+            // ---- §4.2.1: Build cluster-local parameter index map ----
+            int cl_xsize = ci.param_count;
+            int cl_csize = static_cast<int>(ci.constraint_indices.size());
+            if (cl_csize == 0) continue;  // skip clusters with no constraints
+
+            cl_pval_indices.resize(cl_xsize);
+            for (int lp = 0; lp < cl_xsize; lp++) {
+                cl_pval_indices[lp] = pval_lookup(ci.param_pointers[lp]);
+            }
+
+            // Initialize x_c from current subsys->pvals via public API
+            // (upstream clusters have already written their converged values)
+            subsys->getParams(x);
+            for (int lp = 0; lp < cl_xsize; lp++) {
+                x_c(lp) = x(cl_pval_indices[lp]);
+            }
+
+            // ---- §4.2.4: Cluster-local dogleg iteration ----
+            double cl_tolg = tolg, cl_tolx = tolx, cl_tolf = tolf;
+            int cl_maxIter = maxIterNumber;
+            double delta = 0.1, nu = 2.0;
+            int cl_iter = 0, cl_stop = 0, cl_reduce = 0;
+            double cl_err;
+
+            // Initial evaluation: write x_c → subsys via setParams, then full-system eval
+            for (int lp = 0; lp < cl_xsize; lp++) {
+                x(cl_pval_indices[lp]) = x_c(lp);
+            }
+            subsys->setParams(x);
+            subsys->calcResidual(fx, cl_err);
+            subsys->calcJacobi(Jx);
+
+            // Slice cluster residual from monolithic fx
+            for (int lc = 0; lc < cl_csize; lc++) {
+                fx_c(lc) = fx(ci.constraint_indices[lc]);
+            }
+            // Slice cluster Jacobian: rows = cluster constraints, cols = cluster params
+            for (int lc = 0; lc < cl_csize; lc++) {
+                for (int lp = 0; lp < cl_xsize; lp++) {
+                    Jx_c(lc, lp) = Jx(ci.constraint_indices[lc], cl_pval_indices[lp]);
+                }
+            }
+
+            g_c.noalias() = Jx_c.transpose() * (-fx_c);
+            double cl_divergingLim = 1e6 * cl_err + 1e12;
+
+            while (!cl_stop) {
+                double fx_inf = fx_c.lpNorm<Eigen::Infinity>();
+                double g_inf = g_c.lpNorm<Eigen::Infinity>();
+
+                // Convergence checks (§4.2.4a, mirroring monolithic GCS.cpp:3038-3061)
+                if (fx_inf <= cl_tolf) {
+                    cl_stop = 1;
+                    break;
+                }
+                if (g_inf <= cl_tolg) {
+                    cl_stop = 2;
+                    break;
+                }
+                if (delta <= cl_tolx * (cl_tolx + x_c.norm())) {
+                    cl_stop = 2;
+                    break;
+                }
+                if (cl_iter >= cl_maxIter) {
+                    cl_stop = 4;
+                    break;
+                }
+                if (cl_err > cl_divergingLim || cl_err != cl_err) {
+                    cl_stop = 6;
+                    break;
+                }
+
+                // Steepest descent direction
+                double alpha = g_c.squaredNorm() / (Jx_c * g_c).squaredNorm();
+                h_sd_c.noalias() = alpha * g_c;
+
+                // Gauss-Newton step (same switch as monolithic)
+                switch (dogLegGaussStep) {
+                    case FullPivLU:
+                        h_gn_c = Jx_c.fullPivLu().solve(-fx_c);
+                        break;
+                    case LeastNormFullPivLU:
+                        h_gn_c = Jx_c.adjoint()
+                                 * (Jx_c * Jx_c.adjoint()).fullPivLu().solve(-fx_c);
+                        break;
+                    case LeastNormLdlt:
+                        h_gn_c = Jx_c.adjoint()
+                                 * (Jx_c * Jx_c.adjoint()).ldlt().solve(-fx_c);
+                        break;
+                    case SparseLDLT:
+                        // Cluster matrices are small; fall through to dense FullPivLU
+                        h_gn_c = Jx_c.fullPivLu().solve(-fx_c);
+                        break;
+                }
+
+                double rel_error = (Jx_c * h_gn_c + fx_c).norm() / fx_c.norm();
+                if (rel_error > 1e15) {
+                    cl_stop = 3;
+                    break;
+                }
+
+                // Dogleg blending (mirrors monolithic GCS.cpp:3145-3172)
+                if (h_gn_c.norm() < delta) {
+                    h_dl_c = h_gn_c;
+                    if (h_dl_c.norm() <= cl_tolx * (cl_tolx + x_c.norm())) {
+                        cl_stop = 5;
+                        break;
+                    }
+                }
+                else if (alpha * g_c.norm() >= delta) {
+                    h_dl_c = (delta / (alpha * g_c.norm())) * h_sd_c;
+                }
+                else {
+                    double beta = 0;
+                    b_work = h_gn_c - h_sd_c;
+                    double bb = (b_work.transpose() * b_work).norm();
+                    double gb = (h_sd_c.transpose() * b_work).norm();
+                    double c = (delta + h_sd_c.norm()) * (delta - h_sd_c.norm());
+
+                    if (gb > 0) {
+                        beta = c / (gb + sqrt(gb * gb + c * bb));
+                    }
+                    else {
+                        beta = (sqrt(gb * gb + c * bb) - gb) / bb;
+                    }
+
+                    h_dl_c = h_sd_c + beta * b_work;
+                }
+
+                // Update and re-evaluate
+                double cl_err_new;
+                x_new_c.noalias() = x_c + h_dl_c;
+                for (int lp = 0; lp < cl_xsize; lp++) {
+                    x(cl_pval_indices[lp]) = x_new_c(lp);
+                }
+                subsys->setParams(x);
+                subsys->calcResidual(fx, cl_err_new);
+                subsys->calcJacobi(Jx_new);
+
+                // Slice new residual
+                for (int lc = 0; lc < cl_csize; lc++) {
+                    fx_new_c(lc) = fx(ci.constraint_indices[lc]);
+                }
+
+                // Linear model and update ratio
+                double dL = cl_err - 0.5 * (fx_c + Jx_c * h_dl_c).squaredNorm();
+                double dF = cl_err - cl_err_new;
+                double rho = dL / dF;
+
+                if (dF > 0 && dL > 0) {
+                    x_c = x_new_c;
+                    fx_c = fx_new_c;
+                    cl_err = cl_err_new;
+
+                    // Update Jx_c from Jx_new
+                    for (int lc = 0; lc < cl_csize; lc++) {
+                        for (int lp = 0; lp < cl_xsize; lp++) {
+                            Jx_c(lc, lp) =
+                                Jx_new(ci.constraint_indices[lc], cl_pval_indices[lp]);
+                        }
+                    }
+
+                    g_c.noalias() = Jx_c.transpose() * (-fx_c);
+                }
+                else {
+                    rho = -1;
+                }
+
+                // Trust-region radius update
+                if (fabs(rho - 1.) < 0.2 && h_dl_c.norm() > delta / 3.
+                    && cl_reduce <= 0) {
+                    delta = 3 * delta;
+                    nu = 2;
+                    cl_reduce = 0;
+                }
+                else if (rho < 0.25) {
+                    delta = delta / nu;
+                    nu = 2 * nu;
+                    cl_reduce = 2;
+                }
+                else {
+                    cl_reduce--;
+                }
+
+                cl_iter++;
+            }
+
+            // ---- Post-solve writeback (§4.2) ----
+            for (int lp = 0; lp < cl_xsize; lp++) {
+                x(cl_pval_indices[lp]) = x_c(lp);
+            }
+            subsys->setParams(x);
+
+            if (cl_stop > overall_stop) {
+                overall_stop = cl_stop;
+            }
+        }
+
+        subsys->revertParams();
+
+        return (overall_stop <= 2) ? Success : Failed;
+    }
+    // Fall through to monolithic DogLeg path below
 
     subsys->redirectParams();
 
@@ -2320,7 +3279,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     subsys->calcResidual(fx, err);
     subsys->calcJacobi(Jx);
 
-    g = Jx.transpose() * (-fx);
+    g.noalias() = Jx.transpose() * (-fx);
 
     // get the infinity norm fx_inf and g_inf
     double g_inf = g.lpNorm<Eigen::Infinity>();
@@ -2332,6 +3291,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     double alpha = 0.;
     double nu = 2.;
     int iter = 0, stop = 0, reduce = 0;
+    int iteration_count = 0;
     while (!stop) {
         // check if finished
         if (fx_inf <= tolf) {
@@ -2359,7 +3319,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
         // get the steepest descent direction
         alpha = g.squaredNorm() / (Jx * g).squaredNorm();
-        h_sd = alpha * g;
+        h_sd.noalias() = alpha * g;
 
         // get the gauss-newton step
         // https://forum.freecad.org/viewtopic.php?f=10&t=12769&start=50#p106220
@@ -2374,6 +3334,63 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
             case LeastNormLdlt:
                 h_gn = Jx.adjoint() * (Jx * Jx.adjoint()).ldlt().solve(-fx);
                 break;
+            case SparseLDLT: {
+                // ---- Topology Gate: establish non-zero pattern once ----
+                if (!sparse_pattern_locked) {
+                    // Compute J^T J non-zero pattern from constraint topology.
+                    // The normal equations pattern is dense for most constraints
+                    // (each parameter is coupled to many others via constraints).
+                    // Use dense product first to establish pattern, then lock.
+                    Eigen::MatrixXd JtJ_dense = Jx.transpose() * Jx;
+                    A_sparse = JtJ_dense.sparseView();
+                    int n = A_sparse.rows();
+
+                    // Cache diagonal flat-index offsets for O(1) direct LM update
+                    diag_offsets.clear();
+                    diag_offsets.reserve(n);
+                    const int* outer = A_sparse.outerIndexPtr();
+                    const int* inner = A_sparse.innerIndexPtr();
+                    for (int col = 0; col < n; col++) {
+                        for (int idx = outer[col]; idx < outer[col + 1]; idx++) {
+                            if (inner[idx] == col) {
+                                diag_offsets.push_back(idx);
+                                break;
+                            }
+                        }
+                    }
+
+                    sparse_ldlt.analyzePattern(A_sparse);
+                    sparse_pattern_locked = true;
+                }
+
+                // ---- Hot Path: numerical refresh via direct pointer access ----
+                // Recompute A = J^T J numerically (pattern locked, values only)
+                int csize_local = Jx.rows();
+                int n = Jx.cols();
+                double* vals = A_sparse.valuePtr();
+                const int* outer = A_sparse.outerIndexPtr();
+                const int* inner = A_sparse.innerIndexPtr();
+
+                for (int col = 0; col < n; col++) {
+                    for (int idx = outer[col]; idx < outer[col + 1]; idx++) {
+                        int row = inner[idx];
+                        double sum = 0.0;
+                        for (int k = 0; k < csize_local; k++) {
+                            sum += Jx(k, row) * Jx(k, col);
+                        }
+                        vals[idx] = sum;
+                    }
+                }
+
+                // Apply Levenberg-Marquardt regularization via direct pointer arithmetic
+                for (size_t k = 0; k < diag_offsets.size(); k++) {
+                    vals[diag_offsets[k]] += mu;
+                }
+
+                sparse_ldlt.factorize(A_sparse);
+                h_gn = sparse_ldlt.solve(g);
+                break;
+            }
         }
 
         double rel_error = (Jx * h_gn + fx).norm() / fx.norm();
@@ -2413,7 +3430,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
         // get the new values
         double err_new;
-        x_new = x + h_dl;
+        x_new.noalias() = x + h_dl;
         subsys->setParams(x_new);
         subsys->calcResidual(fx_new, err_new);
         subsys->calcJacobi(Jx_new);
@@ -2429,7 +3446,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
             fx = fx_new;
             err = err_new;
 
-            g = Jx.transpose() * (-fx);
+            g.noalias() = Jx.transpose() * (-fx);
 
             // get infinity norms
             g_inf = g.lpNorm<Eigen::Infinity>();
@@ -2467,7 +3484,10 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
         // count this iteration and start again
         iter++;
+        iteration_count++;
     }
+
+    std::cerr << "[ITERATION_COUNT] " << iteration_count << std::endl;
 
     subsys->revertParams();
 
@@ -4733,7 +5753,7 @@ void System::makeReducedJacobian(
 {
     // construct specific parameter list for diagonose ignoring driven constraint parameters
     for (int j = 0; j < int(plist.size()); j++) {
-        auto result1 = std::ranges::find(pdrivenlist, plist[j]);
+        auto result1 = std::find(pdrivenlist.begin(), pdrivenlist.end(), plist[j]);
 
         if (result1 == std::end(pdrivenlist)) {
             pdiagnoselist.push_back(plist[j]);

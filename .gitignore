@@ -71,3 +71,7 @@ tsupdate_stdout.log
 # pixi environments
 *.egg-info
 .pixi
+#Internal Files
+.wrangler_runbook.md
+.roomodes
+bench_solver.py
