@@ -80,6 +80,28 @@ public:
         const std::vector<Constraint*>& ConstraintList,
         int extGeoCount = 0
     );
+
+    /** Phase 5d: Incremental variant of setUpSketch that only updates dirty geometry coordinates
+     *  in-place without tearing down the entire GCS subsystem. For geoms NOT in dirtyGeoIds,
+     *  the existing GCS objects and parameter pointers are preserved — only the underlying double
+     *  values are updated from the source geometry. This avoids the ~8s full rebuild bottleneck
+     *  during interactive drag ticks when a single vertex coordinate changed.
+     *
+     *  @param GeoList       Complete geometry list (internal + external)
+     *  @param ConstraintList Complete constraint list
+     *  @param extGeoCount   Number of external geometry elements at end of GeoList
+     *  @param dirtyGeoIds   IDs of geometry elements whose coordinates have changed
+     *  @param forceFull     If true, performs a full tear-down/rebuild (delegates to setUpSketch)
+     *  @return degrees of freedom
+     */
+    int setUpSketchIncremental(
+        const std::vector<Part::Geometry*>& GeoList,
+        const std::vector<Constraint*>& ConstraintList,
+        int extGeoCount,
+        const std::vector<int>& dirtyGeoIds,
+        bool forceFull
+    );
+
     /// return the actual geometry of the sketch a TopoShape
     Part::TopoShape toShape() const;
     /// add unspecified geometry
@@ -182,6 +204,23 @@ public:
     /** Resets the initialization of a point or curve drag
      */
     void resetInitMove();
+
+    /** Phase 5k: Query whether an interactive drag move has been initialized.
+     *  Returns true when initMove() has been called and resetInitMove() has
+     *  not yet cleared the state. Used by SketchObject::solve() to detect
+     *  drag-solve frames for graceful frame suppression. */
+    bool isInitMoveActive() const
+    {
+        return isInitMove;
+    }
+
+    /** Phase 5g: Clear MoveParameters and InitParameters tracking containers.
+     *  Called from SketchObject::solve() AFTER the full setup pass has
+     *  completed mapping and writing back the true global parameter array
+     *  to the document primitives. Premature clearing (previously in
+     *  resetInitMove()) causes coordinate zero-out on drop when the
+     *  incremental fast-path runs with dangling solver pointers. */
+    void clearMoveTrackers();
 
     /** Limits a b-spline drag to the segment around `firstPoint`.
      */

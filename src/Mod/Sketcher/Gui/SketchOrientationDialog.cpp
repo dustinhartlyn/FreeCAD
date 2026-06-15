@@ -23,7 +23,9 @@
  ***************************************************************************/
 
 #include <QDialog>
+#include <QTimer>
 
+#include <functional>
 
 #include <Gui/BitmapFactory.h>
 #include <Gui/MainWindow.h>
@@ -46,6 +48,10 @@ SketchOrientationDialog::SketchOrientationDialog()
     connect(ui->XY_radioButton, &QRadioButton::clicked, this, &SketchOrientationDialog::onPreview);
     connect(ui->XZ_radioButton, &QRadioButton::clicked, this, &SketchOrientationDialog::onPreview);
     connect(ui->YZ_radioButton, &QRadioButton::clicked, this, &SketchOrientationDialog::onPreview);
+
+    // Phase 5o: Listen for plane selection to auto-advance the dialog
+    connectSelection = Gui::Selection().signalSelectionChanged.connect(
+        std::bind(&SketchOrientationDialog::onSelectionChanged, this, std::placeholders::_1));
 }
 
 SketchOrientationDialog::~SketchOrientationDialog()
@@ -53,6 +59,7 @@ SketchOrientationDialog::~SketchOrientationDialog()
 
 void SketchOrientationDialog::accept()
 {
+    connectSelection.disconnect();
     double offset = ui->Offset_doubleSpinBox->value().getValue();
     bool reverse = ui->Reverse_checkBox->isChecked();
     if (ui->XY_radioButton->isChecked()) {
@@ -89,6 +96,12 @@ void SketchOrientationDialog::accept()
     QDialog::accept();
 }
 
+void SketchOrientationDialog::reject()
+{
+    connectSelection.disconnect();
+    QDialog::reject();
+}
+
 void SketchOrientationDialog::onPreview()
 {
     std::string icon;
@@ -121,6 +134,27 @@ void SketchOrientationDialog::onPreview()
     ui->previewLabel->setPixmap(
         Gui::BitmapFactory().pixmapFromSvg(icon.c_str(), ui->previewLabel->size())
     );
+}
+
+void SketchOrientationDialog::onSelectionChanged(const Gui::SelectionChanges& msg)
+{
+    // Only react to selection ADD events (not REMOVE or CLEAR)
+    if (msg.Type != Gui::SelectionChanges::AddSelection)
+        return;
+
+    // Phase 5o: Check if the selected sub-element is a base plane.
+    // Use substring matching identical to Command.cpp Phase 5n.
+    const std::string subName(msg.pSubName);
+    if (subName.find("XY_Plane") != std::string::npos
+        || subName.find("XZ_Plane") != std::string::npos
+        || subName.find("YZ_Plane") != std::string::npos) {
+
+        // Use zero-delay timer to defer accept() so the global selection
+        // notification loop completes its processing frame before
+        // the dialog terminates and transitions into edit mode.
+        connectSelection.disconnect();  // CRITICAL: sever before timer fires
+        QTimer::singleShot(0, this, &QDialog::accept);
+    }
 }
 
 #include "moc_SketchOrientationDialog.cpp"

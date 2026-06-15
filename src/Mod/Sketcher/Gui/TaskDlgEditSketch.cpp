@@ -23,6 +23,7 @@
  ***************************************************************************/
 
 
+#include <QPushButton>
 #include <Gui/Command.h>
 
 #include "TaskDlgEditSketch.h"
@@ -126,22 +127,20 @@ void TaskDlgEditSketch::clicked(int)
 
 bool TaskDlgEditSketch::reject()
 {
-    ViewProviderSketch* view = sketchView;
+    // Phase 5i: Single Close button — always save changes on exit.
+    // Previously Cancel discarded all edits (data-loss loophole).
+    // Now both Close button and Escape key save + exit.
     std::string document = getDocumentName();  // needed because resetEdit() deletes this instance
-    view->editingCancelled = true;
     Gui::Command::doCommand(Gui::Command::Gui, "Gui.getDocument('%s').resetEdit()", document.c_str());
-    view->editingCancelled = false;
+    Gui::Command::doCommand(Gui::Command::Doc, "App.getDocument('%s').recompute()", document.c_str());
 
     return true;
 }
 
 bool TaskDlgEditSketch::accept()
 {
-    std::string document = getDocumentName();  // needed because resetEdit() deletes this instance
-    Gui::Command::doCommand(Gui::Command::Gui, "Gui.getDocument('%s').resetEdit()", document.c_str());
-    Gui::Command::doCommand(Gui::Command::Doc, "App.getDocument('%s').recompute()", document.c_str());
-
-    return true;
+    // Phase 5i: Delegate to reject() — single unified save+exit path.
+    return reject();
 }
 
 void TaskDlgEditSketch::saveDialogState() const
@@ -157,7 +156,19 @@ void TaskDlgEditSketch::saveDialogState() const
 
 QDialogButtonBox::StandardButtons TaskDlgEditSketch::getStandardButtons() const
 {
-    return QDialogButtonBox::Ok | QDialogButtonBox::Cancel;
+    // Phase 5i: Replace Ok|Cancel with a single Close button.
+    // Close has RejectRole by default, routing through reject()
+    // which now saves+exits (eliminating the Cancel data-loss loophole).
+    return QDialogButtonBox::Close;
+}
+
+void TaskDlgEditSketch::modifyStandardButtons(QDialogButtonBox* buttonBox)
+{
+    // Phase 5i: Set Close button text explicitly for clarity.
+    if (auto* closeBtn = buttonBox->button(QDialogButtonBox::Close)) {
+        closeBtn->setText(QObject::tr("&Close"));
+        closeBtn->setToolTip(QObject::tr("Close the sketch editor and save changes"));
+    }
 }
 
 void TaskDlgEditSketch::autoClosedOnResetEdit()

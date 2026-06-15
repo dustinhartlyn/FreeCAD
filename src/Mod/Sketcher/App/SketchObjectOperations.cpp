@@ -95,6 +95,9 @@ int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, con
 int SketchObject::moveGeometry(int geoId, PointPos pos, const Base::Vector3d& toPoint, bool relative,
     bool updateGeoBeforeMoving)
 {
+    // Phase 5d: Track dirty geometry for incremental setUpSketch
+    dirtyGeometryIds.push_back(geoId);
+
     std::vector<GeoElementId> geoEltIds = { GeoElementId(geoId, pos) };
     return moveGeometries(geoEltIds, toPoint, relative, updateGeoBeforeMoving);
 }

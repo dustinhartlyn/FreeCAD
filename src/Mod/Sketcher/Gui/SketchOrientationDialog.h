@@ -27,7 +27,10 @@
 #include <QDialog>
 
 #include <Base/Placement.h>
+#include <Gui/Selection/Selection.h>
 #include <Mod/Sketcher/SketcherGlobal.h>
+
+#include <fastsignals/signal.h>
 
 
 namespace SketcherGui
@@ -46,12 +49,18 @@ public:
     int DirType;
 
     void accept() override;
+    void reject() override;
 
 protected Q_SLOTS:
     void onPreview();
 
+private Q_SLOTS:
+    // Phase 5o: Auto-advance dialog when user selects a base plane in 3D view
+    void onSelectionChanged(const Gui::SelectionChanges& msg);
+
 private:
     std::unique_ptr<Ui_SketchOrientationDialog> ui;
+    fastsignals::scoped_connection connectSelection;
 };
 
 }  // namespace SketcherGui

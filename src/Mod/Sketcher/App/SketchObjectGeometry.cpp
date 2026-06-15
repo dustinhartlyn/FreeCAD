@@ -151,6 +151,8 @@ int SketchObject::addGeometry(const std::vector<Part::Geometry*>& geoList,
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
 
+    forceFullSetup = true;  // Phase 5d: topology change requires full solver rebuild
+
     const std::vector<Part::Geometry*>& vals = getInternalGeometry();
 
     std::vector<Part::Geometry*> newVals(vals);
@@ -185,6 +187,8 @@ int SketchObject::addGeometry(std::unique_ptr<Part::Geometry> newgeo, bool const
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+
+    forceFullSetup = true;  // Phase 5d: topology change requires full solver rebuild
 
     const std::vector<Part::Geometry*>& vals = getInternalGeometry();
 
@@ -225,6 +229,8 @@ bool SketchObject::hasInternalGeometry(const Part::Geometry* geo)
 
 int SketchObject::delGeometry(int GeoId, DeleteOptions options)
 {
+    forceFullSetup = true;  // Phase 5d: topology change requires full solver rebuild
+
     if (GeoId < 0) {
         if(GeoId > GeoEnum::RefExt)
             return -1;

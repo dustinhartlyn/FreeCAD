@@ -1340,6 +1340,17 @@ EditModeCoinManager::PreselectionResult EditModeCoinManager::detectPreselection(
     return result;
 }
 
+EditModeCoinManager::PreselectionResult EditModeCoinManager::detectGeometryOnlyPreselection(
+    const SoPickedPointList& points,
+    const SbVec2s& cursorPos,
+    int hoveredPointIndex
+)
+{
+    PreselectionResult result;
+    detectGeometryPreselection(points, cursorPos, hoveredPointIndex, result);
+    return result;
+}
+
 SoGroup* EditModeCoinManager::getSelectedConstraints()
 {
     SoGroup* group = new SoGroup();

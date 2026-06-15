@@ -79,8 +79,20 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
 
+    // Phase 5k: Capture interactive drag state before resetInitMove() clears isInitMove.
+    // Used for frame suppression when DogLeg fails on a singular drag tick.
+    bool isDragSolve = solvedSketch.isInitMoveActive();
+
     // Reset the initial movement in case of a dragging operation was ongoing on the solver.
     solvedSketch.resetInitMove();
+
+    // Phase 5g: Force a full setup rebuild on every solve() call.
+    // resetInitMove() above has torn down temporary constraints and move
+    // tracking state. If forceFullSetup were false (as reset by the
+    // previous solve), the incremental fast-path would skip the rebuild
+    // and leave the solver with dangling pointers to cleared memory,
+    // causing coordinates to collapse to (0.0, 0.0) on drop.
+    forceFullSetup = true;
 
     // if updateGeoAfterSolving=false, the solver information is updated, but the Sketch is nothing
     // updated. It is useful to avoid triggering an OnChange when the goeometry did not change but
@@ -89,9 +101,19 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
     // We should have an updated Sketcher (sketchobject) geometry or this solve() should not have
     // happened therefore we update our sketch solver geometry with the SketchObject one.
     //
+    // Phase 5d: Use incremental mapping cache — if no geometries are dirty and no
+    // topology change flagged, skip the tear-down/rebuild and reuse cached DoF.
     // set up a sketch (including dofs counting and diagnosing of conflicts)
-    lastDoF = solvedSketch.setUpSketch(
-        getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+    lastDoF = solvedSketch.setUpSketchIncremental(
+        getCompleteGeometry(),
+        Constraints.getValues(),
+        getExternalGeometryCount(),
+        forceFullSetup ? std::vector<int>{} : dirtyGeometryIds,
+        forceFullSetup);
+
+    // Phase 5d: Reset dirty tracking after successful setup
+    dirtyGeometryIds.clear();
+    forceFullSetup = false;
 
     // At this point we have the solver information about conflicting/redundant/over-constrained,
     // but the sketch is NOT solved. Some examples: Redundant: a vertical line, a horizontal line
@@ -133,6 +155,18 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
         if (lastSolverStatus != 0) {// solving
             err = -1;
         }
+    }
+
+    // Phase 5k: Graceful Frame Suppression
+    // If the solver fails (any non-zero status: DogLeg divergence,
+    // redundancy, over-constrained, conflict, or malformed) on a singular
+    // frame tick during an interactive drag, clear the move trackers and
+    // return success (0) immediately. This suppresses the Python ValueError
+    // exception while completely bypassing extractGeometry(), leaving the
+    // canvas primitives locked safely at their last known valid coordinates.
+    if (isDragSolve && lastSolverStatus != 0) {
+        solvedSketch.clearMoveTrackers();
+        return 0;
     }
 
     if (lastHasMalformedConstraints) {
@@ -177,6 +211,10 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
     }
 
     signalSolverUpdate();
+
+    // Phase 5h: clearMoveTrackers() has moved to SketchObject::execute()
+    // where it runs after ALL recompute passes within the document
+    // execution window have fully concluded.
 
     return err;
 }
@@ -230,6 +268,7 @@ int SketchObject::setDriving(int ConstrId, bool isdriving)
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+    forceFullSetup = true;
 
     const std::vector<Constraint*>& vals = this->Constraints.getValues();
 
@@ -605,6 +644,7 @@ int SketchObject::setVirtualSpace(int ConstrId, bool isinvirtualspace)
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+    forceFullSetup = true;
 
     const std::vector<Constraint*>& vals = this->Constraints.getValues();
 
@@ -633,6 +673,7 @@ int SketchObject::setVirtualSpace(std::vector<int> constrIds, bool isinvirtualsp
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+    forceFullSetup = true;
 
     if (constrIds.empty())
         return 0;
@@ -771,10 +812,73 @@ int SketchObject::setVisibility(int ConstrId, bool isVisible)
 
 int SketchObject::setUpSketch()
 {
-    lastDoF = solvedSketch.setUpSketch(
-        getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+    // Phase 5u: Epsilon-tolerant cache short-circuit.
+    // Runs BEFORE the dirty/forceFullSetup gate so that
+    // Pass 2/3 recompute cycles bypass destructive reconstruction.
+    Base::Placement currentPlm = Placement.getValue();
+    Base::Vector3d curPos = currentPlm.getPosition();
+    Base::Vector3d lastPos = _lastCachePlacement.getPosition();
+    Base::Rotation curRot = currentPlm.getRotation();
+    Base::Rotation lastRot = _lastCachePlacement.getRotation();
+
+    bool matrixUnchanged = curPos.IsEqual(lastPos, 1e-5) &&
+                           curRot.isSame(lastRot, 1e-5);
+
+    if (matrixUnchanged && !_cachedCoordsMap.empty()) {
+        // Physically re-hydrate live geometry from persistent local map
+        const auto& geomList = getInternalGeometry();
+        for (const auto& kv : _cachedCoordsMap) {
+            int geoId = kv.first;
+            if (geoId >= 0 && geoId < static_cast<int>(geomList.size())) {
+                auto* geo = geomList[geoId];
+                if (geo && geo->is<Part::GeomPoint>()) {
+                    static_cast<Part::GeomPoint*>(geo)->setPoint(kv.second);
+                }
+            }
+        }
+
+        if (forceFullSetup) {
+            forceFullSetup = false;  // Defeat the recompute override
+            return lastDoF;          // Short-circuit destructive reconstruction
+        }
+    }
+
+    if (dirtyGeometryIds.empty() && !forceFullSetup
+        && matrixUnchanged && !_cachedCoordsMap.empty()) {
+        // Repopulate dirtyGeometryIds so base framework runs parameter sync
+        for (const auto& kv : _cachedCoordsMap) {
+            dirtyGeometryIds.push_back(kv.first);
+        }
+    }
+
+    lastDoF = solvedSketch.setUpSketchIncremental(
+        getCompleteGeometry(),
+        Constraints.getValues(),
+        getExternalGeometryCount(),
+        forceFullSetup ? std::vector<int>{} : dirtyGeometryIds,
+        forceFullSetup);
 
     retrieveSolverDiagnostics();
+
+    // Phase 5d: Reset dirty tracking after successful setup.
+    // .clear() preserves heap capacity for zero-allocation hot path.
+    dirtyGeometryIds.clear();
+    forceFullSetup = false;
+
+    // Phase 5r: Capture solved point-geometry coordinates for
+    // placement-stable re-hydration on subsequent setUpSketch() calls.
+    _lastCachePlacement = Placement.getValue();
+    _cachedCoordsMap.clear();
+    {
+        const auto& geomList = getInternalGeometry();
+        for (int i = 0; i < static_cast<int>(geomList.size()); ++i) {
+            const auto* geo = geomList[i];
+            if (geo && geo->is<Part::GeomPoint>()) {
+                _cachedCoordsMap[i] =
+                    static_cast<const Part::GeomPoint*>(geo)->getPoint();
+            }
+        }
+    }
 
     if (lastHasRedundancies || lastDoF < 0 || lastHasConflict || lastHasMalformedConstraints
         || lastHasPartialRedundancies)
@@ -858,6 +962,8 @@ int SketchObject::addConstraints(const std::vector<Constraint*>& ConstraintList)
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+
+    forceFullSetup = true;  // Phase 5d: constraint topology change requires full solver rebuild
 
     const std::vector<Constraint*>& vals = this->Constraints.getValues();
 
@@ -964,6 +1070,7 @@ int SketchObject::delConstraint(int ConstrId, DeleteOptions options)
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+    forceFullSetup = true;
 
     const std::vector<Constraint*>& vals = this->Constraints.getValues();
     if (ConstrId < 0 || ConstrId >= int(vals.size())) {
@@ -988,6 +1095,7 @@ int SketchObject::delConstraints(std::vector<int> ConstrIds, DeleteOptions optio
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+    forceFullSetup = true;
     if (ConstrIds.empty()) {
         return 0;
     }
@@ -1036,6 +1144,7 @@ int SketchObject::delConstraintOnPoint(int geoId, PointPos posId, bool onlyCoinc
 {
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
+    forceFullSetup = true;
 
     const std::vector<Constraint*>& vals = this->Constraints.getValues();
     std::vector<Constraint*> newVals;

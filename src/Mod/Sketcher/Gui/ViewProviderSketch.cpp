@@ -920,6 +920,16 @@ EditModeCoinManager::PreselectionResult ViewProviderSketch::getPreselectionResul
         hoveredPointIndex = viewProviderParameters.lastPreselectionResult.PointIndex;
     }
 
+    // Phase 5n: Geometry-first click priority.
+    // When both geometry and a constraint/dimension occupy the same raycast
+    // pixel, the geometry index must win. Scan for geometry hits first;
+    // only fall back to the full detection chain (constraints → geometry
+    // → axes) when no geometry is under the cursor.
+    auto geomResult = editCoinManager->detectGeometryOnlyPreselection(points, pos, hoveredPointIndex);
+    if (geomResult.hasWinner()) {
+        return geomResult;
+    }
+
     return editCoinManager->detectPreselection(points, pos, hoveredPointIndex);
 }
 
@@ -4291,6 +4301,9 @@ void ViewProviderSketch::unsetEdit(int ModNum)
             "unsetEdit: visibility automation failed with an error: %s \n",
             e.what());
     }
+
+    // Phase 5r: Clear coordinate cache on sketch edit exit.
+    getSketchObject()->clearCoordCache();
 }
 
 void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int ModNum)

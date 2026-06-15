@@ -261,6 +261,14 @@ public:
         const SbVec2s& cursorPos,
         int hoveredPointIndex = PreselectionResult::InvalidPoint
     );
+    /// Geometry-only detection: scans picked points for geometry hits only,
+    /// ignoring constraints and axes. Used for click-priority resolution
+    /// when geometry should win over overlapping constraint lines.
+    PreselectionResult detectGeometryOnlyPreselection(
+        const SoPickedPointList& points,
+        const SbVec2s& cursorPos,
+        int hoveredPointIndex = PreselectionResult::InvalidPoint
+    );
     /// The client is responsible for unref-ing the SoGroup to release the memory.
     SoGroup* getSelectedConstraints();
     //@}

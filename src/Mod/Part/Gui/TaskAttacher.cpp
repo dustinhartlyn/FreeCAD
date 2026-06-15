@@ -598,6 +598,19 @@ void TaskAttacher::handleInitialSelection()
 
 void TaskAttacher::onSelectionChanged(const Gui::SelectionChanges& msg)
 {
+    // Phase 5u: Plane auto-advance — detect base-plane selection
+    // and auto-commit the attachment editor globally.
+    if (msg.Type == Gui::SelectionChanges::AddSelection) {
+        const std::string& sub = msg.pSubName;
+        if (sub.find("XY_Plane") != std::string::npos
+            || sub.find("XZ_Plane") != std::string::npos
+            || sub.find("YZ_Plane") != std::string::npos) {
+            detachSelection();
+            QTimer::singleShot(0, []() { Gui::Control().accept(); });
+            return;
+        }
+    }
+
     if (!ViewProvider) {
         return;
     }

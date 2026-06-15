@@ -333,6 +333,13 @@ public:
      */
     int setUpSketch();
 
+    /// Phase 5r: Clear the geometry coordinate cache (called on edit exit).
+    void clearCoordCache()
+    {
+        _cachedCoordsMap.clear();
+        _lastCachePlacement = Base::Placement();
+    }
+
     /** Performs a full analysis of the addition of additional constraints without adding them to
      * the sketch object */
     int diagnoseAdditionalConstraints(std::vector<Sketcher::Constraint*> additionalconstraints);
@@ -1175,6 +1182,29 @@ private:
        (moveGeometry), the geometry must be updated first.
     */
     bool solverNeedsUpdate;
+
+    /** Phase 5d: Zero-allocation dirty geometry tracking for incremental setUpSketch.
+     *  During interactive drag ticks, only mutated geometry IDs are pushed here.
+     *  .clear() drops logical size to 0 while preserving heap capacity, maintaining
+     *  a zero-allocation hot path. Never use std::set<int> — insertions cause implicit heap allocs.
+     */
+    std::vector<int> dirtyGeometryIds;
+
+    /** Phase 5d: When true, forces a full setUpSketch rebuild (e.g. after geometry add/delete,
+     *  constraint topology changes, or external geometry rebuild). When false and dirtyGeometryIds
+     *  is empty, setUpSketch() skips the entire rebuild and returns the cached DoF.
+     */
+    bool forceFullSetup;
+
+    /** Phase 5r: Coordinate cache for fallback re-hydration. Maps GeoId to
+     *  most-recent solved point coordinate. Cleared on edit exit.
+     */
+    std::map<int, Base::Vector3d> _cachedCoordsMap;
+
+    /** Phase 5r: Cached placement from the last capture cycle. Used as guard
+     *  to detect sketch movement between cache capture and re-hydration.
+     */
+    Base::Placement _lastCachePlacement;
 
     int lastDoF;
     bool lastHasConflict;

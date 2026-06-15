@@ -3487,7 +3487,12 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
         iteration_count++;
     }
 
-    std::cerr << "[ITERATION_COUNT] " << iteration_count << std::endl;
+    if (debugMode == IterationLevel) {
+        std::stringstream stream;
+        stream << "[ITERATION_COUNT] " << iteration_count << "\n";
+        const std::string tmp = stream.str();
+        Base::Console().log(tmp.c_str());
+    }
 
     subsys->revertParams();
 

@@ -25,7 +25,11 @@
 #include <algorithm>
 
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -140,6 +144,9 @@ SketchObject::SketchObject() : geoLastId(0)
 
     solverNeedsUpdate = false;
 
+    dirtyGeometryIds.reserve(256);  // Phase 5d: pre-allocate for zero-allocation hot path
+    forceFullSetup = true;          // Phase 5d: first setup must be a full rebuild
+
     noRecomputes = false;
 
     //NOLINTBEGIN
@@ -198,6 +205,14 @@ App::DocumentObjectExecReturn* SketchObject::execute()
         return new App::DocumentObjectExecReturn(e.what());
     }
 
+    // Phase 5h: Force a full solver rebuild across the entire execute() window.
+    // rebuildExternalGeometry() and Constraints.acceptGeometry() below may
+    // trigger onGeometryChanged() which calls setUpSketch(). Without this flag,
+    // those setUpSketch() calls hit the incremental fast-path (forceFullSetup
+    // was reset to false by the previous solve cycle), causing coordinate
+    // collapse to (X=0, Y=0) on drop.
+    forceFullSetup = true;
+
     // setup and diagnose the sketch
     try {
         rebuildExternalGeometry();
@@ -242,6 +257,11 @@ App::DocumentObjectExecReturn* SketchObject::execute()
     // this is not necessary for sketch representation in edit mode, unless we want to trigger an
     // update of the objects that depend on this sketch (like pads)
     buildShape();
+
+    // Phase 5h: Deferred move tracker teardown — moved here from solve() to
+    // ensure MoveParameters/InitParameters are not cleared until ALL recompute
+    // passes within the execute() window have completely finished.
+    solvedSketch.clearMoveTrackers();
 
     return App::DocumentObject::StdReturn;
 }
@@ -326,11 +346,35 @@ void SketchObject::buildShape()
         }
     }
 
-    internalElementMap.clear();
 
     if (shapes.empty() && vertices.empty()) {
-        InternalShape.setValue(Part::TopoShape());
-        Shape.setValue(Part::TopoShape());
+        // Construct a minimal default planar face on the XY plane
+        // to prevent AttachEngine failures ("infinite shape"/"no planar face")
+        // when downstream features or viewport queries inspect the sketch shape
+        // before geometry has been added.
+        try {
+            gp_Pnt p1(-0.5, -0.5, 0.0), p2(0.5, -0.5, 0.0);
+            gp_Pnt p3(0.5, 0.5, 0.0), p4(-0.5, 0.5, 0.0);
+            BRepBuilderAPI_MakeEdge mkE1(p1, p2), mkE2(p2, p3);
+            BRepBuilderAPI_MakeEdge mkE3(p3, p4), mkE4(p4, p1);
+            BRepBuilderAPI_MakeWire mkW;
+            mkW.Add(mkE1.Edge());
+            mkW.Add(mkE2.Edge());
+            mkW.Add(mkE3.Edge());
+            mkW.Add(mkE4.Edge());
+            BRepBuilderAPI_MakeFace mkF(mkW.Wire());
+            Part::TopoShape defaultShape(0, getDocument()->getStringHasher());
+            defaultShape.setShape(mkF.Face());
+            defaultShape.Tag = getID();
+            InternalShape.setValue(defaultShape);
+            Shape.setValue(defaultShape);
+            internalElementMap.clear();
+        }
+        catch (const Standard_Failure&) {
+            InternalShape.setValue(Part::TopoShape());
+            Shape.setValue(Part::TopoShape());
+            internalElementMap.clear();
+        }
         return;
     }
     Part::TopoShape result(0, getDocument()->getStringHasher());
@@ -355,11 +399,30 @@ void SketchObject::buildShape()
         result.makeElementCompound(results);
     }
     result.Tag = getID();
-    InternalShape.setValue(buildInternals(result.located(TopLoc_Location())));
+    auto internals = buildInternals(result.located(TopLoc_Location()));
+    const auto& currentInternal = InternalShape.getShape();
+    bool internalChanged = !currentInternal.getShape().IsEqual(internals.getShape());
+    if (internalChanged) {
+        InternalShape.setValue(internals);
+    }
     // Must set Shape property after InternalShape so that
     // GeoFeature::updateElementReference() can run properly on change of Shape
     // property, because some reference may pointing to the InternalShape
-    Shape.setValue(result);
+    const auto& currentShape = Shape.getShape();
+    bool shapeChanged = !currentShape.getShape().IsEqual(result.getShape());
+    // Phase 5i: Removed unconditional "|| true" that forced Shape.setValue()
+    // on every execute() cycle. This was the source of spurious signalChanged
+    // emissions flooding the ViewProvider during the setEdit() handoff window,
+    // causing the task dialog lifecycle to fail (OK/Cancel button regression).
+    // Phase 5h invariants (forceFullSetup, clearMoveTrackers) are preserved.
+    if (shapeChanged) {
+        Shape.setValue(result);
+    }
+    // Invalidate the cached internal element map only when the shape actually
+    // changed — avoids redundant O(N×M) getInternalElementMap() scans
+    if (internalChanged || shapeChanged) {
+        internalElementMap.clear();
+    }
 }
 // clang-format off
 
@@ -778,6 +841,10 @@ void SketchObject::acceptGeometry()
 }
 
 int SketchObject::setGeometry(int GeoId, const Part::Geometry *geo) {
+    // Phase 5d: Track dirty geometry for incremental setUpSketch
+    forceFullSetup = true;
+    dirtyGeometryIds.push_back(GeoId);
+
     std::unique_ptr<Part::Geometry> g(geo->clone());
     if(GeoId>=0 && GeoId <Geometry.getSize()) {
         Geometry.set1Value(GeoId,std::move(g));
@@ -1102,6 +1169,13 @@ void SketchObject::onConstraintsChanged()
             QT_TRANSLATE_NOOP("Notifications", "Unmanaged change of Constraint "
                               "Property results in invalid constraint indices") "\n");
     }
+    // Phase 5f: Constraint property edit via direct property access (UI editor / Python)
+    // bypasses the typed mutation methods (e.g., setConstraintDriving) that would
+    // normally set forceFullSetup. Without this flag, the incremental cache guard
+    // in setUpSketch() returns the cached DoF without rebuilding the solver,
+    // silently dropping the constraint value change.
+    forceFullSetup = true;
+
     Base::StateLocker lock(internaltransaction, true);
     setUpSketch();
 }

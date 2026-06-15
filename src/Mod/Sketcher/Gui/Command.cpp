@@ -36,6 +36,7 @@
 
 #include <App/DocumentObjectGroup.h>
 #include <App/Datums.h>
+#include <App/Origin.h>
 #include <Gui/Action.h>
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
@@ -231,6 +232,37 @@ void CmdSketcherNewSketch::activated(int iMsg)
             else {
                 bAttach = true;
                 mapmode = validModes[index - 1];
+            }
+        }
+
+        // Phase 5m: Auto-advance on base plane selection.
+        // When SuggestAutoMapMode returns srNoModesFit, inspect both the
+        // object type AND sub-element reference string. Origin planes
+        // (XY/XZ/YZ) are App::Plane objects inside App::Origin features;
+        // the sub-element string identifies which plane was clicked.
+        if (!bAttach && msgid == Attacher::SuggestResult::srNoModesFit) {
+            auto selObjects = Gui::Selection().getSelectionEx();
+            for (auto& selObj : selObjects) {
+                auto* docObj = selObj.getObject();
+                if (!docObj)
+                    continue;
+
+                // Check if object is an Origin feature (contains planes/axes)
+                bool isOrigin = docObj->isDerivedFrom<App::Origin>();
+
+                // Check sub-element reference string for plane roles
+                const auto& subNames = selObj.getSubNames();
+                for (const auto& sub : subNames) {
+                    if (sub.find("XY_Plane") != std::string::npos
+                        || sub.find("XZ_Plane") != std::string::npos
+                        || sub.find("YZ_Plane") != std::string::npos) {
+                        bAttach = true;
+                        mapmode = Attacher::mmFlatFace;
+                        break;
+                    }
+                }
+                if (bAttach)
+                    break;
             }
         }
     }

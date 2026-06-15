@@ -74,6 +74,7 @@ public:
     void autoClosedOnClosedView() override;
 
     QDialogButtonBox::StandardButtons getStandardButtons() const override;
+    void modifyStandardButtons(QDialogButtonBox*) override;
 
     /** @brief Function used to register a slot to be triggered when the tool widget is changed. */
     template<typename F>

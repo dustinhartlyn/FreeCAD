@@ -369,6 +369,304 @@ int Sketch::setUpSketch(
     return GCSsys.dofsNumber();
 }
 
+int Sketch::setUpSketchIncremental(
+    const std::vector<Part::Geometry*>& GeoList,
+    const std::vector<Constraint*>& ConstraintList,
+    int extGeoCount,
+    const std::vector<int>& dirtyGeoIds,
+    bool forceFull)
+{
+    // If a full rebuild is required (topology/constraint change), delegate to full setUpSketch
+    if (forceFull) {
+        return setUpSketch(GeoList, ConstraintList, extGeoCount);
+    }
+
+    if (dirtyGeoIds.empty()) {
+        // No geometry changed: just re-declare unknowns and reinitialize the solver
+        // The GCS subsystem may need to re-diagnose after a solve cycle
+        clearTemporaryConstraints();
+        GCSsys.declareUnknowns(Parameters);
+        GCSsys.declareDrivenParams(DrivenParameters);
+        GCSsys.initSolution(defaultSolverRedundant);
+
+        GCSsys.getConflicting(Conflicting);
+        GCSsys.getRedundant(Redundant);
+        GCSsys.getPartiallyRedundant(PartiallyRedundant);
+        GCSsys.getDependentParams(pDependentParametersList);
+
+        calculateDependentParametersElements();
+        return GCSsys.dofsNumber();
+    }
+
+    // Phase 5d: Incremental in-place coordinate update for dirty geometries.
+    // The GCS objects (Points, Lines, etc.) store double* pointers into the Parameters
+    // vector. By updating the double values in-place (via *ptr = new_value), the GCS
+    // objects automatically see the new coordinates WITHOUT requiring a full tear-down/rebuild.
+
+    // Phase 5f: Transitive graph closure for cluster dependency expansion.
+    // When a single geometry is dragged, constraints that connect it to other
+    // primitives (Distance, DistanceX, DistanceY, Radius, Diameter, Angle, etc.)
+    // require those connected primitives to have fresh initial coordinates too.
+    // Without expansion, the solver starts from an inconsistent state where
+    // the dragged primitive has moved but its constraint partners still hold
+    // stale double* values from the previous solve cycle, creating a
+    // mathematical island that can produce incorrect convergence.
+    std::set<int> expandedDirtySet;
+    for (int gid : dirtyGeoIds) {
+        if (gid >= 0) {
+            expandedDirtySet.insert(gid);
+        }
+    }
+
+    // Phase 5f: Transitive graph closure via fixed-point iteration.
+    // A single pass over ConstraintList can miss indirect connections when
+    // constraints are out of topological order (e.g., constraint C connecting
+    // W to Y is processed BEFORE constraint B connecting X to W; then Y
+    // is only discovered on the second pass). We loop until a full pass
+    // adds no new elements, guaranteeing we capture the complete local
+    // connected component (active primitive, all constraints touching it,
+    // and all primitives touching those constraints).
+    bool didExpand = true;
+    int closureIter = 0;
+    constexpr int kMaxClosureIterations = 16;  // safety cap; depth 16 is conservative
+
+    while (didExpand && closureIter < kMaxClosureIterations) {
+        didExpand = false;
+        ++closureIter;
+
+        for (const auto* c : ConstraintList) {
+            if (!c || c->Type == Sketcher::Group || c->Type == Sketcher::Text) {
+                continue;  // non-geometric constraints
+            }
+
+            bool touchesDirty = false;
+            // Check legacy geoId members (First, Second, Third)
+            if (c->First >= 0 && expandedDirtySet.count(c->First)) { touchesDirty = true; }
+            if (c->Second >= 0 && expandedDirtySet.count(c->Second)) { touchesDirty = true; }
+            if (c->Third >= 0 && expandedDirtySet.count(c->Third)) { touchesDirty = true; }
+
+            if (touchesDirty) {
+                // Pull all connected geometry IDs into the active mutation cluster
+                const size_t beforeSize = expandedDirtySet.size();
+                if (c->First >= 0) { expandedDirtySet.insert(c->First); }
+                if (c->Second >= 0) { expandedDirtySet.insert(c->Second); }
+                if (c->Third >= 0) { expandedDirtySet.insert(c->Third); }
+                if (expandedDirtySet.size() > beforeSize) {
+                    didExpand = true;
+                }
+            }
+        }
+    }
+
+    std::vector<int> expandedDirtyVec(expandedDirtySet.begin(), expandedDirtySet.end());
+
+    const int intCount = static_cast<int>(GeoList.size()) - extGeoCount;
+    const int extStartIdx = Geoms.size() - extGeoCount;
+
+    for (int dirtyGeoId : expandedDirtyVec) {
+        if (dirtyGeoId < 0) {
+            continue;  // skip sketch axes (negative geoIds)
+        }
+
+        // Map SketchObject geoId to internal Geoms index
+        int geomIdx = -1;
+        if (dirtyGeoId < intCount) {
+            geomIdx = dirtyGeoId;  // internal geometry: direct 1:1 mapping
+        }
+        else {
+            // External geometry: offset into the external section
+            int extIdx = dirtyGeoId - intCount;
+            geomIdx = extStartIdx + extIdx;
+        }
+
+        if (geomIdx < 0 || geomIdx >= static_cast<int>(Geoms.size())) {
+            continue;
+        }
+
+        GeoDef& def = Geoms[geomIdx];
+        const Part::Geometry* srcGeo = nullptr;
+
+        // Find the source geometry from GeoList
+        if (dirtyGeoId < static_cast<int>(GeoList.size())) {
+            srcGeo = GeoList[dirtyGeoId];
+        }
+
+        if (!srcGeo || !def.geo) {
+            continue;
+        }
+
+        // Phase 5d: Update the cloned geometry copy by deleting the old one
+        // and re-cloning from the source. This is safe for Point/Line/Circle/Arc
+        // (the fast-path types) and avoids needing per-type setter APIs.
+        delete def.geo;
+        def.geo = srcGeo->clone();
+
+        // Update double* parameter values in-place based on geometry type
+        switch (def.type) {
+            case Point: {
+                auto* pt = static_cast<const GeomPoint*>(srcGeo);
+                if (def.startPointId >= 0 && def.startPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& p = Points[def.startPointId];
+                    if (p.x) { *p.x = pt->getPoint().x; }
+                    if (p.y) { *p.y = pt->getPoint().y; }
+                }
+                break;
+            }
+            case Line: {
+                auto* lineSeg = static_cast<const GeomLineSegment*>(srcGeo);
+                if (def.startPointId >= 0 && def.startPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& p1 = Points[def.startPointId];
+                    if (p1.x) { *p1.x = lineSeg->getStartPoint().x; }
+                    if (p1.y) { *p1.y = lineSeg->getStartPoint().y; }
+                }
+                if (def.endPointId >= 0 && def.endPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& p2 = Points[def.endPointId];
+                    if (p2.x) { *p2.x = lineSeg->getEndPoint().x; }
+                    if (p2.y) { *p2.y = lineSeg->getEndPoint().y; }
+                }
+                break;
+            }
+            case Circle: {
+                auto* circle = static_cast<const GeomCircle*>(srcGeo);
+                if (def.midPointId >= 0 && def.midPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& center = Points[def.midPointId];
+                    if (center.x) { *center.x = circle->getCenter().x; }
+                    if (center.y) { *center.y = circle->getCenter().y; }
+                }
+                if (def.index >= 0 && def.index < static_cast<int>(Circles.size())) {
+                    GCS::Circle& c = Circles[def.index];
+                    if (c.rad) { *c.rad = circle->getRadius(); }
+                }
+                break;
+            }
+            case Arc: {
+                auto* aoc = static_cast<const GeomArcOfCircle*>(srcGeo);
+                if (def.startPointId >= 0 && def.startPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& sp = Points[def.startPointId];
+                    if (sp.x) { *sp.x = aoc->getStartPoint().x; }
+                    if (sp.y) { *sp.y = aoc->getStartPoint().y; }
+                }
+                if (def.endPointId >= 0 && def.endPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& ep = Points[def.endPointId];
+                    if (ep.x) { *ep.x = aoc->getEndPoint().x; }
+                    if (ep.y) { *ep.y = aoc->getEndPoint().y; }
+                }
+                if (def.midPointId >= 0 && def.midPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& center = Points[def.midPointId];
+                    if (center.x) { *center.x = aoc->getCenter().x; }
+                    if (center.y) { *center.y = aoc->getCenter().y; }
+                }
+                if (def.index >= 0 && def.index < static_cast<int>(Arcs.size())) {
+                    GCS::Arc& a = Arcs[def.index];
+                    if (a.rad) { *a.rad = aoc->getRadius(); }
+                    if (a.startAngle) { *a.startAngle = aoc->getFirstParameter(); }
+                    if (a.endAngle) { *a.endAngle = aoc->getLastParameter(); }
+                }
+                break;
+            }
+            case Ellipse:
+            case ArcOfEllipse:
+            case ArcOfHyperbola:
+            case ArcOfParabola:
+            case BSpline:
+                // Phase 5d: Complex conics and BSplines require focal-point recomputation
+                // or pole restructuring. Fall back to the legacy full setUpSketch path
+                // to guarantee correctness. Points/Lines/Circles/Arcs (the dominant
+                // primitives in rectangular arrays) use the incremental fast path above.
+                return setUpSketch(GeoList, ConstraintList, extGeoCount);
+            default:
+                break;
+        }
+    }
+
+    // Phase 5e: Synchronize ALL Geoms[].geo with current GCS parameter values.
+    // The dirty loop above updates GCS double* for dirty geometries only,
+    // but the solver may have modified non-dirty geometry parameters in
+    // previous solve cycles. Reading ALL parameters back ensures extractGeometry()
+    // produces correct coordinates for both mutated and unmutated clusters.
+    for (size_t i = 0; i < Geoms.size(); ++i) {
+        GeoDef& def = Geoms[i];
+        if (!def.geo) {
+            continue;
+        }
+
+        switch (def.type) {
+            case Point: {
+                if (def.startPointId >= 0 && def.startPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& p = Points[def.startPointId];
+                    if (p.x && p.y) {
+                        static_cast<GeomPoint*>(def.geo)->setPoint(
+                            Base::Vector3d(*p.x, *p.y, 0));
+                    }
+                }
+                break;
+            }
+            case Line: {
+                if (def.startPointId >= 0 && def.startPointId < static_cast<int>(Points.size()) &&
+                    def.endPointId >= 0 && def.endPointId < static_cast<int>(Points.size())) {
+                    GCS::Point& p1 = Points[def.startPointId];
+                    GCS::Point& p2 = Points[def.endPointId];
+                    if (p1.x && p1.y && p2.x && p2.y) {
+                        static_cast<GeomLineSegment*>(def.geo)->setPoints(
+                            Base::Vector3d(*p1.x, *p1.y, 0),
+                            Base::Vector3d(*p2.x, *p2.y, 0));
+                    }
+                }
+                break;
+            }
+            case Circle: {
+                if (def.midPointId >= 0 && def.midPointId < static_cast<int>(Points.size()) &&
+                    def.index >= 0 && def.index < static_cast<int>(Circles.size())) {
+                    GCS::Point& center = Points[def.midPointId];
+                    GCS::Circle& c = Circles[def.index];
+                    if (center.x && center.y && c.rad) {
+                        static_cast<GeomCircle*>(def.geo)->setCenter(
+                            Base::Vector3d(*center.x, *center.y, 0));
+                        static_cast<GeomCircle*>(def.geo)->setRadius(*c.rad);
+                    }
+                }
+                break;
+            }
+            case Arc: {
+                if (def.startPointId >= 0 && def.startPointId < static_cast<int>(Points.size()) &&
+                    def.endPointId >= 0 && def.endPointId < static_cast<int>(Points.size()) &&
+                    def.midPointId >= 0 && def.midPointId < static_cast<int>(Points.size()) &&
+                    def.index >= 0 && def.index < static_cast<int>(Arcs.size())) {
+                    GCS::Point& sp = Points[def.startPointId];
+                    GCS::Point& ep = Points[def.endPointId];
+                    GCS::Point& center = Points[def.midPointId];
+                    GCS::Arc& a = Arcs[def.index];
+                    if (center.x && center.y && a.rad && a.startAngle && a.endAngle) {
+                        static_cast<GeomArcOfCircle*>(def.geo)->setCenter(
+                            Base::Vector3d(*center.x, *center.y, 0));
+                        static_cast<GeomArcOfCircle*>(def.geo)->setRadius(*a.rad);
+                        static_cast<GeomArcOfCircle*>(def.geo)->setRange(
+                            *a.startAngle, *a.endAngle, /*emulateCCWXY=*/true);
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    // After updating dirty geometry coordinates in-place, reinitialize the solver
+    clearTemporaryConstraints();
+    GCSsys.declareUnknowns(Parameters);
+    GCSsys.declareDrivenParams(DrivenParameters);
+    GCSsys.initSolution(defaultSolverRedundant);
+
+    GCSsys.getConflicting(Conflicting);
+    GCSsys.getRedundant(Redundant);
+    GCSsys.getPartiallyRedundant(PartiallyRedundant);
+    GCSsys.getDependentParams(pDependentParametersList);
+
+    calculateDependentParametersElements();
+
+    return GCSsys.dofsNumber();
+}
+
 void Sketch::buildInternalAlignmentGeometryMap(const std::vector<Constraint*>& constraintList)
 {
     for (auto* c : constraintList) {
@@ -5335,7 +5633,22 @@ int Sketch::initMove(int geoId, PointPos pos, bool fine)
 
 void Sketch::resetInitMove()
 {
+    // Phase 5g: Defer clearing MoveParameters/InitParameters until after
+    // the full setup pass in SketchObject::solve() has re-established
+    // solver parameter pointers from document geometry. Premature clearing
+    // causes coordinate zero-out (X=0, Y=0) on drop when the incremental
+    // fast-path runs with dangling solver pointers.
     isInitMove = false;
+    clearTemporaryConstraints();
+    // MoveParameters.clear() and InitParameters.clear() are deferred to
+    // clearMoveTrackers(), called from SketchObject::solve() after the
+    // full setup and geometry writeback complete.
+}
+
+void Sketch::clearMoveTrackers()
+{
+    MoveParameters.clear();
+    InitParameters.clear();
 }
 
 int Sketch::initBSplinePieceMove(int geoId, PointPos pos, const Base::Vector3d& firstPoint, bool fine)
