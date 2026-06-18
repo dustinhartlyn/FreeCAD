@@ -70,7 +70,8 @@ enum DogLegGaussStep
 {
     FullPivLU = 0,
     LeastNormFullPivLU = 1,
-    LeastNormLdlt = 2
+    LeastNormLdlt = 2,
+    SparseLDLT = 3       // Sparse LDLT on damped normal equations (J^T J + mu*I)
 };
 
 enum QRAlgorithm
@@ -102,6 +103,151 @@ enum SpecialTag
 {
     DefaultTemporaryConstraint = -1
 };
+
+///////////////////////////////////////
+// Cluster Metadata (§4.2)
+///////////////////////////////////////
+
+/**
+ * @brief Describes a well-constrained cluster for sequential solving (§4.2).
+ *
+ * Populated by buildClusterDAG() output. Each cluster is a connected
+ * component of the covered subgraph with exactly 3 free pebbles (2D rigid-body DOF).
+ */
+struct ClusterInfo
+{
+    std::vector<double*> param_pointers;          // original parameter pointers in this cluster
+    std::vector<int>      constraint_indices;     // indices into the parent SubSystem::clist
+    int param_count = 0;                          // number of scalar parameters
+    int vertex_count = 0;                         // number of geometric point vertices
+    int free_pebbles = 0;                         // free pebble count (should be 3 for well-constrained)
+};
+
+///////////////////////////////////////
+// Pebble Game — 2D Laman Sparsity Matroid (§2.2)
+///////////////////////////////////////
+
+/**
+ * @brief Pre-allocated pebble game state used for topological cluster decomposition.
+ *
+ * All arrays are resized once per solve_DL() call. Zero dynamic allocation
+ * occurs in the pebble game hot path. The pebble game determines which
+ * constraint edges can be covered (well-constrained) and which induce
+ * overconstraint.
+ *
+ * Each geometric Point vertex contributes 2 pebbles. Each constraint edge
+ * consumes 1 pebble. The Laman condition |E| ≤ 2|V| − 3 is enforced by
+ * the greedy orientation + DFS flip algorithm.
+ *
+ * @see §2.2 of phase4a_blueprint_v3.md
+ */
+struct PebbleGameState
+{
+    int num_vertices = 0;                        // |V| — number of geometric point vertices
+    int num_edges    = 0;                        // |E| — number of constraint edges
+
+    // Per-vertex state
+    std::vector<int> vertex_pebbles;             // [num_vertices] — pebbles held by each vertex
+                                                 // Initialized to 2 per vertex (2D Laman)
+
+    // Pebble ownership tracking (v3 FIX for BLOCKER 2)
+    std::vector<int> pebble_owner;               // [2*num_vertices] — which vertex owns pebble i
+                                                 // pebble_owner[i] == -1 means pebble is on an edge
+
+    // Per-edge state
+    std::vector<std::vector<int>> edge_vertices;  // [num_edges] — vertex indices incident to edge
+    std::vector<bool>              edge_covered;  // [num_edges] — true if edge holds a pebble
+    std::vector<int>               edge_pebble;   // [num_edges] — pebble index held (-1 if uncovered)
+    std::vector<int>               edge_donor_vertex; // [num_edges] — which vertex donated the pebble
+
+    // Overconstrained detection
+    std::vector<int> overconstrained_edges;       // edges that remain uncovered after DFS
+
+    // DFS workspace (pre-allocated, reused across all DFS calls)
+    std::vector<int>  dfs_parent;                 // [num_vertices] — parent in DFS tree
+    std::vector<int>  dfs_edge_to_parent;         // [num_vertices] — edge index to parent
+    std::vector<bool> dfs_visited;                // [num_vertices] — visited flag
+    std::vector<int>  dfs_stack;                  // pre-allocated stack for iterative DFS
+
+    // ---- Cluster decomposition (§3.1–3.2) ----
+    std::vector<int> component_id;                // [num_vertices] — cluster assignment, -1 = unvisited
+    int num_components = 0;                       // count of connected components on covered subgraph
+
+    // DAG adjacency — Compressed Sparse Row (CSR) format (§3.4)
+    std::vector<int> dag_in_degree;               // [num_components] — inbound dependency count
+    std::vector<int> dag_out_degree;              // [num_components] — outbound dependency count
+    std::vector<int> dag_out_start;               // [num_components+1] — prefix-sum offsets
+    std::vector<int> dag_out_edges;               // flat adjacency list (total out-edge count)
+
+    // DAG construction workspace (§3.2–3.3) — pre-allocated, reused across solve_DL() calls
+    std::vector<int> free_pebbles_per_cluster;    // [num_components] pebbles held free per cluster
+    std::vector<int> dag_insert_ptr;              // [num_components+1] mutable CSR insertion pointer
+    std::vector<int> kahn_queue;                  // [num_components] fixed-size Kahn queue (head/tail)
+    std::vector<int> kahn_in_degree;              // [num_components] mutable in-degree copy for Kahn
+    std::vector<int> recip;                       // [num_components] recipient cluster dedup workspace
+
+    // BFS workspace (pre-allocated, reused across component discovery)
+    std::vector<int> bfs_queue;                   // [num_vertices] — work queue for BFS
+
+    // ---- Vertex-to-parameter mapping (persisted for ClusterInfo construction §4.2) ----
+    // Each geometric-point vertex maps to exactly 2 scalar parameters (x,y).
+    std::vector<std::pair<double*, double*>> vertex_params;  // [num_vertices] — {px, py} per vertex
+
+    // ---- Edge-to-constraint mapping (persisted for ClusterInfo construction §4.2) ----
+    // Maps each pebble-game edge to its index in the parent SubSystem::clist.
+    std::vector<int> edge_constraint_index;        // [num_edges] — index into SubSystem::clist
+
+    // ---- Cluster metadata (§4.2) ----
+    // Populated by buildClusterDAG() after topological sort succeeds.
+    // One entry per connected component on the covered subgraph.
+    std::vector<ClusterInfo> clusters;              // [num_components] — per-cluster parameter/constraint lists
+
+    /**
+     * @brief Main entry point: run the full pebble game decomposition.
+     *
+     * 1. Build vertex set from SubSystem::plist (geometric points only)
+     * 2. Build edge set from SubSystem::clist (exclude Equal/Difference)
+     * 3. Allocate 2 pebbles per vertex
+     * 4. Greedy orientation: try to cover each edge
+     * 5. DFS flip: for uncovered edges, search along covered edges
+     *
+     * @param subsys  The subsystem to decompose
+     */
+    void initialize(SubSystem* subsys);
+
+    /**
+     * @brief Attempt to collect a pebble for edge `target_edge` using DFS flip.
+     *
+     * Searches from incident vertices of target_edge outward along covered
+     * edges to find a vertex that still holds free pebbles, then flips
+     * pebble ownership along the found path (v3: leaf→root cascade).
+     *
+     * @param target_edge  Index of the uncovered edge needing a pebble
+     * @return true if a pebble was successfully collected and target_edge is now covered
+     */
+    bool collectPebble(int target_edge);
+
+    /**
+     * @brief Build inter-cluster DAG and topologically sort clusters (§3.2–3.3).
+     *
+     * Three linear passes over the covered subgraph:
+     *  1. Connected components via BFS on covered edges (§3.1)
+     *  2. Count inter-cluster dependencies (out-degree per cluster)
+     *  3. CSR layout + Kahn topological sort (§3.3.1)
+     *
+     * Uses a pre-allocated fixed-size queue with head/tail pointers for Kahn.
+     * Zero dynamic allocation in the topological sort itself.
+     *
+     * @param solve_order  [out] topological ordering of clusters (empty on failure)
+     * @return true if DAG construction and topological sort succeeded
+     */
+    bool buildClusterDAG(std::vector<int>& solve_order);
+
+private:
+    void buildVertexSet(SubSystem* subsys);
+    void buildEdgeSet(SubSystem* subsys);
+};
+
 
 class SketcherExport System
 {
