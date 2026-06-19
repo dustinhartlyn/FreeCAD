@@ -2989,7 +2989,6 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     Eigen::SparseMatrix<double> A_sparse;
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> sparse_ldlt;
     bool sparse_pattern_locked = false;   // true after first analyzePattern()
-    std::vector<int> diag_offsets;        // flat indices of diagonal elements in A_sparse.valuePtr()
     std::vector<Eigen::Triplet<double>> pattern_triplets;  // pre-computed non-zero pattern of J^T J
     double mu = 1e-6;  // Levenberg-Marquardt damping factor (lifts rigid-body nullspace)
 
@@ -3337,6 +3336,10 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 break;
             case SparseLDLT: {
                 // ---- Topology Gate: establish non-zero pattern once ----
+                // NOTE: sparse_pattern_locked assumes J^T J sparsity is invariant
+                // across iterations. B-Spline constraints have parameter-dependent
+                // Jacobian structure, so this gate may be fragile for those cases.
+                // If sparsity changes mid-solve, the cached pattern will be stale.
                 if (!sparse_pattern_locked) {
                     // Compute J^T J non-zero pattern from constraint topology.
                     // The normal equations pattern is dense for most constraints
@@ -3345,20 +3348,6 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                     Eigen::MatrixXd JtJ_dense = Jx.transpose() * Jx;
                     A_sparse = JtJ_dense.sparseView();
                     int n = A_sparse.rows();
-
-                    // Cache diagonal flat-index offsets for O(1) direct LM update
-                    diag_offsets.clear();
-                    diag_offsets.reserve(n);
-                    const int* outer = A_sparse.outerIndexPtr();
-                    const int* inner = A_sparse.innerIndexPtr();
-                    for (int col = 0; col < n; col++) {
-                        for (int idx = outer[col]; idx < outer[col + 1]; idx++) {
-                            if (inner[idx] == col) {
-                                diag_offsets.push_back(idx);
-                                break;
-                            }
-                        }
-                    }
 
                     sparse_ldlt.analyzePattern(A_sparse);
                     sparse_pattern_locked = true;
@@ -3383,13 +3372,19 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                     }
                 }
 
-                // Apply Levenberg-Marquardt regularization via direct pointer arithmetic
-                for (size_t k = 0; k < diag_offsets.size(); k++) {
-                    vals[diag_offsets[k]] += mu;
-                }
+                // NOTE: No LM damping applied here. The dogleg trust-region
+                // framework (lines 3402-3430) handles step-length control via
+                // the trust-region radius delta. Adding mu to the diagonal
+                // would double-damp the Gauss-Newton step, causing premature
+                // solver failure (e.g., B-Spline tangent constraints).
 
                 sparse_ldlt.factorize(A_sparse);
-                h_gn = sparse_ldlt.solve(g);
+                if (sparse_ldlt.info() != Eigen::Success) {
+                    // Fallback: use dense FullPivLU for this iteration
+                    h_gn = Jx.fullPivLu().solve(-fx);
+                } else {
+                    h_gn = sparse_ldlt.solve(g);
+                }
                 break;
             }
         }

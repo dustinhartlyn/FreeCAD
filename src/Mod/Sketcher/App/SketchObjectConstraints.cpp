@@ -76,11 +76,14 @@ void SketchObject::retrieveSolverDiagnostics()
 
 int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
 {
+    // Reset the initial movement in case of a dragging operation was ongoing on the solver,
+    // but only if we are not currently in a managed/temporary drag operation.
+    if (!managedoperation) {
+        solvedSketch.resetInitMove();
+    }
+
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
-
-    // Reset the initial movement in case of a dragging operation was ongoing on the solver.
-    solvedSketch.resetInitMove();
 
     // if updateGeoAfterSolving=false, the solver information is updated, but the Sketch is nothing
     // updated. It is useful to avoid triggering an OnChange when the goeometry did not change but
