@@ -76,25 +76,43 @@ void SketchObject::retrieveSolverDiagnostics()
 
 int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
 {
-    // Reset the initial movement in case of a dragging operation was ongoing on the solver,
-    // but only if we are not currently in a managed/temporary drag operation.
-    if (!managedoperation) {
-        solvedSketch.resetInitMove();
-    }
+    // Check if this solve() was called from outside a managed operation (e.g., a recompute
+    // triggered by the document). We capture this before the StateLocker so we can distinguish
+    // external calls from managed ones.
+    bool isExternalCall = !managedoperation;
 
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
 
-    // if updateGeoAfterSolving=false, the solver information is updated, but the Sketch is nothing
-    // updated. It is useful to avoid triggering an OnChange when the goeometry did not change but
-    // the solver needs to be updated.
-
-    // We should have an updated Sketcher (sketchobject) geometry or this solve() should not have
-    // happened therefore we update our sketch solver geometry with the SketchObject one.
-    //
-    // set up a sketch (including dofs counting and diagnosing of conflicts)
-    lastDoF = solvedSketch.setUpSketch(
-        getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+    // During an interactive drag (isDragActive), the solver already has the correct state
+    // from moveGeometriesTemporary() calls. We must avoid destroying this state via
+    // setUpSketch() -> clear(), which would cause the geometry to snap back.
+    if (isDragActive) {
+        if (!solverNeedsUpdate) {
+            // No constraints or geometry changed — skip setUpSketch() entirely.
+            // The solver retains its drag move constraints and parameter pointers.
+        } else {
+            // Constraints or geometry changed — we must rebuild the solver.
+            // setUpSketch() rebuilds from getCompleteGeometry(), which now contains
+            // the correct dragged position (committed by moveGeometries()).
+            // After rebuilding, re-add the drag pinning constraints via initMove().
+            lastDoF = solvedSketch.setUpSketch(
+                getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+            if (!dragGeoEltIds.empty()) {
+                solvedSketch.initMove(dragGeoEltIds);
+            } else {
+                isDragActive = false;
+            }
+        }
+    } else {
+        // Normal (non-drag) path: reset any stale drag state from a previous operation,
+        // then rebuild the solver from the SketchObject's current geometry.
+        if (isExternalCall) {
+            solvedSketch.resetInitMove();
+        }
+        lastDoF = solvedSketch.setUpSketch(
+            getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+    }
 
     // At this point we have the solver information about conflicting/redundant/over-constrained,
     // but the sketch is NOT solved. Some examples: Redundant: a vertical line, a horizontal line

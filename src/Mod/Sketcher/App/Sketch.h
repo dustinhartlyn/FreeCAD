@@ -183,6 +183,8 @@ public:
      */
     void resetInitMove();
 
+
+
     /** Limits a b-spline drag to the segment around `firstPoint`.
      */
     int limitBSplineMove(int geoId, PointPos pos, const Base::Vector3d& firstPoint);

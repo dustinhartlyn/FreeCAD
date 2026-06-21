@@ -47,7 +47,6 @@ using namespace Base;
 int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, const Base::Vector3d& toPoint, bool relative,
                             bool updateGeoBeforeMoving)
 {
-
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
 
@@ -62,6 +61,12 @@ int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, con
     if (updateGeoBeforeMoving || solverNeedsUpdate) {
         lastDoF = solvedSketch.setUpSketch(
             getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+
+        // setUpSketch() -> clear() destroyed isInitMove and drag move constraints.
+        // If a drag is active, re-initialize the drag to re-add the pinning constraints.
+        if (isDragActive && !dragGeoEltIds.empty()) {
+            solvedSketch.initMove(dragGeoEltIds);
+        }
 
         retrieveSolverDiagnostics();
 
@@ -87,7 +92,10 @@ int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, con
         }
     }
 
-    solvedSketch.resetInitMove();// reset solver point moving mechanism
+    // Note: isDragActive is NOT reset here. It remains true so that the post-drag
+    // recompute's solve() preserves the solver's drag state. isDragActive is cleared
+    // in solve() when setUpSketch() runs (solverNeedsUpdate=true) and no dragGeoEltIds
+    // are available for re-initialization.
 
     return lastSolverStatus;
 }

@@ -817,6 +817,8 @@ public: /* Solver exposed interface */
         Base::Vector3d toPoint,
         bool relative = false
     );
+
+
     /// forwards a request to update an extension of a geometry of the solver to the solver.
     inline void updateSolverExtension(int geoId, std::unique_ptr<Part::GeometryExtension>&& ext)
     {
@@ -1219,6 +1221,12 @@ private:
     bool managedoperation;  // indicates whether changes to properties are the deed of SketchObject
                             // or not (for input validation)
 
+    // Tracks whether an interactive drag (moveGeometriesTemporary) is currently active.
+    // When true and solverNeedsUpdate is false, solve() skips setUpSketch() to preserve
+    // the solver's drag state instead of rebuilding from stale committed geometry.
+    bool isDragActive = false;
+    std::vector<GeoElementId> dragGeoEltIds;  // saved during initTemporaryMove() for re-init after setUpSketch()
+
     // mapping from ExternalGeometry[*] to ExternalGeo[*].Id
     // Some external geometry may generate more than one projection
     std::map<std::string, std::vector<long>> externalGeoRefMap;
@@ -1250,6 +1258,10 @@ inline int SketchObject::initTemporaryMove(std::vector<GeoElementId> moved, bool
         solve();
     }
 
+    // Mark that an interactive drag is active so solve() can skip setUpSketch()
+    // and preserve the solver's drag state.
+    isDragActive = true;
+    dragGeoEltIds = moved;
     return solvedSketch.initMove(moved, fine);
 }
 
