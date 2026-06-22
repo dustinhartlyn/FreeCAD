@@ -2989,6 +2989,8 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     Eigen::SparseMatrix<double> A_sparse;
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> sparse_ldlt;
     bool sparse_pattern_locked = false;   // true after first analyzePattern()
+    int sparse_pattern_iter = 0;          // iteration counter for periodic re-validation
+    int locked_nnz = 0;                   // non-zero count of locked pattern for staleness check
     std::vector<Eigen::Triplet<double>> pattern_triplets;  // pre-computed non-zero pattern of J^T J
     double mu = 1e-6;  // Levenberg-Marquardt damping factor (lifts rigid-body nullspace)
 
@@ -3335,12 +3337,13 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 h_gn = Jx.adjoint() * (Jx * Jx.adjoint()).ldlt().solve(-fx);
                 break;
             case SparseLDLT: {
-                // ---- Topology Gate: establish non-zero pattern once ----
-                // NOTE: sparse_pattern_locked assumes J^T J sparsity is invariant
-                // across iterations. B-Spline constraints have parameter-dependent
-                // Jacobian structure, so this gate may be fragile for those cases.
-                // If sparsity changes mid-solve, the cached pattern will be stale.
-                if (!sparse_pattern_locked) {
+                // ---- Topology Gate: establish/re-validate non-zero pattern ----
+                // Periodic re-validation (every 10 iterations) prevents stale
+                // sparsity patterns when B-Spline or other parameter-dependent
+                // constraints shift the J^T J non-zero structure mid-solve.
+                // The info() != Success fallback below acts as a secondary
+                // safety net for any pattern drift between re-validations.
+                if (!sparse_pattern_locked || sparse_pattern_iter >= 10) {
                     // Compute J^T J non-zero pattern from constraint topology.
                     // The normal equations pattern is dense for most constraints
                     // (each parameter is coupled to many others via constraints).
@@ -3351,7 +3354,10 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
                     sparse_ldlt.analyzePattern(A_sparse);
                     sparse_pattern_locked = true;
+                    sparse_pattern_iter = 0;
+                    locked_nnz = A_sparse.nonZeros();
                 }
+                sparse_pattern_iter++;
 
                 // ---- Hot Path: numerical refresh via direct pointer access ----
                 // Recompute A = J^T J numerically (pattern locked, values only)
