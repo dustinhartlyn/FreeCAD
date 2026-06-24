@@ -2987,7 +2987,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
     // Pure-sparse LDLT solver infrastructure (zero dense/heap allocations in hot loop)
     Eigen::SparseMatrix<double> A_sparse;
-    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> sparse_ldlt;
+    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>, Eigen::Upper> sparse_ldlt;
     bool sparse_pattern_locked = false;   // true after first analyzePattern()
     int sparse_pattern_iter = 0;          // iteration counter for periodic re-validation
 
@@ -3366,11 +3366,8 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 for (int col = 0; col < n; col++) {
                     for (int idx = outer[col]; idx < outer[col + 1]; idx++) {
                         int row = inner[idx];
-                        double sum = 0.0;
-                        for (int k = 0; k < csize_local; k++) {
-                            sum += Jx(k, row) * Jx(k, col);
-                        }
-                        vals[idx] = sum;
+                        if (row > col) continue;  // skip lower triangle; Upper factorize won't read it
+                        vals[idx] = Jx.col(col).dot(Jx.col(row));
                     }
                 }
 
