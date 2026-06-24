@@ -491,7 +491,7 @@ System::System()
     , qrAlgorithm(EigenSparseQR)
     , autoChooseAlgorithm(true)
     , autoQRThreshold(1000)
-    , dogLegGaussStep(std::getenv("GCS_SPARSE_LDLT") ? SparseLDLT : FullPivLU)
+    , dogLegGaussStep(SparseLDLT)
     , qrpivotThreshold(1E-13)
     , debugMode(Minimal)
     , LM_eps(1E-10)
@@ -2990,9 +2990,6 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> sparse_ldlt;
     bool sparse_pattern_locked = false;   // true after first analyzePattern()
     int sparse_pattern_iter = 0;          // iteration counter for periodic re-validation
-    int locked_nnz = 0;                   // non-zero count of locked pattern for staleness check
-    std::vector<Eigen::Triplet<double>> pattern_triplets;  // pre-computed non-zero pattern of J^T J
-    double mu = 1e-6;  // Levenberg-Marquardt damping factor (lifts rigid-body nullspace)
 
     Eigen::VectorXd x(xsize), x_new(xsize);
     Eigen::VectorXd fx(csize), fx_new(csize);
@@ -3355,7 +3352,6 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                     sparse_ldlt.analyzePattern(A_sparse);
                     sparse_pattern_locked = true;
                     sparse_pattern_iter = 0;
-                    locked_nnz = A_sparse.nonZeros();
                 }
                 sparse_pattern_iter++;
 
