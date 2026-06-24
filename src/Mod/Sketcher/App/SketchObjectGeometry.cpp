@@ -65,7 +65,8 @@ Base::Vector3d SketchObject::getPoint(int GeoId, PointPos PosId) const
           || (GeoId <= getHighestCurveIndex() && GeoId >= -getExternalGeometryCount())))
         throw Base::ValueError("SketchObject::getPoint. Invalid GeoId was supplied.");
     const Part::Geometry* geo = getGeometry(GeoId);
-    return getPoint(geo,PosId);
+    Base::Vector3d result = getPoint(geo,PosId);
+    return result;
 }
 
 int SketchObject::getAxisCount() const

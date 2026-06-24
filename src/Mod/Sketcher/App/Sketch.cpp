@@ -5322,6 +5322,8 @@ int Sketch::initMove(const std::vector<GeoElementId>& geoEltIds, bool fine)
     InitParameters = MoveParameters;
 
     GCSsys.initSolution();
+    initToPoint = Base::Vector3d(0, 0, 0);
+    moveStep = 0;
     isInitMove = true;
 
     return 0;

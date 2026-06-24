@@ -58,15 +58,9 @@ int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, con
     // geometry to that of of SketchObject upon moving. => use updateGeometry parameter = true then
 
 
-    if (updateGeoBeforeMoving || solverNeedsUpdate) {
+    if (updateGeoBeforeMoving || (solverNeedsUpdate && !isDragActive)) {
         lastDoF = solvedSketch.setUpSketch(
             getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
-
-        // setUpSketch() -> clear() destroyed isInitMove and drag move constraints.
-        // If a drag is active, re-initialize the drag to re-add the pinning constraints.
-        if (isDragActive && !dragGeoEltIds.empty()) {
-            solvedSketch.initMove(dragGeoEltIds);
-        }
 
         retrieveSolverDiagnostics();
 
@@ -92,10 +86,11 @@ int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, con
         }
     }
 
-    // Note: isDragActive is NOT reset here. It remains true so that the post-drag
-    // recompute's solve() preserves the solver's drag state. isDragActive is cleared
-    // in solve() when setUpSketch() runs (solverNeedsUpdate=true) and no dragGeoEltIds
-    // are available for re-initialization.
+    // The drag is now complete — geometry has been moved and committed via
+    // Geometry.setValues(). Clear isDragActive so the next solve() takes the
+    // normal (non-drag) path and rebuilds from the committed Geometry property.
+    isDragActive = false;
+    solverNeedsUpdate = true;
 
     return lastSolverStatus;
 }

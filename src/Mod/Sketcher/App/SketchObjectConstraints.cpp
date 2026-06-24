@@ -88,22 +88,21 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
     // from moveGeometriesTemporary() calls. We must avoid destroying this state via
     // setUpSketch() -> clear(), which would cause the geometry to snap back.
     if (isDragActive) {
-        if (!solverNeedsUpdate) {
-            // No constraints or geometry changed — skip setUpSketch() entirely.
-            // The solver retains its drag move constraints and parameter pointers.
-        } else {
-            // Constraints or geometry changed — we must rebuild the solver.
-            // setUpSketch() rebuilds from getCompleteGeometry(), which now contains
-            // the correct dragged position (committed by moveGeometries()).
-            // After rebuilding, re-add the drag pinning constraints via initMove().
-            lastDoF = solvedSketch.setUpSketch(
-                getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
-            if (!dragGeoEltIds.empty()) {
-                solvedSketch.initMove(dragGeoEltIds);
-            } else {
-                isDragActive = false;
-            }
-        }
+        // During drag, NEVER rebuild the solver from getCompleteGeometry().
+        // The Geometry property is stale during drag (moveGeometriesTemporary()
+        // updates the solver's internal parameters directly, not the property).
+        // Rebuilding from stale geometry would snapshot pre-drag positions into
+        // InitParameters, causing the next moveGeometries(relative=true) to
+        // compute MoveParameters = stale_position + delta, snapping to origin.
+        //
+        // Instead: keep solverNeedsUpdate=true and skip setUpSketch() entirely.
+        // The solver retains its live drag state. When the drag ends and
+        // isDragActive becomes false, the next solve() takes the non-drag branch
+        // and rebuilds from the (now-committed) Geometry property.
+        //
+        // New geometry created during drag is unconstrained, so it has no effect
+        // on existing solver parameters — it stays where it was created until
+        // the post-drag rebuild.
     } else {
         // Normal (non-drag) path: reset any stale drag state from a previous operation,
         // then rebuild the solver from the SketchObject's current geometry.

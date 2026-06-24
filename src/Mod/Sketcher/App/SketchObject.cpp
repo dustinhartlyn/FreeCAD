@@ -1032,6 +1032,15 @@ void SketchObject::onGeometryChanged()
         return;
     }
 
+    // During an interactive drag, geometry property changes are triggered
+    // by the recompute system. The geometry is in a transitional state, so
+    // checkConstraintIndices() would fail against the partially-updated
+    // geometry. Defer the update until the drag ends.
+    if (isDragActive) {
+        solverNeedsUpdate = true;
+        return;
+    }
+
     // internal sketchobject operations changing both geometry and constraints will
     // explicitly perform an update
 
@@ -1073,6 +1082,16 @@ void SketchObject::onConstraintsChanged()
     }
 
     if (internaltransaction) {
+        return;
+    }
+
+    // During an interactive drag, constraint property changes are triggered
+    // by the recompute system, not by user constraint edits. The geometry is
+    // in a transitional state (new elements being added), so
+    // checkConstraintIndices() would fail and wipe all constraints. Defer
+    // the update until the drag ends.
+    if (isDragActive) {
+        solverNeedsUpdate = true;
         return;
     }
 
