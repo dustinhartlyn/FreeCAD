@@ -359,7 +359,7 @@ void SubSystem::calcGrad(VEC_pD& params, Eigen::VectorXd& grad)
     for (int j = 0; j < int(params.size()); j++) {
         MAP_pD_pD::const_iterator pmapfind = pmap.find(params[j]);
         if (pmapfind != pmap.end()) {
-            std::vector<Constraint*> constrs = p2c[pmapfind->second];
+            const std::vector<Constraint*>& constrs = p2c[pmapfind->second];
             for (std::vector<Constraint*>::const_iterator constr = constrs.begin();
                  constr != constrs.end();
                  ++constr) {
