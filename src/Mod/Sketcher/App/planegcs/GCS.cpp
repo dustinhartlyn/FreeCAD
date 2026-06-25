@@ -2990,6 +2990,8 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>, Eigen::Upper> sparse_ldlt;
     bool sparse_pattern_locked = false;   // true after first analyzePattern()
     int sparse_pattern_iter = 0;          // iteration counter for periodic re-validation
+    std::vector<Eigen::Triplet<double>> pattern_triplets;  // P3: pre-computed upper-triangle triplets for re-validation
+    int locked_nnz = 0;                                    // P3: cached non-zero count for defensive check
 
     Eigen::VectorXd x(xsize), x_new(xsize);
     Eigen::VectorXd fx(csize), fx_new(csize);
@@ -3341,15 +3343,29 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 // The info() != Success fallback below acts as a secondary
                 // safety net for any pattern drift between re-validations.
                 if (!sparse_pattern_locked || sparse_pattern_iter >= 10) {
-                    // Compute J^T J non-zero pattern from constraint topology.
-                    // The normal equations pattern is dense for most constraints
-                    // (each parameter is coupled to many others via constraints).
-                    // Use dense product first to establish pattern, then lock.
-                    Eigen::MatrixXd JtJ_dense = Jx.transpose() * Jx;
-                    A_sparse = JtJ_dense.sparseView();
-                    int n = A_sparse.rows();
+                    // P3: Two-path pattern-lock — first-fire discovers pattern via dense
+                    // product, then captures upper-triangle triplets for zero-allocation
+                    // re-validation on subsequent locks (every 10 iterations).
+                    if (pattern_triplets.empty()) {
+                        // FIRST FIRE: discover pattern via dense product, then capture triplets
+                        Eigen::MatrixXd JtJ_dense = Jx.transpose() * Jx;
+                        A_sparse = JtJ_dense.sparseView();
+                        sparse_ldlt.analyzePattern(A_sparse);
 
-                    sparse_ldlt.analyzePattern(A_sparse);
+                        // Capture upper-triangle triplets for future re-validations
+                        pattern_triplets.clear();
+                        for (int col = 0; col < A_sparse.outerSize(); ++col) {
+                            for (Eigen::SparseMatrix<double>::InnerIterator it(A_sparse, col); it; ++it) {
+                                if (it.row() <= it.col())
+                                    pattern_triplets.emplace_back(it.row(), it.col(), 0.0);
+                            }
+                        }
+                        locked_nnz = static_cast<int>(pattern_triplets.size());
+                    } else {
+                        // RE-VALIDATION: restore pattern from pre-computed triplets (no dense temp)
+                        A_sparse.setFromTriplets(pattern_triplets.begin(), pattern_triplets.end());
+                        sparse_ldlt.analyzePattern(A_sparse);
+                    }
                     sparse_pattern_locked = true;
                     sparse_pattern_iter = 0;
                 }
