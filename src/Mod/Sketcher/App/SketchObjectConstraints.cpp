@@ -34,6 +34,7 @@
 #include <App/ExpressionParser.h>
 #include <App/ObjectIdentifier.h>
 #include <Base/Console.h>
+#include <Base/TimeInfo.h>
 #include <Base/Tools.h>
 #include <Base/Vector3D.h>
 
@@ -109,8 +110,12 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
         if (isExternalCall) {
             solvedSketch.resetInitMove();
         }
+        Base::TimeElapsed t_setup;
         lastDoF = solvedSketch.setUpSketch(
             getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+        topologyWasSkipped = solvedSketch.wasDiagnosisRestored();
+        std::cerr << "[SOLVER_PROFILE] setUpSketch: "
+                   << (Base::TimeElapsed::diffTimeF(t_setup) * 1000.0) << "ms" << std::endl;
     }
 
     // At this point we have the solver information about conflicting/redundant/over-constrained,
@@ -149,7 +154,40 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
         err = -5;
     }
     else {
+        Base::TimeElapsed t_solve;
         lastSolverStatus = solvedSketch.solve();
+        std::cerr << "[SOLVER_PROFILE] solve: "
+                   << (Base::TimeElapsed::diffTimeF(t_solve) * 1000.0) << "ms" << std::endl;
+
+        // Stage 2: Safety fallback when topology was skipped
+        if (topologyWasSkipped) {
+            double maxError = 0.0;
+            // GCS constraint tags are sequential integers starting from 1
+            // (ConstraintsCounter starts at 0, each addConstraint does ++ConstraintsCounter)
+            // Cap: at most as many tags as UI constraints (tagDisappeared not needed —
+            // sequential tags guarantee no gaps; NaN is natural termination for end-of-list)
+            int maxTag = static_cast<int>(Constraints.getValues().size());
+            for (int tag = 1; tag <= maxTag; ++tag) {
+                double err = solvedSketch.calculateConstraintError(tag);
+                if (std::isnan(err)) {
+                    break;  // tag not in clist (should not happen with sequential tags)
+                }
+                maxError = std::max(maxError, err);
+            }
+            // Threshold: 1e-4 (document-unit-dependent)
+            // For mm-based sketches: 1e-4 mm = 0.1 microns (negligible)
+            // For m-based sketches: 1e-4 m = 0.1 mm (may be too tight)
+            bool residualTooHigh = (maxError > 1e-4);
+
+            if (residualTooHigh) {
+                // Diagnosis was stale — fall back to full rebuild
+                solvedSketch.invalidateDiagnosisCache();
+                lastDoF = solvedSketch.setUpSketch(
+                    getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
+                lastSolverStatus = solvedSketch.solve();
+            }
+        }
+
         if (lastSolverStatus != 0) {// solving
             err = -1;
         }

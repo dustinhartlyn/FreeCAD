@@ -23,6 +23,8 @@
  ***************************************************************************/
 
 #include <cmath>
+#include <cstdint>
+#include <functional>
 #include <iostream>
 
 #include <BRepBuilderAPI_MakeWire.hxx>
@@ -195,10 +197,80 @@ int Sketch::setUpSketch(
 {
     Base::TimeElapsed start_time;
 
+    // Stage 2: Reset diagnosis-restored flag
+    diagnosisWasRestored = false;
+
+    // Stage 2: Build inGroupGeoIds for fingerprint computation BEFORE clear()
+    std::set<int> inGroupGeoIds;
+    for (const auto& c : ConstraintList) {
+        if (c->Type == Group || c->Type == Text) {
+            for (int i = 1; c->hasElement(i); ++i) {
+                inGroupGeoIds.insert(c->getGeoId(i));
+            }
+        }
+    }
+
+    // Compute effective constraint fingerprint
+    // Replicates the EXACT addConstraints() skip predicate at Sketch.cpp:2578:
+    //   if (!unenforceableConstraints[cid] && (*it)->Type != Block && (*it)->isActive)
+    uint32_t curHash = 0;
+    size_t curEffectiveCount = 0;
+    auto h = [](int v) { return std::hash<int>()(v) + 0x9e3779b9; };
+    for (size_t i = 0; i < ConstraintList.size(); ++i) {
+        const auto* c = ConstraintList[i];
+
+        // Skip Group/Text (never added to clist)
+        if (c->Type == Group || c->Type == Text) continue;
+
+        // Skip Block constraints (per addConstraints predicate)
+        if (c->Type == Block) continue;
+
+        // Skip inactive constraints (per addConstraints predicate)
+        if (!c->isActive) continue;
+
+        // Skip constraints with geoIds in groups (unenforceable)
+        bool unenforceable = false;
+        for (int j = 0; c->hasElement(j); ++j) {
+            if (inGroupGeoIds.count(c->getGeoId(j))) {
+                unenforceable = true;
+                break;
+            }
+        }
+        if (unenforceable) continue;
+
+        curEffectiveCount++;
+        curHash ^= h(c->Type); curHash ^= h(c->First); curHash ^= h(c->Second);
+        curHash ^= h(c->Third);
+        curHash ^= h(static_cast<int>(c->FirstPos));
+        curHash ^= h(static_cast<int>(c->SecondPos));
+        curHash ^= h(static_cast<int>(c->ThirdPos));
+        curHash ^= h(static_cast<int>(c->isDriving));
+        curHash ^= h(c->AlignmentType); curHash ^= h(c->InternalAlignmentIndex);
+        curHash ^= h(static_cast<int>(c->Orientation.getFlags()));
+    }
+
+    // Per-element geometry type/flag sequence (detects reordering, not just count)
+    for (size_t i = 0; i < GeoList.size(); ++i) {
+        curHash ^= h(static_cast<int>(GeoList[i]->getTypeId().getKey())) + h(static_cast<int>(i));
+    }
+
+    bool topologyUnchanged = (curEffectiveCount == lastEffectiveCount &&
+                              curHash == lastTopologyHash &&
+                              hasValidDiagnosis);
+
+    // Save diagnosis BEFORE clear() if topology unchanged
+    GCS::DiagnosisCache diagCache;
+    bool hasCache = false;
+    if (topologyUnchanged && hasValidDiagnosis) {
+        diagCache = GCSsys.saveDiagnosis();
+        hasCache = true;
+    }
+
     clear();
 
     // The geometries that are in groups are going to be ignored by the solver.
-    std::set<int> inGroupGeoIds;
+    // inGroupGeoIds already built above for fingerprint; rebuild for use below
+    inGroupGeoIds.clear();
     for (const auto& c : ConstraintList) {
         if (c->Type == Group || c->Type == Text) {
             // Start from index 1, as 0 is the frame.
@@ -227,6 +299,15 @@ int Sketch::setUpSketch(
     std::vector<int> blockedGeoIds;
     bool doesBlockAffectOtherConstraints
         = analyseBlockedGeometry(intGeoList, ConstraintList, onlyBlockedGeometry, blockedGeoIds);
+
+    // Stage 2 Phase B: Block constraint exclusion + blocked-geometry flags
+    if (doesBlockAffectOtherConstraints) {
+        topologyUnchanged = false;
+        hasCache = false;
+    }
+    for (size_t i = 0; i < onlyBlockedGeometry.size(); ++i) {
+        if (onlyBlockedGeometry[i]) curHash ^= h(static_cast<int>(i));
+    }
 
 #ifdef DEBUG_BLOCK_CONSTRAINT
     if (doesBlockAffectOtherConstraints) {
@@ -290,6 +371,13 @@ int Sketch::setUpSketch(
     clearTemporaryConstraints();
     GCSsys.declareUnknowns(Parameters);
     GCSsys.declareDrivenParams(DrivenParameters);
+
+    // Stage 2: Restore cached diagnosis to skip O(n³) diagnose() when topology unchanged
+    if (topologyUnchanged && hasCache) {
+        GCSsys.restoreDiagnosis(diagCache);
+        diagnosisWasRestored = true;
+    }
+
     GCSsys.initSolution(defaultSolverRedundant);
 
     // Post-analysis
@@ -356,6 +444,11 @@ int Sketch::setUpSketch(
     GCSsys.getDependentParams(pDependentParametersList);
 
     calculateDependentParametersElements();
+
+    // Stage 2: Update fingerprint for next call
+    lastEffectiveCount = curEffectiveCount;
+    lastTopologyHash = curHash;
+    hasValidDiagnosis = true;
 
     if (debugMode == GCS::Minimal || debugMode == GCS::IterationLevel) {
         Base::TimeElapsed end_time;

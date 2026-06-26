@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include <Base/Persistence.h>
 #include <CXX/Objects.hxx>
 #include <Mod/Part/App/TopoShape.h>
@@ -555,6 +557,12 @@ public:
         return GCSsys.calculateConstraintErrorByTag(icstr);
     }
 
+    /// Stage 2: Returns true if the last setUpSketch() restored diagnosis from cache
+    bool wasDiagnosisRestored() const { return diagnosisWasRestored; }
+
+    /// Stage 2: Invalidates the cached diagnosis, forcing a full diagnose() on next setUpSketch()
+    void invalidateDiagnosisCache() { hasValidDiagnosis = false; }
+
     /// Returns the size of the Geometry
     int getGeometrySize() const
     {
@@ -648,6 +656,15 @@ private:
 
     bool isInitMove;
     bool isFine;
+
+    // Stage 2: Persistent Delta-Update fingerprint members
+    size_t lastEffectiveCount = 0;
+    uint32_t lastTopologyHash = 0;
+    bool hasValidDiagnosis = false;
+    GCS::DiagnosisCache cachedDiagnosis;
+    bool hasCachedDiagnosis = false;
+    bool diagnosisWasRestored = false;
+
     Base::Vector3d initToPoint;
     double moveStep;
 
