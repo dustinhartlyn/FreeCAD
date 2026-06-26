@@ -1227,9 +1227,6 @@ private:
     bool isDragActive = false;
     std::vector<GeoElementId> dragGeoEltIds;  // saved during initTemporaryMove() for re-init after setUpSketch()
 
-    // Stage 2: Tracks whether topology was unchanged and diagnose() was skipped
-    bool topologyWasSkipped = false;
-
     // mapping from ExternalGeometry[*] to ExternalGeo[*].Id
     // Some external geometry may generate more than one projection
     std::map<std::string, std::vector<long>> externalGeoRefMap;

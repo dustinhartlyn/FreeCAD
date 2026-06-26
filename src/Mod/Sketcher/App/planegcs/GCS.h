@@ -249,26 +249,6 @@ private:
 };
 
 
-struct DiagnosisCache {
-    // Tag vectors (stored directly — no re-derivation needed)
-    VEC_I conflictingTags;
-    VEC_I redundantTags;
-    VEC_I partiallyRedundantTags;
-
-    // Redundant per-constraint set (as clist indices — the only per-constraint set that exists)
-    std::vector<int> redundantIndices;
-
-    // Dependent parameter groups (as plist indices)
-    std::vector<std::vector<int>> dependentParamGroupsIndices;
-
-    // Flat dependent parameter list (as plist indices)
-    std::vector<int> dependentParamIndices;
-
-    // Scalar state
-    int dofs;
-    bool emptyDiagnoseMatrix;
-};
-
 class SketcherExport System
 {
     // This is the main class. It holds all constraints and information
@@ -840,9 +820,6 @@ public:
     {
         return !(hasDiagnosis && partiallyRedundantTags.empty());
     }
-
-    DiagnosisCache saveDiagnosis() const;
-    void restoreDiagnosis(const DiagnosisCache& cache);
 
     void invalidatedDiagnosis();
 

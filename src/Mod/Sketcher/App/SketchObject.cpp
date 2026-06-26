@@ -975,9 +975,6 @@ void SketchObject::onChanged(const App::Property* prop)
 
 void SketchObject::onGeometryChanged()
 {
-    // Stage 2: Invalidate cached diagnosis when geometry changes
-    solvedSketch.invalidateDiagnosisCache();
-
     if (isRestoring() && checkMigration(Geometry)) {
         // Construction migration to extension
         for (auto geometryValue : Geometry.getValues()) {
@@ -1076,13 +1073,6 @@ void SketchObject::onGeometryChanged()
 
 void SketchObject::onConstraintsChanged()
 {
-    // Stage 2: Do NOT invalidate diagnosis cache here.
-    // The fingerprint comparison in setUpSketch() (Sketch.cpp:257) already
-    // detects topology changes. Invalidating on every constraint property
-    // change (including datum-only setDatum()) would defeat the cache for
-    // the most common use case (value-only datum edits), causing a +10.7%
-    // regression vs P3 baseline.
-
     auto doc = getDocument();
 
     if (doc && doc->isPerformingTransaction()) {
