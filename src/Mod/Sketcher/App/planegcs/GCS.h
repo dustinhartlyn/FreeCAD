@@ -248,6 +248,21 @@ private:
     void buildEdgeSet(SubSystem* subsys);
 };
 
+// Stage 2 v6: Persistent Delta-Update — DiagnosisCache stores the result of
+// the expensive O(n³) diagnose() call so it can be restored across
+// consecutive setUpSketch() invocations when the constraint topology
+// has not changed (e.g., during setDatum() drags).
+struct DiagnosisCache
+{
+    VEC_I conflictingTags;
+    VEC_I redundantTags;
+    VEC_I partiallyRedundantTags;
+    std::vector<int> redundantIndices;               // indices into clist
+    std::vector<std::vector<int>> dependentParamGroupsIndices;  // indices into plist
+    std::vector<int> dependentParamIndices;          // indices into plist
+    int dofs = -1;
+    bool emptyDiagnoseMatrix = true;
+};
 
 class SketcherExport System
 {
@@ -822,6 +837,10 @@ public:
     }
 
     void invalidatedDiagnosis();
+
+    // Stage 2 v6: Persistent Delta-Update — save/restore diagnosis cache
+    DiagnosisCache saveDiagnosis() const;
+    void restoreDiagnosis(const DiagnosisCache& cache);
 
     // Unit testing interface - not intended for use by production code
 protected:

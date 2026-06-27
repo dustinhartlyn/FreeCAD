@@ -1050,6 +1050,11 @@ void SketchObject::onGeometryChanged()
         return;
     }
 
+    // Stage 2 v6: External geometry edit — topology may have changed.
+    // Invalidate the diagnosis cache HERE (not at the top of the function)
+    // so that solver writeback (managedoperation == true) preserves the cache.
+    solvedSketch.invalidateDiagnosisCache();
+
     // this change was not effect via SketchObject, but using direct access to
     // properties, check input data
 

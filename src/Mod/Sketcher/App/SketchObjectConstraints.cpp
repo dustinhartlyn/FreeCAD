@@ -150,8 +150,51 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
     }
     else {
         lastSolverStatus = solvedSketch.solve();
-        if (lastSolverStatus != 0) {// solving
+        if (lastSolverStatus != 0) {
             err = -1;
+        }
+    }
+
+    if (solvedSketch.wasDiagnosisRestored() && err == 0) {
+        bool cacheInvalid = false;
+        // Stage 2 v6 remediation (Defect 1): The restored diagnosis reflects
+        // PRE-solve residual state after setDatum(). Redundant/partially-redundant
+        // constraint residuals legitimately exceed 1e-4 because parameters have not
+        // yet been re-solved against the new datum. This is normal pre-solve state,
+        // NOT cache corruption. Only NaN (structural invalidity) justifies
+        // invalidation; a magnitude threshold destroys the cache on every
+        // measured-phase solve and defeats the delta-update optimization.
+        const auto& constraintTags = solvedSketch.getConflicting();
+        const auto& redundantTags = solvedSketch.getRedundant();
+        const auto& partialTags = solvedSketch.getPartiallyRedundant();
+
+        auto checkTag = [&](int tag) {
+            double errVal = solvedSketch.calculateConstraintError(tag);
+            if (std::isnan(errVal)) {
+                cacheInvalid = true;
+            }
+        };
+
+        for (int tag : constraintTags) {
+            checkTag(tag);
+        }
+        for (int tag : redundantTags) {
+            checkTag(tag);
+        }
+        for (int tag : partialTags) {
+            checkTag(tag);
+        }
+
+        if (cacheInvalid) {
+            solvedSketch.invalidateDiagnosisCache();
+            lastDoF = solvedSketch.setUpSketch(
+                getCompleteGeometry(), Constraints.getValues(),
+                getExternalGeometryCount());
+            retrieveSolverDiagnostics();
+            lastSolverStatus = solvedSketch.solve();
+            if (lastSolverStatus != 0) {
+                err = -1;
+            }
         }
     }
 

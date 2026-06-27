@@ -156,6 +156,17 @@ public:
         return MalformedConstraints;
     }
 
+    // Stage 2 v6: Persistent Delta-Update — diagnosis cache management
+    inline bool wasDiagnosisRestored() const
+    {
+        return hasCachedDiagnosis;
+    }
+    inline void invalidateDiagnosisCache()
+    {
+        hasValidDiagnosis = false;
+        hasCachedDiagnosis = false;
+    }
+
 public:
     std::set<std::pair<int, Sketcher::PointPos>> getDependencyGroup(int geoId, PointPos pos) const;
 
@@ -614,6 +625,13 @@ private:
     std::vector<int> Redundant;
     std::vector<int> PartiallyRedundant;
     std::vector<int> MalformedConstraints;
+
+    // Stage 2 v6: Persistent Delta-Update — fingerprint for diagnosis cache
+    int lastEffectiveCount = 0;
+    size_t lastTopologyHash = 0;
+    bool hasValidDiagnosis = false;
+    GCS::DiagnosisCache cachedDiagnosis;
+    bool hasCachedDiagnosis = false;
 
     std::vector<double*> pDependentParametersList;
 

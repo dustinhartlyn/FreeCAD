@@ -551,6 +551,109 @@ void System::invalidatedDiagnosis()
     pDependentParametersGroups.clear();
 }
 
+DiagnosisCache System::saveDiagnosis() const
+{
+    DiagnosisCache cache;
+    cache.conflictingTags = conflictingTags;
+    cache.redundantTags = redundantTags;
+    cache.partiallyRedundantTags = partiallyRedundantTags;
+    cache.dofs = dofs;
+    cache.emptyDiagnoseMatrix = emptyDiagnoseMatrix;
+
+    for (auto* c : redundant) {
+        auto it = std::find(clist.begin(), clist.end(), c);
+        if (it != clist.end()) {
+            cache.redundantIndices.push_back(
+                static_cast<int>(std::distance(clist.begin(), it)));
+        }
+    }
+
+    for (auto* p : pDependentParameters) {
+        auto it = std::find(plist.begin(), plist.end(), p);
+        if (it != plist.end()) {
+            cache.dependentParamIndices.push_back(
+                static_cast<int>(std::distance(plist.begin(), it)));
+        }
+    }
+
+    cache.dependentParamGroupsIndices.resize(pDependentParametersGroups.size());
+    for (size_t g = 0; g < pDependentParametersGroups.size(); ++g) {
+        for (auto* p : pDependentParametersGroups[g]) {
+            auto it = std::find(plist.begin(), plist.end(), p);
+            if (it != plist.end()) {
+                cache.dependentParamGroupsIndices[g].push_back(
+                    static_cast<int>(std::distance(plist.begin(), it)));
+            }
+        }
+    }
+
+    return cache;
+}
+
+void System::restoreDiagnosis(const DiagnosisCache& cache)
+{
+    conflictingTags = cache.conflictingTags;
+    redundantTags = cache.redundantTags;
+    partiallyRedundantTags = cache.partiallyRedundantTags;
+    dofs = cache.dofs;
+    emptyDiagnoseMatrix = cache.emptyDiagnoseMatrix;
+
+    redundant.clear();
+    for (int idx : cache.redundantIndices) {
+        if (idx >= 0 && idx < static_cast<int>(clist.size())) {
+            GCS::Constraint* restored = clist[idx];
+            // Stage 2 v6 remediation (Concern 3): Guard the stable-ordering
+            // invariant. saveDiagnosis() derived idx via
+            // std::distance(clist.begin(), find(clist.begin(), clist.end(), c)).
+            // If clist ordering shifted between save and restore, idx now points
+            // at a different constraint. Re-derive and assert identity.
+#ifndef NDEBUG
+            auto it = std::find(clist.begin(), clist.end(), restored);
+            assert(it != clist.end()
+                && "restoreDiagnosis: redundant constraint pointer not in clist");
+            assert(static_cast<int>(std::distance(clist.begin(), it)) == idx
+                && "restoreDiagnosis: clist ordering shifted since saveDiagnosis()");
+#endif
+            redundant.insert(restored);
+        }
+    }
+
+    pDependentParameters.clear();
+    for (int idx : cache.dependentParamIndices) {
+        if (idx >= 0 && idx < static_cast<int>(plist.size())) {
+            double* restored = plist[idx];
+#ifndef NDEBUG
+            auto it = std::find(plist.begin(), plist.end(), restored);
+            assert(it != plist.end()
+                && "restoreDiagnosis: dependent param pointer not in plist");
+            assert(static_cast<int>(std::distance(plist.begin(), it)) == idx
+                && "restoreDiagnosis: plist ordering shifted since saveDiagnosis()");
+#endif
+            pDependentParameters.push_back(restored);
+        }
+    }
+
+    pDependentParametersGroups.clear();
+    pDependentParametersGroups.resize(cache.dependentParamGroupsIndices.size());
+    for (size_t g = 0; g < cache.dependentParamGroupsIndices.size(); ++g) {
+        for (int idx : cache.dependentParamGroupsIndices[g]) {
+            if (idx >= 0 && idx < static_cast<int>(plist.size())) {
+                double* restored = plist[idx];
+#ifndef NDEBUG
+                auto it = std::find(plist.begin(), plist.end(), restored);
+                assert(it != plist.end()
+                    && "restoreDiagnosis: group param pointer not in plist");
+                assert(static_cast<int>(std::distance(plist.begin(), it)) == idx
+                    && "restoreDiagnosis: plist ordering shifted since saveDiagnosis()");
+#endif
+                pDependentParametersGroups[g].push_back(restored);
+            }
+        }
+    }
+
+    hasDiagnosis = true;
+}
+
 void System::clearByTag(int tagId)
 {
     std::vector<Constraint*> constrvec;
