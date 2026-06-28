@@ -607,13 +607,16 @@ void System::restoreDiagnosis(const DiagnosisCache& cache)
             // std::distance(clist.begin(), find(clist.begin(), clist.end(), c)).
             // If clist ordering shifted between save and restore, idx now points
             // at a different constraint. Re-derive and assert identity.
-#ifndef NDEBUG
             auto it = std::find(clist.begin(), clist.end(), restored);
-            assert(it != clist.end()
-                && "restoreDiagnosis: redundant constraint pointer not in clist");
-            assert(static_cast<int>(std::distance(clist.begin(), it)) == idx
-                && "restoreDiagnosis: clist ordering shifted since saveDiagnosis()");
-#endif
+            if (it == clist.end()
+                || static_cast<int>(std::distance(clist.begin(), it)) != idx) {
+                // Ordering shifted — cache is stale. Abort restore.
+                hasDiagnosis = false;
+                redundant.clear();
+                pDependentParameters.clear();
+                pDependentParametersGroups.clear();
+                return;
+            }
             redundant.insert(restored);
         }
     }
@@ -622,13 +625,16 @@ void System::restoreDiagnosis(const DiagnosisCache& cache)
     for (int idx : cache.dependentParamIndices) {
         if (idx >= 0 && idx < static_cast<int>(plist.size())) {
             double* restored = plist[idx];
-#ifndef NDEBUG
             auto it = std::find(plist.begin(), plist.end(), restored);
-            assert(it != plist.end()
-                && "restoreDiagnosis: dependent param pointer not in plist");
-            assert(static_cast<int>(std::distance(plist.begin(), it)) == idx
-                && "restoreDiagnosis: plist ordering shifted since saveDiagnosis()");
-#endif
+            if (it == plist.end()
+                || static_cast<int>(std::distance(plist.begin(), it)) != idx) {
+                // Ordering shifted — cache is stale. Abort restore.
+                hasDiagnosis = false;
+                redundant.clear();
+                pDependentParameters.clear();
+                pDependentParametersGroups.clear();
+                return;
+            }
             pDependentParameters.push_back(restored);
         }
     }
@@ -639,13 +645,16 @@ void System::restoreDiagnosis(const DiagnosisCache& cache)
         for (int idx : cache.dependentParamGroupsIndices[g]) {
             if (idx >= 0 && idx < static_cast<int>(plist.size())) {
                 double* restored = plist[idx];
-#ifndef NDEBUG
                 auto it = std::find(plist.begin(), plist.end(), restored);
-                assert(it != plist.end()
-                    && "restoreDiagnosis: group param pointer not in plist");
-                assert(static_cast<int>(std::distance(plist.begin(), it)) == idx
-                    && "restoreDiagnosis: plist ordering shifted since saveDiagnosis()");
-#endif
+                if (it == plist.end()
+                    || static_cast<int>(std::distance(plist.begin(), it)) != idx) {
+                    // Ordering shifted — cache is stale. Abort restore.
+                    hasDiagnosis = false;
+                    redundant.clear();
+                    pDependentParameters.clear();
+                    pDependentParametersGroups.clear();
+                    return;
+                }
                 pDependentParametersGroups[g].push_back(restored);
             }
         }

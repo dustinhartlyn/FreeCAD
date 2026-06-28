@@ -155,7 +155,7 @@ int SketchObject::solve(bool updateGeoAfterSolving /*=true*/)
         }
     }
 
-    if (solvedSketch.wasDiagnosisRestored() && err == 0) {
+    if (solvedSketch.wasDiagnosisRestored()) {
         bool cacheInvalid = false;
         // Stage 2 v6 remediation (Defect 1): The restored diagnosis reflects
         // PRE-solve residual state after setDatum(). Redundant/partially-redundant

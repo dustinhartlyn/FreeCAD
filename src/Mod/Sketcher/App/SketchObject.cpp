@@ -1029,6 +1029,7 @@ void SketchObject::onGeometryChanged()
     }
 
     if (internaltransaction) {
+        solverNeedsUpdate = true;
         return;
     }
 
@@ -1087,6 +1088,7 @@ void SketchObject::onConstraintsChanged()
     }
 
     if (internaltransaction) {
+        solverNeedsUpdate = true;
         return;
     }
 
