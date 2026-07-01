@@ -3118,49 +3118,25 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     // If DAG construction succeeds, the cluster-local solve path (Phase 4a.4)
     // is taken. Otherwise, fall through to the existing monolithic path.
     std::vector<int> solve_order;  // topological ordering of clusters
-    bool use_clusters = false; // DISABLED: cluster-local solve path has parameter writeback bug.
-                               // pg.buildClusterDAG(solve_order);
+#ifndef NDEBUG
+    bool use_clusters = debugUseClusters;
+#else
+    bool use_clusters = false;
+#endif
+    if (use_clusters) {
+        pg.buildClusterDAG(solve_order);
+    }
 
     // ---- Cluster-local workspace (pre-allocated, zero heap in hot loop) ----
-    std::vector<std::pair<double*, int>> param_to_pval_index;  // flat lookup buffer (§4.4)
-    std::vector<int> cl_pval_indices;     // cluster-local param → pvals index
+    // Copy parent constraint list once — per-cluster constraint vectors are
+    // built from this by index lookup inside the cluster loop.
+    std::vector<Constraint*> parent_clist;
+    subsys->getConstraintList(parent_clist);
 
     if (use_clusters) {
         // ================================================================
-        // Phase 4a §4: Cluster-Local Dogleg — Decoupled Per-Cluster Solve
+        // Stage 4C: Per-Cluster Scoped Residual/Jacobian Evaluation
         // ================================================================
-
-        // One-time redirectParams() to set up constraint pvec → pvals mapping.
-        // Per the v3 cluster-transparent policy (§1.2 invariant 4), pmap is
-        // mutated only once here (same as the monolithic path) and never
-        // touched per-cluster or per-iteration.
-        subsys->redirectParams();
-
-        // ---- Flat param-to-pval lookup buffer (§4.4 mitigation 2) ----
-        // Sorted vector of {param_ptr, pval_index} for O(log n) binary search.
-        // Superior cache locality vs std::map red-black tree traversal.
-        {
-            VEC_pD plist_local;
-            subsys->getParamList(plist_local);
-            param_to_pval_index.assign(xsize, {nullptr, -1});
-            for (int pi = 0; pi < xsize; pi++) {
-                param_to_pval_index[pi] = {plist_local[pi], pi};
-            }
-            std::sort(param_to_pval_index.begin(), param_to_pval_index.end(),
-                      [](const auto& a, const auto& b) { return a.first < b.first; });
-        }
-
-        auto pval_lookup = [&](double* param) -> int {
-            auto it = std::lower_bound(
-                param_to_pval_index.begin(), param_to_pval_index.end(), param,
-                [](const std::pair<double*, int>& entry, double* key) {
-                    return entry.first < key;
-                });
-            if (it != param_to_pval_index.end() && it->first == param) {
-                return it->second;
-            }
-            return -1;
-        };
 
         // ---- Pre-allocate max-cluster workspace (§4.2 constraint) ----
         int max_cl_xsize = 0, max_cl_csize = 0;
@@ -3171,6 +3147,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                                     static_cast<int>(ci.constraint_indices.size()));
         }
         Eigen::MatrixXd Jx_c(max_cl_csize, max_cl_xsize);
+        Eigen::MatrixXd Jx_new_c(max_cl_csize, max_cl_xsize);
         Eigen::VectorXd fx_c(max_cl_csize), fx_new_c(max_cl_csize);
         Eigen::VectorXd x_c(max_cl_xsize), x_new_c(max_cl_xsize), g_c(max_cl_xsize);
         Eigen::VectorXd h_sd_c(max_cl_xsize), h_gn_c(max_cl_xsize), h_dl_c(max_cl_xsize);
@@ -3181,22 +3158,37 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
         for (int ci_idx : solve_order) {
             const ClusterInfo& ci = pg.clusters[ci_idx];
 
-            // ---- §4.2.1: Build cluster-local parameter index map ----
             int cl_xsize = ci.param_count;
             int cl_csize = static_cast<int>(ci.constraint_indices.size());
-            if (cl_csize == 0) continue;  // skip clusters with no constraints
+            if (cl_csize == 0) continue;
 
-            cl_pval_indices.resize(cl_xsize);
-            for (int lp = 0; lp < cl_xsize; lp++) {
-                cl_pval_indices[lp] = pval_lookup(ci.param_pointers[lp]);
+            // ---- Build cluster-local constraint and parameter lists ----
+            std::vector<Constraint*> cluster_clist;
+            cluster_clist.reserve(cl_csize);
+            for (int idx : ci.constraint_indices) {
+                cluster_clist.push_back(parent_clist[idx]);
             }
+            VEC_pD cluster_params = ci.param_pointers;  // cheap pointer copy
 
-            // Initialize x_c from current subsys->pvals via public API
-            // (upstream clusters have already written their converged values)
-            subsys->getParams(x);
-            for (int lp = 0; lp < cl_xsize; lp++) {
-                x_c(lp) = x(cl_pval_indices[lp]);
-            }
+            // ---- Construct temporary per-cluster SubSystem ----
+            SubSystem cluster_subsys(cluster_clist, cluster_params);
+            cluster_subsys.redirectParams();
+
+            // ---- Size workspace vectors for this cluster ----
+            // conservativeResize is zero-allocation when new_size ≤ capacity;
+            // all clusters are ≤ max_cl_* so these never trigger heap allocation.
+            x_c.conservativeResize(cl_xsize);
+            x_new_c.conservativeResize(cl_xsize);
+            g_c.conservativeResize(cl_xsize);
+            h_sd_c.conservativeResize(cl_xsize);
+            h_gn_c.conservativeResize(cl_xsize);
+            h_dl_c.conservativeResize(cl_xsize);
+            b_work.conservativeResize(cl_xsize);
+            fx_c.conservativeResize(cl_csize);
+            fx_new_c.conservativeResize(cl_csize);
+
+            // ---- Read initial params from temp SubSystem ----
+            cluster_subsys.getParams(x_c);
 
             // ---- §4.2.4: Cluster-local dogleg iteration ----
             double cl_tolg = tolg, cl_tolx = tolx, cl_tolf = tolf;
@@ -3205,24 +3197,12 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
             int cl_iter = 0, cl_stop = 0, cl_reduce = 0;
             double cl_err;
 
-            // Initial evaluation: write x_c → subsys via setParams, then full-system eval
-            for (int lp = 0; lp < cl_xsize; lp++) {
-                x(cl_pval_indices[lp]) = x_c(lp);
-            }
-            subsys->setParams(x);
-            subsys->calcResidual(fx, cl_err);
-            subsys->calcJacobi(Jx);
-
-            // Slice cluster residual from monolithic fx
-            for (int lc = 0; lc < cl_csize; lc++) {
-                fx_c(lc) = fx(ci.constraint_indices[lc]);
-            }
-            // Slice cluster Jacobian: rows = cluster constraints, cols = cluster params
-            for (int lc = 0; lc < cl_csize; lc++) {
-                for (int lp = 0; lp < cl_xsize; lp++) {
-                    Jx_c(lc, lp) = Jx(ci.constraint_indices[lc], cl_pval_indices[lp]);
-                }
-            }
+            // Initial per-cluster residual + Jacobian evaluation
+            // CRITICAL: calcResidual asserts r.size()==csize; fx_c must be
+            // pre-sized via conservativeResize above. calcJacobi calls
+            // setZero(csize, nparams) which resizes Jx_c automatically.
+            cluster_subsys.calcResidual(fx_c, cl_err);
+            cluster_subsys.calcJacobi(Jx_c);
 
             g_c.noalias() = Jx_c.transpose() * (-fx_c);
             double cl_divergingLim = 1e6 * cl_err + 1e12;
@@ -3231,7 +3211,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 double fx_inf = fx_c.lpNorm<Eigen::Infinity>();
                 double g_inf = g_c.lpNorm<Eigen::Infinity>();
 
-                // Convergence checks (§4.2.4a, mirroring monolithic GCS.cpp:3038-3061)
+                // Convergence checks
                 if (fx_inf <= cl_tolf) {
                     cl_stop = 1;
                     break;
@@ -3257,7 +3237,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 double alpha = g_c.squaredNorm() / (Jx_c * g_c).squaredNorm();
                 h_sd_c.noalias() = alpha * g_c;
 
-                // Gauss-Newton step (same switch as monolithic)
+                // Gauss-Newton step
                 switch (dogLegGaussStep) {
                     case FullPivLU:
                         h_gn_c = Jx_c.fullPivLu().solve(-fx_c);
@@ -3282,7 +3262,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                     break;
                 }
 
-                // Dogleg blending (mirrors monolithic GCS.cpp:3145-3172)
+                // Dogleg blending
                 if (h_gn_c.norm() < delta) {
                     h_dl_c = h_gn_c;
                     if (h_dl_c.norm() <= cl_tolx * (cl_tolx + x_c.norm())) {
@@ -3310,20 +3290,17 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                     h_dl_c = h_sd_c + beta * b_work;
                 }
 
-                // Update and re-evaluate
+                // Update and re-evaluate (per-cluster scoped)
                 double cl_err_new;
                 x_new_c.noalias() = x_c + h_dl_c;
-                for (int lp = 0; lp < cl_xsize; lp++) {
-                    x(cl_pval_indices[lp]) = x_new_c(lp);
-                }
-                subsys->setParams(x);
-                subsys->calcResidual(fx, cl_err_new);
-                subsys->calcJacobi(Jx_new);
-
-                // Slice new residual
-                for (int lc = 0; lc < cl_csize; lc++) {
-                    fx_new_c(lc) = fx(ci.constraint_indices[lc]);
-                }
+                cluster_subsys.setParams(x_new_c);
+                // CRITICAL: calcResidual asserts r.size()==csize; fx_new_c must
+                // be pre-sized. conservativeResize above set it to cl_csize,
+                // but setParams may have conservatively re-allocated if capacity
+                // was insufficient (should not happen since cl_csize ≤ max_cl_csize).
+                fx_new_c.conservativeResize(cl_csize);
+                cluster_subsys.calcResidual(fx_new_c, cl_err_new);
+                cluster_subsys.calcJacobi(Jx_new_c);
 
                 // Linear model and update ratio
                 double dL = cl_err - 0.5 * (fx_c + Jx_c * h_dl_c).squaredNorm();
@@ -3334,14 +3311,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                     x_c = x_new_c;
                     fx_c = fx_new_c;
                     cl_err = cl_err_new;
-
-                    // Update Jx_c from Jx_new
-                    for (int lc = 0; lc < cl_csize; lc++) {
-                        for (int lp = 0; lp < cl_xsize; lp++) {
-                            Jx_c(lc, lp) =
-                                Jx_new(ci.constraint_indices[lc], cl_pval_indices[lp]);
-                        }
-                    }
+                    Jx_c = Jx_new_c;  // deep copy; both pre-sized to cl_csize×cl_xsize by calcJacobi
 
                     g_c.noalias() = Jx_c.transpose() * (-fx_c);
                 }
@@ -3368,18 +3338,23 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 cl_iter++;
             }
 
-            // ---- Post-solve writeback (§4.2) ----
-            for (int lp = 0; lp < cl_xsize; lp++) {
-                x(cl_pval_indices[lp]) = x_c(lp);
-            }
-            subsys->setParams(x);
+            // ---- Post-solve writeback: temp SubSystem → original params ----
+            cluster_subsys.applySolution();
+            cluster_subsys.revertParams();
+            // ~cluster_subsys destructor runs here (Constraint* pointers are
+            // not owned by temp SubSystem; parent_clist retains ownership)
 
             if (cl_stop > overall_stop) {
                 overall_stop = cl_stop;
             }
         }
 
-        subsys->revertParams();
+        // ---- Refresh parent pvals from solved original params ----
+        // MANDATORY: per-cluster applySolution() wrote to original params,
+        // but parent SubSystem pvals are stale. redirectParams() copies
+        // original → pvals and re-redirects constraint pvec → pvals so
+        // that System::applySolution() sees the correct values.
+        subsys->redirectParams();
 
         return (overall_stop <= 2) ? Success : Failed;
     }
