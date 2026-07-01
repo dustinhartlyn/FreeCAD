@@ -842,6 +842,13 @@ public:
     DiagnosisCache saveDiagnosis() const;
     void restoreDiagnosis(const DiagnosisCache& cache);
 
+    // Cluster decomposition gate (§5) — placed at end of public members (ABI hygiene).
+    // When true (default), solve_DL() attempts pebble-game cluster decomposition for
+    // systems with >= 6 scalar parameters. Falls through to monolithic path when
+    // buildClusterDAG() returns false (no valid clusters found).
+    // Set to false to force monolithic path for all solves.
+    bool useClusters = true;
+
     // Unit testing interface - not intended for use by production code
 protected:
     size_t _getNumberOfConstraints(int tagID = -1)

@@ -3110,21 +3110,17 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     Eigen::MatrixXd Jx(csize, xsize), Jx_new(csize, xsize);
     Eigen::VectorXd g(xsize), h_sd(xsize), h_gn(xsize), h_dl(xsize);
 
+    // ---- Stage 5: Production Cluster Decomposition Gate ----
+    // Two-layer gate: (1) size floor avoids overhead on trivial systems;
+    // (2) buildClusterDAG() success is the true activation signal.
+    // PebbleGameState initialization and DAG construction only occur when
+    // both conditions are met, avoiding overhead on the monolithic path.
     PebbleGameState pg;
-    pg.initialize(subsys);
-
-    // ---- PHASE 4a INJECTION POINT (Strategy B §4.1) ----
-    // Attempt pebble-game cluster decomposition BEFORE redirectParams().
-    // If DAG construction succeeds, the cluster-local solve path (Phase 4a.4)
-    // is taken. Otherwise, fall through to the existing monolithic path.
     std::vector<int> solve_order;  // topological ordering of clusters
-#ifndef NDEBUG
-    bool use_clusters = debugUseClusters;
-#else
     bool use_clusters = false;
-#endif
-    if (use_clusters) {
-        pg.buildClusterDAG(solve_order);
+    if (useClusters && xsize >= 6) {
+        pg.initialize(subsys);
+        use_clusters = pg.buildClusterDAG(solve_order);
     }
 
     // ---- Cluster-local workspace (pre-allocated, zero heap in hot loop) ----
