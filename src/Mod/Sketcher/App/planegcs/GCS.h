@@ -71,7 +71,8 @@ enum DogLegGaussStep
     FullPivLU = 0,
     LeastNormFullPivLU = 1,
     LeastNormLdlt = 2,
-    SparseLDLT = 3       // Sparse LDLT on damped normal equations (J^T J + mu*I)
+    SparseLDLT = 3  // Sparse LDLT: least-norm (J J^T) when under-constrained, else
+                    // normal equations (J^T J); dense fullPivLU fallback on failure
 };
 
 enum QRAlgorithm
@@ -843,11 +844,16 @@ public:
     void restoreDiagnosis(const DiagnosisCache& cache);
 
     // Cluster decomposition gate (§5) — placed at end of public members (ABI hygiene).
-    // When true (default), solve_DL() attempts pebble-game cluster decomposition for
-    // systems with >= 6 scalar parameters. Falls through to monolithic path when
+    // When true, solve_DL() attempts pebble-game cluster decomposition for systems
+    // with >= 6 scalar parameters, falling through to the monolithic path when
     // buildClusterDAG() returns false (no valid clusters found).
-    // Set to false to force monolithic path for all solves.
-    bool useClusters = true;
+    //
+    // Default is false: the cluster path converges the pre-drag steady state onto a
+    // parameter configuration that biases the two-subsystem SQP drag solver toward
+    // the degenerate Y=0 minimum (drag snap-to-origin). This is an interim safety net
+    // until qp_eq is regularized to handle that rank-deficient step; re-enable only
+    // once a benchmark shows clustering materially beats the monolithic path.
+    bool useClusters = false;
 
     // Unit testing interface - not intended for use by production code
 protected:

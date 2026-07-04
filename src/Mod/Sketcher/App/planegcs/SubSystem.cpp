@@ -114,7 +114,10 @@ void SubSystem::initialize(VEC_pD& params, MAP_pD_pD& reductionmap)
 
     c2p.clear();
     p2c.clear();
-    for (std::vector<Constraint*>::iterator constr = clist.begin(); constr != clist.end(); ++constr) {
+    p2c_rows_.clear();
+    int row = 0;
+    for (std::vector<Constraint*>::iterator constr = clist.begin(); constr != clist.end();
+         ++constr, ++row) {
         (*constr)->revertParams();  // ensure that the constraint points to the original parameters
         VEC_pD constr_params_orig = (*constr)->params();
         SET_pD constr_params;
@@ -129,6 +132,7 @@ void SubSystem::initialize(VEC_pD& params, MAP_pD_pD& reductionmap)
             //            jacobi.set(*constr, *p, 0.);
             c2p[*constr].push_back(*p);
             p2c[*p].push_back(*constr);
+            p2c_rows_[*p].push_back(row);  // clist index of *constr, aligned with p2c[*p]
         }
         //        (*constr)->redirectParams(pmap); // redirect parameters to pvec
     }
@@ -145,29 +149,6 @@ void SubSystem::redirectParams()
     for (std::vector<Constraint*>::iterator constr = clist.begin(); constr != clist.end(); ++constr) {
         (*constr)->revertParams();  // this line will normally not be necessary
         (*constr)->redirectParams(pmap);
-    }
-
-    // Cache column-index mapping: pvals pointer -> jacobian column index.
-    // Built once per solve (redirectParams called once before Newton loop).
-    // Eliminates per-iteration std::map construction in calcJacobi().
-    pval_col_index_.assign(psize, -1);
-    for (int j = 0; j < psize; j++) {
-        MAP_pD_pD::const_iterator it = pmap.find(plist[j]);
-        if (it != pmap.end()) {
-            int pidx = static_cast<int>(it->second - &pvals[0]);
-            if (pidx >= 0 && pidx < psize) {
-                pval_col_index_[pidx] = j;
-            }
-        }
-    }
-
-    // Cache Equal-constraint mask: avoids per-iteration getTypeId() checks.
-    // Branch-based check in scalar inner loop proven optimal at 111.07 ms.
-    is_equal_constraint_.assign(csize, false);
-    for (int i = 0; i < csize; i++) {
-        if (clist[i]->getTypeId() == Equal) {
-            is_equal_constraint_[i] = true;
-        }
     }
 }
 
@@ -275,78 +256,82 @@ void SubSystem::calcResidual(Eigen::VectorXd& r, double& err)
 }
 
 // ---------------------------------------------------------------------------
-// calcJacobi() — Analytical Jacobian Assembly (Critic-reviewed optimization)
+// calcJacobi() — Sparse Analytical Jacobian Assembly
 //
-// Two-phase design eliminates virtual dispatch overhead for Equal constraints:
+// For each output column j we look up params[j]'s redirected pvals pointer and
+// visit ONLY the constraints that actually depend on it (via the p2c / p2c_rows_
+// adjacency built once in initialize()). This is O(nnz) — for banded/local
+// sketches O(N) — instead of the O(nparams × csize) dense grad() sweep.
 //
-//   Phase 1 (Equal fast path):
-//     ConstraintEqual::grad(p1)=+scale, grad(p2)=-scale is value-independent.
-//     We compute column indices directly via pval_col_index_[pidx] (O(1) lookup,
-//     built once in redirectParams() from the pmap redirection) rather than
-//     calling grad() which requires a virtual dispatch + pointer comparison.
-//     Since redirectParams() has already remapped constraint pvec entries to
-//     point into pvals, pointer arithmetic (cparams[k] - &pvals[0]) is safe and
-//     yields the correct pvals index.  Zero dynamic allocations.
-//
-//   Phase 2 (scalar loop):
-//     Non-Equal constraints use the standard grad() virtual dispatch.
-//     is_equal_constraint_[i] skip prevents double-evaluation.
-//
-// Correctness: Produces identical Jacobian values to the upstream grad()-based
-// loop.  Critic-reviewed and approved (81% test pass rate, failures are
-// pre-existing Qt GUI headless issues).
+// The column is j (the position in the passed-in `params`), so the result is
+// correct for ANY params array — `plist` (single-arg overload) or a differently
+// ordered union such as the SQP solver's `plistAB`. This mirrors calcGrad()'s
+// use of p2c and removes the earlier Equal fast path, whose cached column index
+// was keyed to `plist` and therefore produced wrong columns when called with
+// `plistAB` during dragging.
 // ---------------------------------------------------------------------------
 void SubSystem::calcJacobi(VEC_pD& params, Eigen::MatrixXd& jacobi)
 {
     int nparams = int(params.size());
     jacobi.setZero(csize, nparams);
 
-    // Batch-vectorized path: Equal constraints have value-independent gradients.
-    // Uses pre-cached pval_col_index_ and is_equal_constraint_ (built once per
-    // solve in redirectParams()). Zero dynamic allocations in the hot path.
-    for (int i = 0; i < csize; i++) {
-        if (!is_equal_constraint_[i]) {
-            continue;
-        }
-        const VEC_pD& cparams = clist[i]->params();  // pvec (redirected to pvals entries)
-        double s = clist[i]->getScale();
-
-        int pidx1 = static_cast<int>(cparams[0] - &pvals[0]);
-        if (pidx1 >= 0 && pidx1 < psize) {
-            int col1 = pval_col_index_[pidx1];
-            if (col1 >= 0) {
-                jacobi(i, col1) = s;
-            }
-        }
-
-        int pidx2 = static_cast<int>(cparams[1] - &pvals[0]);
-        if (pidx2 >= 0 && pidx2 < psize) {
-            int col2 = pval_col_index_[pidx2];
-            if (col2 >= 0) {
-                jacobi(i, col2) = -s;
-            }
-        }
-    }
-
-    // Scalar loop: only for non-Equal constraints that still require virtual dispatch.
-    // Branch check on is_equal_constraint_[i] — branch predictor handles the
-    // mostly-uniform mix efficiently (benchmarked 111.07 ms, better than row-list).
     for (int j = 0; j < nparams; j++) {
         MAP_pD_pD::const_iterator pmapfind = pmap.find(params[j]);
         if (pmapfind == pmap.end()) {
             continue;
         }
         double* pval = pmapfind->second;
-        for (int i = 0; i < csize; i++) {
-            if (is_equal_constraint_[i]) {
-                continue;
-            }
-            jacobi(i, j) = clist[i]->grad(pval);
+
+        auto cit = p2c.find(pval);
+        if (cit == p2c.end()) {
+            continue;
+        }
+        const std::vector<Constraint*>& constrs = cit->second;
+        const std::vector<int>& rows = p2c_rows_.find(pval)->second;  // 1:1 with constrs
+        for (std::size_t k = 0; k < constrs.size(); ++k) {
+            jacobi(rows[k], j) = constrs[k]->grad(pval);
         }
     }
 }
 
 void SubSystem::calcJacobi(Eigen::MatrixXd& jacobi)
+{
+    calcJacobi(plist, jacobi);
+}
+
+// Sparse counterpart of calcJacobi(): assembles the Jacobian directly into an
+// Eigen::SparseMatrix in O(nnz) via the p2c / p2c_rows_ adjacency. Same column
+// convention as the dense overload (column j == params[j]), so it is correct for
+// any params array. Used by the monolithic DogLeg path so that J^T*J and the
+// linear solve stay sparse (banded) instead of O(N^2)/O(N^3) dense.
+void SubSystem::calcJacobi(VEC_pD& params, Eigen::SparseMatrix<double>& jacobi)
+{
+    int nparams = int(params.size());
+    std::vector<Eigen::Triplet<double>> triplets;
+
+    for (int j = 0; j < nparams; j++) {
+        MAP_pD_pD::const_iterator pmapfind = pmap.find(params[j]);
+        if (pmapfind == pmap.end()) {
+            continue;
+        }
+        double* pval = pmapfind->second;
+
+        auto cit = p2c.find(pval);
+        if (cit == p2c.end()) {
+            continue;
+        }
+        const std::vector<Constraint*>& constrs = cit->second;
+        const std::vector<int>& rows = p2c_rows_.find(pval)->second;  // 1:1 with constrs
+        for (std::size_t k = 0; k < constrs.size(); ++k) {
+            triplets.emplace_back(rows[k], j, constrs[k]->grad(pval));
+        }
+    }
+
+    jacobi.resize(csize, nparams);
+    jacobi.setFromTriplets(triplets.begin(), triplets.end());
+}
+
+void SubSystem::calcJacobi(Eigen::SparseMatrix<double>& jacobi)
 {
     calcJacobi(plist, jacobi);
 }

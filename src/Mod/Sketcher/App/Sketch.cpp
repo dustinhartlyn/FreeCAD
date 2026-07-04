@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRep_Builder.hxx>

@@ -195,7 +195,6 @@ public:
     void resetInitMove();
     inline bool isInitMoveActive() const { return isInitMove; }
 
-
     /** Limits a b-spline drag to the segment around `firstPoint`.
      */
     int limitBSplineMove(int geoId, PointPos pos, const Base::Vector3d& firstPoint);
@@ -703,6 +702,17 @@ public:
     inline void setDogLegGaussStep(GCS::DogLegGaussStep mode)
     {
         GCSsys.dogLegGaussStep = mode;
+    }
+    // Stage 5B: Accessors for useClusters flag. GCSsys is private, so SketchObject
+    // (which owns a Sketch) must toggle useClusters through these accessors to
+    // suppress cluster decomposition during the drag lifecycle.
+    inline void setUseClusters(bool val)
+    {
+        GCSsys.useClusters = val;
+    }
+    inline bool getUseClusters() const
+    {
+        return GCSsys.useClusters;
     }
     inline void setDebugMode(GCS::DebugMode mode)
     {
