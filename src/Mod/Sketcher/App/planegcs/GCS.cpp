@@ -50,12 +50,15 @@
 
 #include <algorithm>
 #define _USE_MATH_DEFINES
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <future>
 #include <iostream>
 #include <limits>
+#include <numeric>
 #include <stdexcept>
+#include <unordered_map>
 
 #include "GCS.h"
 #include "qp_eq.h"
@@ -5829,11 +5832,10 @@ void System::undoSolution()
     resetToReference();
 }
 
-void System::makeReducedJacobian(
-    Eigen::MatrixXd& J,
-    std::map<int, int>& jacobianconstraintmap,
+void System::prepareDiagnosis(
     GCS::VEC_pD& pdiagnoselist,
-    std::map<int, int>& tagmultiplicity
+    std::map<int, int>& tagmultiplicity,
+    std::vector<int>& jacobianRows
 )
 {
     // construct specific parameter list for diagonose ignoring driven constraint parameters
@@ -5845,19 +5847,12 @@ void System::makeReducedJacobian(
         }
     }
 
-
-    J = Eigen::MatrixXd::Zero(clist.size(), pdiagnoselist.size());
-
-    int jacobianconstraintcount = 0;
     int allcount = 0;
     for (auto& constr : clist) {
         constr->revertParams();
         ++allcount;
         if (constr->getTag() >= 0 && constr->isDriving()) {
-            jacobianconstraintcount++;
-            for (int j = 0; j < int(pdiagnoselist.size()); j++) {
-                J(jacobianconstraintcount - 1, j) = constr->grad(pdiagnoselist[j]);
-            }
+            jacobianRows.push_back(allcount - 1);
 
             // parallel processing: create tag multiplicity map
             if (tagmultiplicity.find(constr->getTag()) == tagmultiplicity.end()) {
@@ -5866,13 +5861,127 @@ void System::makeReducedJacobian(
             else {
                 tagmultiplicity[constr->getTag()]++;
             }
+        }
+    }
+}
 
-            jacobianconstraintmap[jacobianconstraintcount - 1] = allcount - 1;
+void System::fillReducedJacobian(
+    const std::vector<int>& jacobianRows,
+    const GCS::VEC_pD& pdiagnoselist,
+    Eigen::MatrixXd& J,
+    std::map<int, int>& jacobianconstraintmap
+)
+{
+    J = Eigen::MatrixXd::Zero(jacobianRows.size(), pdiagnoselist.size());
+
+    int row = 0;
+    for (int ci : jacobianRows) {
+        for (int j = 0; j < int(pdiagnoselist.size()); j++) {
+            J(row, j) = clist[ci]->grad(pdiagnoselist[j]);
+        }
+        jacobianconstraintmap[row] = ci;
+        ++row;
+    }
+}
+
+void System::splitDiagnoseComponents(
+    const GCS::VEC_pD& pdiagnoselist,
+    const std::vector<int>& jacobianRows,
+    std::vector<DiagnoseComponent>& components
+)
+{
+    const int nparams = static_cast<int>(pdiagnoselist.size());
+
+    std::unordered_map<double*, int> paramIndex;
+    paramIndex.reserve(pdiagnoselist.size() * 2);
+    for (int i = 0; i < nparams; ++i) {
+        paramIndex.emplace(pdiagnoselist[i], i);
+    }
+
+    // union-find with path halving over pdiagnoselist indices
+    std::vector<int> parent(nparams);
+    std::iota(parent.begin(), parent.end(), 0);
+    auto find = [&parent](int i) {
+        while (parent[i] != i) {
+            parent[i] = parent[parent[i]];
+            i = parent[i];
+        }
+        return i;
+    };
+
+    for (int ci : jacobianRows) {
+        int first = -1;
+        for (double* p : clist[ci]->params()) {
+            auto it = paramIndex.find(p);
+            if (it == paramIndex.end()) {
+                continue;  // driven-value or otherwise non-diagnosed parameter
+            }
+            int root = find(it->second);
+            if (first < 0) {
+                first = root;
+            }
+            else if (root != first) {
+                parent[root] = first;
+            }
         }
     }
 
-    if (jacobianconstraintcount == 0) {  // only driven constraints
-        J.resize(0, 0);
+    // group parameters by root, components ordered by first parameter occurrence
+    std::unordered_map<int, int> rootToComponent;
+    for (int i = 0; i < nparams; ++i) {
+        int root = find(i);
+        auto [it, isNew] = rootToComponent.emplace(root, static_cast<int>(components.size()));
+        if (isNew) {
+            components.emplace_back();
+        }
+        components[it->second].params.push_back(pdiagnoselist[i]);
+    }
+
+    // assign driving constraints to their component, keeping global row order
+    for (int ci : jacobianRows) {
+        int comp = -1;
+        for (double* p : clist[ci]->params()) {
+            auto it = paramIndex.find(p);
+            if (it != paramIndex.end()) {
+                comp = rootToComponent.at(find(it->second));
+                break;
+            }
+        }
+        if (comp < 0) {
+            // constraint touches no diagnosed parameter: a zero row in the
+            // reduced Jacobian; isolate it in an empty pseudo-component
+            components.emplace_back();
+            comp = static_cast<int>(components.size()) - 1;
+        }
+        components[comp].constraintIndices.push_back(ci);
+    }
+}
+
+void System::makeComponentReducedJacobian(
+    const DiagnoseComponent& comp,
+    Eigen::MatrixXd& J,
+    std::map<int, int>& jacobianconstraintmap
+)
+{
+    J = Eigen::MatrixXd::Zero(comp.constraintIndices.size(), comp.params.size());
+
+    std::unordered_map<double*, int> col;
+    col.reserve(comp.params.size() * 2);
+    for (int j = 0; j < int(comp.params.size()); ++j) {
+        col.emplace(comp.params[j], j);
+    }
+
+    int row = 0;
+    for (int ci : comp.constraintIndices) {
+        Constraint* constr = clist[ci];
+        for (double* p : constr->params()) {
+            auto it = col.find(p);
+            if (it != col.end()) {
+                J(row, it->second) = constr->grad(p);
+            }
+        }
+        jacobianconstraintmap[row] = ci;
+        ++row;
     }
 }
 
@@ -5919,19 +6028,17 @@ int System::diagnose(Algorithm alg)
     conflictingTags.clear();
     redundantTags.clear();
     partiallyRedundantTags.clear();
+    // Defensive: in the normal setUpSketch flow System::clear() has already
+    // emptied these; clearing here keeps a repeated diagnose() deterministic.
+    pDependentParameters.clear();
+    pDependentParametersGroups.clear();
 
     // This QR diagnosis uses a reduced Jacobian matrix to calculate the rank of the system
     // and identify conflicting and redundant constraints.
     //
-    // reduced Jacobian matrix
-    // The Jacobian has been reduced to:
-    // 1. only contain driving constraints, but keep a full size (zero padded).
+    // The Jacobian is reduced to:
+    // 1. only contain driving constraints.
     // 2. remove the parameters of the values of driven constraints.
-    Eigen::MatrixXd J;
-
-    // maps the index of the rows of the reduced jacobian matrix (solver constraints) to
-    // the index those constraints would have in a full size Jacobian matrix
-    std::map<int, int> jacobianconstraintmap;
 
     // list of parameters to be diagnosed in this routine (removes value parameters from driven
     // constraints)
@@ -5942,7 +6049,11 @@ int System::diagnose(Algorithm alg)
     // like 0 and -1.
     std::map<int, int> tagmultiplicity;
 
-    makeReducedJacobian(J, jacobianconstraintmap, pdiagnoselist, tagmultiplicity);
+    // indices into clist of the driving (tag >= 0) constraints, i.e. the rows of the
+    // reduced Jacobian in order
+    std::vector<int> jacobianRows;
+
+    prepareDiagnosis(pdiagnoselist, tagmultiplicity, jacobianRows);
 
     // this function will exit with a diagnosis and, unless overridden by functions below, with full
     // DoFs
@@ -6014,12 +6125,72 @@ int System::diagnose(Algorithm alg)
     }
 #endif
 
-    if (J.rows() == 0) {
+    if (jacobianRows.empty()) {
+        // only driven constraints; nothing to diagnose
         return dofs;
     }
 
-    // From here on, presuming `J.rows() > 0`.
+    // From here on, presuming at least one driving constraint.
     emptyDiagnoseMatrix = false;
+
+    // Environment gates for the component-decomposed diagnosis:
+    //  GCS_DIAG_MONOLITHIC — force the legacy single-QR path (kill switch)
+    //  GCS_DIAG_SELFCHECK  — run BOTH paths and warn on any result mismatch
+    static const bool envForceMonolithic = (std::getenv("GCS_DIAG_MONOLITHIC") != nullptr);
+    static const bool selfCheck = (std::getenv("GCS_DIAG_SELFCHECK") != nullptr);
+    static const bool diagProf = (std::getenv("GCS_DIAGPROF") != nullptr);
+
+    const bool forceMonolithic = envForceMonolithic || !useComponentDiagnose;
+
+    const auto profStart = diagProf ? std::chrono::steady_clock::now()
+                                    : std::chrono::steady_clock::time_point {};
+
+    std::vector<DiagnoseComponent> components;
+    if (!forceMonolithic || selfCheck) {
+        splitDiagnoseComponents(pdiagnoselist, jacobianRows, components);
+    }
+
+    const char* path = "monolithic";
+    int result;
+    if (components.size() > 1 && selfCheck) {
+        path = "selfcheck";
+        result = diagnoseSelfCheck(alg, pdiagnoselist, tagmultiplicity, jacobianRows, components);
+    }
+    else if (components.size() > 1 && !forceMonolithic) {
+        path = "componentwise";
+        result = diagnoseComponentwise(alg, pdiagnoselist, tagmultiplicity, components);
+    }
+    else {
+        result = diagnoseMonolithic(alg, pdiagnoselist, tagmultiplicity, jacobianRows);
+    }
+
+    if (diagProf) {
+        const auto profEnd = std::chrono::steady_clock::now();
+        std::cerr << "[DIAGPROF] path=" << path << " params=" << pdiagnoselist.size()
+                  << " rows=" << jacobianRows.size() << " components=" << components.size()
+                  << " ms="
+                  << std::chrono::duration<double, std::milli>(profEnd - profStart).count()
+                  << std::endl;
+    }
+
+    return result;
+}
+
+int System::diagnoseMonolithic(
+    Algorithm alg,
+    GCS::VEC_pD& pdiagnoselist,
+    const std::map<int, int>& tagmultiplicity,
+    const std::vector<int>& jacobianRows
+)
+{
+    // reduced Jacobian matrix: rows are the driving constraints, columns pdiagnoselist
+    Eigen::MatrixXd J;
+
+    // maps the index of the rows of the reduced jacobian matrix (solver constraints) to
+    // the index those constraints would have in a full size Jacobian matrix
+    std::map<int, int> jacobianconstraintmap;
+
+    fillReducedJacobian(jacobianRows, pdiagnoselist, J, jacobianconstraintmap);
 
     if (qrAlgorithm == EigenDenseQR) {
 #ifdef PROFILE_DIAGNOSE
@@ -6177,6 +6348,230 @@ int System::diagnose(Algorithm alg)
 #endif
 
     return dofs;
+}
+
+int System::diagnoseComponentwise(
+    Algorithm alg,
+    GCS::VEC_pD& pdiagnoselist,
+    const std::map<int, int>& tagmultiplicity,
+    const std::vector<DiagnoseComponent>& components
+)
+{
+    // The reduced Jacobian of independent components is block-diagonal, so the
+    // global QR results decompose exactly: rank(J) = Σ rank(J_i), the dependent
+    // (conflicting/redundant) columns are the union of the per-component ones,
+    // and likewise for the dependent-parameter groups. Only the resolution phase
+    // (redundant solving + tag outputs) is global, exactly as in the monolithic
+    // path.
+    int rankTotal = 0;
+    int constrTotal = 0;
+    std::vector<std::vector<Constraint*>> conflictGroups;
+
+    for (const auto& comp : components) {
+        constrTotal += static_cast<int>(comp.constraintIndices.size());
+
+        if (comp.constraintIndices.empty()) {
+            // Unconstrained parameters: zero columns of the monolithic Jacobian,
+            // each reported as a single-parameter dependent group.
+            for (double* p : comp.params) {
+                pDependentParametersGroups.emplace_back(1, p);
+                pDependentParameters.push_back(p);
+            }
+            continue;
+        }
+
+        if (comp.params.empty()) {
+            // Driving constraints with no diagnosed parameters: zero rows of the
+            // monolithic Jacobian, i.e. rank-deficient singleton groups.
+            for (int ci : comp.constraintIndices) {
+                conflictGroups.push_back({clist[ci]});
+            }
+            continue;
+        }
+
+        Eigen::MatrixXd Jcomp;
+        std::map<int, int> compconstraintmap;
+        makeComponentReducedJacobian(comp, Jcomp, compconstraintmap);
+
+        bool useDenseQR = autoChooseAlgorithm
+            ? (static_cast<int>(comp.params.size()) < autoQRThreshold)
+            : (qrAlgorithm == EigenDenseQR);
+#ifndef EIGEN_SPARSEQR_COMPATIBLE
+        useDenseQR = true;
+#endif
+
+        int rank = 0;
+        Eigen::MatrixXd R;
+        const int constrNum = static_cast<int>(comp.constraintIndices.size());
+
+        if (useDenseQR) {
+            Eigen::FullPivHouseholderQR<Eigen::MatrixXd> qrJT;
+            makeDenseQRDecomposition(Jcomp, compconstraintmap, qrJT, rank, R, true, true);
+            if (constrNum > rank) {
+                collectConflictGroups(qrJT, compconstraintmap, R, constrNum, rank, conflictGroups);
+            }
+            identifyDependentParametersDenseQR(Jcomp, compconstraintmap, comp.params, true);
+        }
+#ifdef EIGEN_SPARSEQR_COMPATIBLE
+        else {
+            Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> SqrJT;
+            makeSparseQRDecomposition(Jcomp, compconstraintmap, SqrJT, rank, R, true, true);
+            if (constrNum > rank) {
+                collectConflictGroups(SqrJT, compconstraintmap, R, constrNum, rank, conflictGroups);
+            }
+            identifyDependentParametersSparseQR(Jcomp, compconstraintmap, comp.params, true);
+        }
+#endif
+
+        rankTotal += rank;
+    }
+
+    const int paramsNum = static_cast<int>(pdiagnoselist.size());
+    dofs = paramsNum - rankTotal;  // unless overconstraint, overridden below
+
+    if (constrTotal > rankTotal) {
+        int nonredundantconstrNum = constrTotal;
+        resolveConflictingRedundantConstraints(
+            alg,
+            conflictGroups,
+            tagmultiplicity,
+            pdiagnoselist,
+            constrTotal,
+            nonredundantconstrNum
+        );
+
+        if (paramsNum == rankTotal && nonredundantconstrNum > rankTotal) {
+            // over-constrained
+            dofs = paramsNum - nonredundantconstrNum;
+        }
+    }
+
+    return dofs;
+}
+
+int System::diagnoseSelfCheck(
+    Algorithm alg,
+    GCS::VEC_pD& pdiagnoselist,
+    const std::map<int, int>& tagmultiplicity,
+    const std::vector<int>& jacobianRows,
+    const std::vector<DiagnoseComponent>& components
+)
+{
+    // Differential validation: run the component-decomposed path, snapshot every
+    // diagnosis output, reset, run the monolithic path, and compare. The
+    // monolithic result is the one kept. Any mismatch is loudly reported.
+    //
+    // Note on dependentGroups: the raw partition into groups is QR-pivot-dependent
+    // and not unique (the monolithic path itself produces different partitions for
+    // DenseQR vs SparseQR). The consumer (Sketch::calculateDependentParametersElements)
+    // merges groups sharing an element, so the comparison below is on that merged
+    // transitive closure, which is well-defined.
+    struct Snapshot
+    {
+        int dofs;
+        VEC_I conflicting, redundantT, partiallyRedundantT;
+        std::set<Constraint*> redundantSet;
+        std::set<double*> dependentParams;
+        std::multiset<std::set<double*>> dependentGroups;  // merged transitive closure
+    };
+
+    auto takeSnapshot = [this]() {
+        Snapshot s;
+        s.dofs = dofs;
+        s.conflicting = conflictingTags;
+        s.redundantT = redundantTags;
+        s.partiallyRedundantT = partiallyRedundantTags;
+        s.redundantSet = redundant;
+        s.dependentParams.insert(pDependentParameters.begin(), pDependentParameters.end());
+
+        // merge groups that share a parameter (transitive closure via union-find)
+        std::unordered_map<double*, int> id;
+        std::vector<int> parent;
+        auto find = [&parent](int i) {
+            while (parent[i] != i) {
+                parent[i] = parent[parent[i]];
+                i = parent[i];
+            }
+            return i;
+        };
+        auto idOf = [&id, &parent](double* p) {
+            auto [it, isNew] = id.emplace(p, static_cast<int>(parent.size()));
+            if (isNew) {
+                parent.push_back(it->second);
+            }
+            return it->second;
+        };
+        for (const auto& group : pDependentParametersGroups) {
+            int first = -1;
+            for (double* p : group) {
+                int root = find(idOf(p));
+                if (first < 0) {
+                    first = root;
+                }
+                else if (root != first) {
+                    parent[root] = first;
+                }
+            }
+        }
+        std::map<int, std::set<double*>> closures;
+        for (const auto& [p, i] : id) {
+            closures[find(i)].insert(p);
+        }
+        for (auto& [root, params] : closures) {
+            s.dependentGroups.insert(params);
+        }
+        return s;
+    };
+
+    diagnoseComponentwise(alg, pdiagnoselist, tagmultiplicity, components);
+    Snapshot comp = takeSnapshot();
+
+    redundant.clear();
+    conflictingTags.clear();
+    redundantTags.clear();
+    partiallyRedundantTags.clear();
+    pDependentParameters.clear();
+    pDependentParametersGroups.clear();
+
+    int ret = diagnoseMonolithic(alg, pdiagnoselist, tagmultiplicity, jacobianRows);
+    Snapshot mono = takeSnapshot();
+
+    std::string mismatches;
+    if (comp.dofs != mono.dofs) {
+        mismatches += " dofs(comp=" + std::to_string(comp.dofs)
+            + ",mono=" + std::to_string(mono.dofs) + ")";
+    }
+    if (comp.conflicting != mono.conflicting) {
+        mismatches += " conflictingTags";
+    }
+    if (comp.redundantT != mono.redundantT) {
+        mismatches += " redundantTags";
+    }
+    if (comp.partiallyRedundantT != mono.partiallyRedundantT) {
+        mismatches += " partiallyRedundantTags";
+    }
+    if (comp.redundantSet != mono.redundantSet) {
+        mismatches += " redundantSet";
+    }
+    if (comp.dependentParams != mono.dependentParams) {
+        mismatches += " dependentParams(comp=" + std::to_string(comp.dependentParams.size())
+            + ",mono=" + std::to_string(mono.dependentParams.size()) + ")";
+    }
+    if (comp.dependentGroups != mono.dependentGroups) {
+        mismatches += " dependentGroups(comp=" + std::to_string(comp.dependentGroups.size())
+            + ",mono=" + std::to_string(mono.dependentGroups.size()) + ")";
+    }
+
+    if (!mismatches.empty()) {
+        Base::Console().warning(
+            "[GCS_DIAG_SELFCHECK MISMATCH] components=%d params=%d:%s\n",
+            static_cast<int>(components.size()),
+            static_cast<int>(pdiagnoselist.size()),
+            mismatches.c_str()
+        );
+    }
+
+    return ret;
 }
 
 void System::makeDenseQRDecomposition(
@@ -6423,19 +6818,22 @@ void System::identifyDependentParameters(
     }
 #endif
 
-    pDependentParametersGroups.resize(qrJ.cols() - rank);
+    // append (rather than overwrite) so the component-decomposed diagnosis can
+    // accumulate per-component groups; the monolithic path starts empty
+    const size_t base = pDependentParametersGroups.size();
+    pDependentParametersGroups.resize(base + (qrJ.cols() - rank));
     for (int j = rank; j < qrJ.cols(); j++) {
         for (int row = 0; row < rank; row++) {
             if (fabs(Rparams(row, j)) > 1e-10) {
                 int origCol = qrJ.colsPermutation().indices()[row];
 
-                pDependentParametersGroups[j - rank].push_back(pdiagnoselist[origCol]);
+                pDependentParametersGroups[base + j - rank].push_back(pdiagnoselist[origCol]);
                 pDependentParameters.push_back(pdiagnoselist[origCol]);
             }
         }
         int origCol = qrJ.colsPermutation().indices()[j];
 
-        pDependentParametersGroups[j - rank].push_back(pdiagnoselist[origCol]);
+        pDependentParametersGroups[base + j - rank].push_back(pdiagnoselist[origCol]);
         pDependentParameters.push_back(pdiagnoselist[origCol]);
     }
 
@@ -6574,22 +6972,56 @@ void System::identifyConflictingRedundantConstraints(
     int& nonredundantconstrNum
 )
 {
+    std::vector<std::vector<Constraint*>> conflictGroups;
+    collectConflictGroups(qrJT, jacobianconstraintmap, R, constrNum, rank, conflictGroups);
+    resolveConflictingRedundantConstraints(
+        alg,
+        conflictGroups,
+        tagmultiplicity,
+        pdiagnoselist,
+        constrNum,
+        nonredundantconstrNum
+    );
+}
+
+template<typename T>
+void System::collectConflictGroups(
+    const T& qrJT,
+    const std::map<int, int>& jacobianconstraintmap,
+    Eigen::MatrixXd& R,
+    int constrNum,
+    int rank,
+    std::vector<std::vector<Constraint*>>& conflictGroups
+)
+{
     eliminateNonZerosOverPivotInUpperTriangularMatrix(R, rank);
 
-    std::vector<std::vector<Constraint*>> conflictGroups(constrNum - rank);
+    const size_t base = conflictGroups.size();
+    conflictGroups.resize(base + (constrNum - rank));
     for (int j = rank; j < constrNum; j++) {
         for (int row = 0; row < rank; row++) {
             if (fabs(R(row, j)) > 1e-10) {
                 int origCol = qrJT.colsPermutation().indices()[row];
 
-                conflictGroups[j - rank].push_back(clist[jacobianconstraintmap.at(origCol)]);
+                conflictGroups[base + j - rank].push_back(
+                    clist[jacobianconstraintmap.at(origCol)]);
             }
         }
         int origCol = qrJT.colsPermutation().indices()[j];
 
-        conflictGroups[j - rank].push_back(clist[jacobianconstraintmap.at(origCol)]);
+        conflictGroups[base + j - rank].push_back(clist[jacobianconstraintmap.at(origCol)]);
     }
+}
 
+void System::resolveConflictingRedundantConstraints(
+    Algorithm alg,
+    std::vector<std::vector<Constraint*>>& conflictGroups,
+    const std::map<int, int>& tagmultiplicity,
+    GCS::VEC_pD& pdiagnoselist,
+    int constrNum,
+    int& nonredundantconstrNum
+)
+{
     // Augment the information regarding the group of constraints that are conflicting or redundant.
     if (debugMode == IterationLevel) {
         SolverReportingManager::Manager().LogGroupOfConstraints(

@@ -4,7 +4,10 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <array>
 #include <cmath>
+#include <set>
 
 #include "Mod/Sketcher/App/planegcs/GCS.h"
 
@@ -563,4 +566,137 @@ TEST(SparseDogLegTest, redundantConstraintsDoNotProduceNaN)  // NOLINT
     double dist = std::hypot(x1 - x0, y1 - y0);
     EXPECT_NEAR(dist, 5.0, 1e-6)
         << "distance constraint not satisfied (dist=" << dist << ", res=" << res << ")";
+}
+
+// Component-decomposed diagnose(): differential tests against the monolithic path.
+// The two paths must report identical dofs, conflicting/redundant tags and
+// dependent-parameter sets for multi-component systems.
+namespace
+{
+
+// Three independent segments; the second carries a duplicated (redundant)
+// distance, the third a conflicting pair of distances. First point of each
+// segment is fixed (not declared unknown), second is free.
+struct DiagnoseFixture
+{
+    // storage lives here so pointers stay valid for the System's lifetime
+    std::array<double, 12> coords;
+    std::array<double, 5> dims;
+    GCS::VEC_pD unknowns;
+
+    void build(GCS::System& sys)
+    {
+        coords = {0, 0, 3, 4,       // segment 1
+                  20, 0, 23, 4,     // segment 2
+                  40, 0, 43, 4};    // segment 3
+        dims = {5.0, 5.0, 5.0, 5.0, 7.0};
+
+        GCS::Point p1a(&coords[0], &coords[1]), p1b(&coords[2], &coords[3]);
+        GCS::Point p2a(&coords[4], &coords[5]), p2b(&coords[6], &coords[7]);
+        GCS::Point p3a(&coords[8], &coords[9]), p3b(&coords[10], &coords[11]);
+
+        sys.addConstraintP2PDistance(p1a, p1b, &dims[0], 1);
+        sys.addConstraintP2PDistance(p2a, p2b, &dims[1], 2);
+        sys.addConstraintP2PDistance(p2a, p2b, &dims[2], 3);  // redundant with tag 2
+        sys.addConstraintP2PDistance(p3a, p3b, &dims[3], 4);
+        sys.addConstraintP2PDistance(p3a, p3b, &dims[4], 5);  // conflicts with tag 4
+
+        unknowns = {&coords[2], &coords[3], &coords[6], &coords[7], &coords[10], &coords[11]};
+        sys.declareUnknowns(unknowns);
+    }
+};
+
+}  // namespace
+
+TEST(DiagnoseComponentTest, multiComponentMatchesMonolithic)  // NOLINT
+{
+    DiagnoseFixture fixMono;
+    GCS::System sysMono;
+    fixMono.build(sysMono);
+    sysMono.useComponentDiagnose = false;
+    int dofsMono = sysMono.diagnose();
+
+    DiagnoseFixture fixComp;
+    GCS::System sysComp;
+    fixComp.build(sysComp);
+    sysComp.useComponentDiagnose = true;
+    int dofsComp = sysComp.diagnose();
+
+    EXPECT_EQ(dofsMono, dofsComp);
+
+    GCS::VEC_I confMono, confComp, redMono, redComp, partMono, partComp;
+    sysMono.getConflicting(confMono);
+    sysComp.getConflicting(confComp);
+    sysMono.getRedundant(redMono);
+    sysComp.getRedundant(redComp);
+    sysMono.getPartiallyRedundant(partMono);
+    sysComp.getPartiallyRedundant(partComp);
+
+    EXPECT_EQ(confMono, confComp);
+    EXPECT_EQ(redMono, redComp);
+    EXPECT_EQ(partMono, partComp);
+
+    // dependent parameters must be positionally identical sets; compare via the
+    // index each parameter has in the respective system's unknown list
+    auto depIndices = [](const GCS::System& sys, const GCS::VEC_pD& unknowns) {
+        GCS::VEC_pD dep;
+        sys.getDependentParams(dep);
+        std::set<size_t> indices;
+        for (double* p : dep) {
+            auto it = std::find(unknowns.begin(), unknowns.end(), p);
+            EXPECT_NE(it, unknowns.end());
+            indices.insert(static_cast<size_t>(it - unknowns.begin()));
+        }
+        return indices;
+    };
+    EXPECT_EQ(depIndices(sysMono, fixMono.unknowns), depIndices(sysComp, fixComp.unknowns));
+
+    // sanity on the semantics themselves, not only the differential:
+    // 6 unknowns minus one independent distance per segment = 3 DoF
+    EXPECT_EQ(dofsComp, 3);
+    // tag 5 conflicts (or is reported against tag 4); tags 2/3 hold a redundancy
+    EXPECT_FALSE(confComp.empty());
+    EXPECT_FALSE(redComp.empty());
+}
+
+TEST(DiagnoseComponentTest, fullyConstrainedComponentsMatchMonolithic)  // NOLINT
+{
+    // Two segments, each fully pinned: CoordinateX/Y on the free endpoint plus a
+    // consistent redundant distance -> over-/redundant handling across components.
+    auto build = [](GCS::System& sys, std::array<double, 8>& c, std::array<double, 8>& d) {
+        c = {0, 0, 3, 4, 20, 0, 23, 4};
+        d = {3, 4, 5, 0, 23, 4, 5, 0};
+        GCS::Point p1b(&c[2], &c[3]);
+        GCS::Point p2b(&c[6], &c[7]);
+        sys.addConstraintCoordinateX(p1b, &d[0], 1);
+        sys.addConstraintCoordinateY(p1b, &d[1], 2);
+        GCS::Point p1a(&c[0], &c[1]);
+        sys.addConstraintP2PDistance(p1a, p1b, &d[2], 3);  // consistent redundant
+        sys.addConstraintCoordinateX(p2b, &d[4], 4);
+        sys.addConstraintCoordinateY(p2b, &d[5], 5);
+        GCS::VEC_pD unknowns = {&c[2], &c[3], &c[6], &c[7]};
+        sys.declareUnknowns(unknowns);
+    };
+
+    std::array<double, 8> cMono, dMono, cComp, dComp;
+    GCS::System sysMono, sysComp;
+    build(sysMono, cMono, dMono);
+    build(sysComp, cComp, dComp);
+    sysMono.useComponentDiagnose = false;
+    sysComp.useComponentDiagnose = true;
+
+    int dofsMono = sysMono.diagnose();
+    int dofsComp = sysComp.diagnose();
+
+    EXPECT_EQ(dofsMono, dofsComp);
+    EXPECT_EQ(dofsComp, 0);  // fully constrained, redundancy is consistent
+
+    GCS::VEC_I confMono, confComp, redMono, redComp;
+    sysMono.getConflicting(confMono);
+    sysComp.getConflicting(confComp);
+    sysMono.getRedundant(redMono);
+    sysComp.getRedundant(redComp);
+    EXPECT_EQ(confMono, confComp);
+    EXPECT_EQ(redMono, redComp);
+    EXPECT_FALSE(redComp.empty());  // the distance is redundant
 }

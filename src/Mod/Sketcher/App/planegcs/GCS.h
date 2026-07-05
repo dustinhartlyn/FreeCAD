@@ -311,11 +311,62 @@ private:
     int solve_LM(SubSystem* subsys, bool isRedundantsolving = false);
     int solve_DL(SubSystem* subsys, bool isRedundantsolving = false);
 
-    void makeReducedJacobian(
-        Eigen::MatrixXd& J,
-        std::map<int, int>& jacobianconstraintmap,
+    void prepareDiagnosis(
         GCS::VEC_pD& pdiagnoselist,
-        std::map<int, int>& tagmultiplicity
+        std::map<int, int>& tagmultiplicity,
+        std::vector<int>& jacobianRows
+    );
+
+    void fillReducedJacobian(
+        const std::vector<int>& jacobianRows,
+        const GCS::VEC_pD& pdiagnoselist,
+        Eigen::MatrixXd& J,
+        std::map<int, int>& jacobianconstraintmap
+    );
+
+    // Component-decomposed diagnosis. For geometry made of independent connected
+    // components the reduced Jacobian is block-diagonal (after row/column
+    // permutation), so per-component QR yields exactly the same rank, dependent
+    // parameters and conflicting/redundant column structure as one global QR —
+    // at a fraction of the cost.
+    struct DiagnoseComponent
+    {
+        GCS::VEC_pD params;                  // diagnosed parameters (global order)
+        std::vector<int> constraintIndices;  // indices into clist (global order)
+    };
+
+    void splitDiagnoseComponents(
+        const GCS::VEC_pD& pdiagnoselist,
+        const std::vector<int>& jacobianRows,
+        std::vector<DiagnoseComponent>& components
+    );
+
+    void makeComponentReducedJacobian(
+        const DiagnoseComponent& comp,
+        Eigen::MatrixXd& J,
+        std::map<int, int>& jacobianconstraintmap
+    );
+
+    int diagnoseMonolithic(
+        Algorithm alg,
+        GCS::VEC_pD& pdiagnoselist,
+        const std::map<int, int>& tagmultiplicity,
+        const std::vector<int>& jacobianRows
+    );
+
+    int diagnoseComponentwise(
+        Algorithm alg,
+        GCS::VEC_pD& pdiagnoselist,
+        const std::map<int, int>& tagmultiplicity,
+        const std::vector<DiagnoseComponent>& components
+    );
+
+    int diagnoseSelfCheck(
+        Algorithm alg,
+        GCS::VEC_pD& pdiagnoselist,
+        const std::map<int, int>& tagmultiplicity,
+        const std::vector<int>& jacobianRows,
+        const std::vector<DiagnoseComponent>& components
     );
 
     void makeDenseQRDecomposition(
@@ -359,6 +410,31 @@ private:
         Eigen::MatrixXd& R,
         int constrNum,
         int rank,
+        int& nonredundantconstrNum
+    );
+
+    // Extracts the groups of mutually dependent constraints from the reduced R
+    // factor of a (possibly per-component) transposed-Jacobian QR decomposition.
+    // Appends to conflictGroups so per-component results can be accumulated.
+    template<typename T>
+    void collectConflictGroups(
+        const T& qrJT,
+        const std::map<int, int>& jacobianconstraintmap,
+        Eigen::MatrixXd& R,
+        int constrNum,
+        int rank,
+        std::vector<std::vector<Constraint*>>& conflictGroups
+    );
+
+    // Resolution phase shared by the monolithic and component-decomposed paths:
+    // popularity contest, redundant solving and the conflicting/redundant/
+    // partially-redundant tag outputs.
+    void resolveConflictingRedundantConstraints(
+        Algorithm alg,
+        std::vector<std::vector<Constraint*>>& conflictGroups,
+        const std::map<int, int>& tagmultiplicity,
+        GCS::VEC_pD& pdiagnoselist,
+        int constrNum,
         int& nonredundantconstrNum
     );
 
@@ -854,6 +930,15 @@ public:
     // until qp_eq is regularized to handle that rank-deficient step; re-enable only
     // once a benchmark shows clustering materially beats the monolithic path.
     bool useClusters = false;
+
+    // Component-decomposed diagnose() gate. When true (default) and the diagnosed
+    // parameters split into >1 independent connected components, diagnose() runs
+    // one small QR per component instead of one global QR — mathematically exact
+    // for block-diagonal Jacobians, and orders of magnitude faster on sketches
+    // made of many independent islands (e.g. pattern arrays). Overridable at
+    // runtime: GCS_DIAG_MONOLITHIC=1 forces the legacy path, GCS_DIAG_SELFCHECK=1
+    // runs both paths and warns on mismatch.
+    bool useComponentDiagnose = true;
 
     // Unit testing interface - not intended for use by production code
 protected:
