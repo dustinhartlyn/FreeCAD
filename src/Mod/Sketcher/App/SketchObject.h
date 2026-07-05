@@ -29,6 +29,7 @@
 #include <App/PropertyFile.h>
 #include <Base/Axis.h>
 #include <Base/Bitmask.h>
+#include <Base/BoundBox.h>
 #include <Mod/Part/App/Part2DObject.h>
 #include <Mod/Part/App/PropertyGeometryList.h>
 #include <Mod/Sketcher/App/PropertyConstraintList.h>
@@ -1265,6 +1266,43 @@ private:
     std::vector<std::pair<std::unique_ptr<Part::Geometry>, bool>> builtShapeExternal;
     bool builtShapeMakeInternals = false;
     bool builtShapeValid = false;
+
+    // Island-local rebuild (transient): the sketch's edges partition into
+    // bounding-box-disjoint clusters that cannot interact in makeElementWires
+    // (needs coincident endpoints), FaceMaker (nesting needs bbox containment)
+    // or WireJoiner (splits only at intersections). When a value edit moves the
+    // geometry of some clusters only, their wires/faces are rebuilt in
+    // isolation and spliced positionally into the previous compounds — the
+    // full build defines the sub-shape order, splicing preserves it. Strict
+    // preconditions (single wire+face per changed cluster, no open wires, no
+    // vertices/external geometry, boxes stay disjoint) fall back to the full
+    // rebuild. SKETCH_NO_ISLANDS=1 disables; SKETCH_SHAPECACHE_CHECK=1 builds
+    // the monolithic result as well and warns on divergence.
+    struct ShapeIslandCache
+    {
+        bool valid = false;
+        std::map<int, int> geoToCluster;               // absolute geo index -> cluster
+        std::vector<std::vector<int>> clusterGeos;     // absolute geo indices per cluster
+        std::vector<Base::BoundBox3d> clusterBoxes;    // inflated, pairwise disjoint
+        std::vector<Part::TopoShape> wireShapes;       // Shape compound children in order
+        std::vector<Part::TopoShape> faceShapes;       // InternalShape children in order
+        std::vector<std::vector<int>> clusterWires;    // indices into wireShapes per cluster
+        std::vector<std::vector<int>> clusterFaces;    // indices into faceShapes per cluster
+    };
+    ShapeIslandCache islandCache;
+
+    bool trySpliceIslands(
+        const std::vector<Part::Geometry*>& geometries,
+        Part::TopoShape& newResult,
+        Part::TopoShape& newInternal
+    );
+
+    void rebuildIslandCache(
+        const std::vector<std::pair<int, Base::BoundBox3d>>& geoBoxes,
+        const Part::TopoShape& result,
+        const Part::TopoShape& internal,
+        bool spliceable
+    );
 };
 
 inline int SketchObject::initTemporaryMove(std::vector<GeoElementId> moved, bool fine /*=true*/)

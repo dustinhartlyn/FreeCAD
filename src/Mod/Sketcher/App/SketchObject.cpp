@@ -58,7 +58,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <numeric>
+#include <set>
 #include <sstream>
+
+#include <TopoDS_Iterator.hxx>
 
 #include "GeoEnum.h"
 #include "SketchObject.h"
@@ -105,6 +109,24 @@ inline bool shapeCacheCheckEnabled()
 {
     static const bool enabled = (std::getenv("SKETCH_SHAPECACHE_CHECK") != nullptr);
     return enabled;
+}
+
+// SKETCH_NO_ISLANDS=1 disables the island-local splice in buildShape()
+inline bool islandsDisabled()
+{
+    static const bool disabled = (std::getenv("SKETCH_NO_ISLANDS") != nullptr);
+    return disabled;
+}
+
+// inflation applied to every bounding box before disjointness/attribution
+// tests; must cover the endpoint-merge tolerance of makeElementWires and the
+// intersection tolerance of FaceMaker/WireJoiner (both Precision::Confusion)
+constexpr double islandBoxTolerance = 1e-5;
+
+inline bool boxesOverlap(const Base::BoundBox3d& a, const Base::BoundBox3d& b)
+{
+    return !(a.MaxX < b.MinX || b.MaxX < a.MinX || a.MaxY < b.MinY || b.MaxY < a.MinY
+             || a.MaxZ < b.MinZ || b.MaxZ < a.MinZ);
 }
 
 // content compare for the buildShape() skip-cache; tolerances follow the
@@ -414,12 +436,59 @@ void SketchObject::buildShape()
         checkPrevInternal = InternalShape.getShape();
     }
 
+    // update the skip-cache reference (takes ownership of the extracted
+    // clones) — called on every path that keeps or produces shapes
+    auto updateGeometryCache = [this, &geometries, shapeCacheOff]() {
+        builtShapeGeometry.clear();
+        builtShapeGeometry.reserve(geometries.size());
+        for (auto geo : geometries) {
+            builtShapeGeometry.emplace_back(geo);
+        }
+        builtShapeExternal.clear();
+        for (int i = 2; i < ExternalGeo.getSize(); ++i) {
+            auto geo = ExternalGeo[i];
+            auto egf = ExternalGeometryFacade::getFacade(geo);
+            builtShapeExternal.emplace_back(
+                std::unique_ptr<Part::Geometry>(geo->clone()),
+                egf->testFlag(ExternalGeometryExtension::Defining));
+        }
+        builtShapeMakeInternals = MakeInternals.getValue();
+        builtShapeValid = !shapeCacheOff;
+    };
+
+    // island-local rebuild: when only some disjoint clusters moved, rebuild
+    // just those and splice into the previous compounds
+    Part::TopoShape splicedResult;
+    Part::TopoShape splicedInternal;
+    bool spliced = false;
+    if (!shapeCacheOff && !shapeCacheHit) {
+        spliced = trySpliceIslands(geometries, splicedResult, splicedInternal);
+    }
+
+    if (spliced && !shapeCacheCheck) {
+        updateGeometryCache();
+        internalElementMap.clear();
+        InternalShape.setValue(splicedInternal);
+        Shape.setValue(splicedResult);
+        if (execProfEnabled()) {
+            const auto tpEnd = ProfClock::now();
+            std::cerr << "[EXECPROF] buildShape: island splice, total=" << profMs(tp0, tpEnd)
+                      << std::endl;
+        }
+        return;
+    }
+
+    bool islandSpliceable = true;
+    std::vector<std::pair<int, Base::BoundBox3d>> geoBoxes;
+    geoBoxes.reserve(geometries.size());
+
     for (auto geo : geometries) {
         ++geoId;
         if (GeometryFacade::getConstruction(geo)) {
             continue;
         }
         if (geo->isDerivedFrom<Part::GeomPoint>()) {
+            islandSpliceable = false;
             int idx = getVertexIndexGeoPos(geoId - 1, Sketcher::PointPos::start);
             addVertex(
                 Part::TopoShape {TopoDS::Vertex(geo->toShape())},
@@ -429,25 +498,13 @@ void SketchObject::buildShape()
         else {
             auto indexedName = Data::IndexedName::fromConst("Edge", geoId);
             addEdge(geo, indexedName);
+            Base::BoundBox3d box = shapes.back().getBoundBox();
+            box.Enlarge(islandBoxTolerance);
+            geoBoxes.emplace_back(geoId - 1, box);
         }
     }
 
-    // the extracted clones become the skip-cache reference for the next call
-    builtShapeGeometry.clear();
-    builtShapeGeometry.reserve(geometries.size());
-    for (auto geo : geometries) {
-        builtShapeGeometry.emplace_back(geo);
-    }
-    builtShapeExternal.clear();
-    for (int i = 2; i < ExternalGeo.getSize(); ++i) {
-        auto geo = ExternalGeo[i];
-        auto egf = ExternalGeometryFacade::getFacade(geo);
-        builtShapeExternal.emplace_back(
-            std::unique_ptr<Part::Geometry>(geo->clone()),
-            egf->testFlag(ExternalGeometryExtension::Defining));
-    }
-    builtShapeMakeInternals = MakeInternals.getValue();
-    builtShapeValid = !shapeCacheOff;
+    updateGeometryCache();
 
     for (int i = 2; i < ExternalGeo.getSize(); ++i) {
         auto geo = ExternalGeo[i];
@@ -455,6 +512,8 @@ void SketchObject::buildShape()
         if (!egf->testFlag(ExternalGeometryExtension::Defining)) {
             continue;
         }
+
+        islandSpliceable = false;
 
         auto indexedName = Data::IndexedName::fromConst("ExternalEdge", i - 1);
 
@@ -472,6 +531,7 @@ void SketchObject::buildShape()
     internalElementMap.clear();
 
     if (shapes.empty() && vertices.empty()) {
+        islandCache = ShapeIslandCache {};
         InternalShape.setValue(Part::TopoShape());
         Shape.setValue(Part::TopoShape());
         return;
@@ -504,7 +564,8 @@ void SketchObject::buildShape()
 
     const auto tp2 = profNow();
 
-    InternalShape.setValue(buildInternals(result.located(TopLoc_Location())));
+    Part::TopoShape internal = buildInternals(result.located(TopLoc_Location()));
+    InternalShape.setValue(internal);
 
     const auto tp3 = profNow();
 
@@ -512,6 +573,42 @@ void SketchObject::buildShape()
     // GeoFeature::updateElementReference() can run properly on change of Shape
     // property, because some reference may pointing to the InternalShape
     Shape.setValue(result);
+
+    rebuildIslandCache(geoBoxes, result, internal, islandSpliceable && vertices.empty());
+
+    if (spliced && shapeCacheCheck) {
+        // the splice claimed success: it must structurally match the full build
+        auto describeDeep = [](const Part::TopoShape& shape) {
+            std::ostringstream os;
+            if (shape.isNull()) {
+                os << "null";
+                return os.str();
+            }
+            os << "V" << shape.countSubShapes(TopAbs_VERTEX) << " E"
+               << shape.countSubShapes(TopAbs_EDGE) << " W" << shape.countSubShapes(TopAbs_WIRE)
+               << " F" << shape.countSubShapes(TopAbs_FACE);
+            // strip any placement so cached and freshly built shapes compare
+            Base::BoundBox3d box = shape.located(TopLoc_Location()).getBoundBox();
+            os.precision(6);
+            os << " bbox[" << box.MinX << "," << box.MinY << ";" << box.MaxX << "," << box.MaxY
+               << "]";
+            os << " map" << shape.getElementMapSize();
+            return os.str();
+        };
+        const std::string spliceShape = describeDeep(splicedResult);
+        const std::string fullShape = describeDeep(result);
+        const std::string spliceInternal = describeDeep(splicedInternal);
+        const std::string fullInternal = describeDeep(internal);
+        if (spliceShape != fullShape || spliceInternal != fullInternal) {
+            Base::Console().warning(
+                "[SKETCH_ISLANDS MISMATCH] Shape splice=%s full=%s | InternalShape splice=%s "
+                "full=%s\n",
+                spliceShape.c_str(),
+                fullShape.c_str(),
+                spliceInternal.c_str(),
+                fullInternal.c_str());
+        }
+    }
 
     if (shapeCacheHit && shapeCacheCheck) {
         // validation mode: the cache claimed a hit — the rebuilt shapes must
@@ -635,6 +732,331 @@ Part::TopoShape SketchObject::buildInternals(const Part::TopoShape &edges) const
     }
     return Part::TopoShape();
 }
+
+// clang-format on
+void SketchObject::rebuildIslandCache(
+    const std::vector<std::pair<int, Base::BoundBox3d>>& geoBoxes,
+    const Part::TopoShape& result,
+    const Part::TopoShape& internal,
+    bool spliceable
+)
+{
+    islandCache = ShapeIslandCache {};
+
+    if (!spliceable || islandsDisabled() || geoBoxes.size() < 2 || result.isNull()
+        || internal.isNull()) {
+        return;
+    }
+
+    // InternalShape must be faces only (single face or compound of faces): the
+    // splice reproduces exactly that structure. Open wires disable splicing.
+    if (internal.shapeType() != TopAbs_FACE) {
+        if (internal.shapeType() != TopAbs_COMPOUND) {
+            return;
+        }
+        for (TopoDS_Iterator it(internal.getShape()); it.More(); it.Next()) {
+            if (it.Value().ShapeType() != TopAbs_FACE) {
+                return;
+            }
+        }
+    }
+
+    // union-find over geometry bounding boxes
+    const int n = static_cast<int>(geoBoxes.size());
+    std::vector<int> parent(n);
+    std::iota(parent.begin(), parent.end(), 0);
+    auto find = [&parent](int i) {
+        while (parent[i] != i) {
+            parent[i] = parent[parent[i]];
+            i = parent[i];
+        }
+        return i;
+    };
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            if (boxesOverlap(geoBoxes[i].second, geoBoxes[j].second)) {
+                int a = find(i);
+                int b = find(j);
+                if (a != b) {
+                    parent[b] = a;
+                }
+            }
+        }
+    }
+
+    // initial clusters
+    std::map<int, int> rootToCluster;
+    std::vector<std::vector<int>> memberIdx;  // indices into geoBoxes
+    std::vector<Base::BoundBox3d> boxes;
+    for (int i = 0; i < n; ++i) {
+        int root = find(i);
+        auto [it, isNew] = rootToCluster.emplace(root, static_cast<int>(memberIdx.size()));
+        if (isNew) {
+            memberIdx.emplace_back();
+            boxes.emplace_back();
+        }
+        memberIdx[it->second].push_back(i);
+        boxes[it->second].Add(geoBoxes[i].second);
+    }
+
+    // merge clusters whose UNION boxes overlap (covers nesting, e.g. a small
+    // profile inside a bigger one, which has no pairwise edge-box overlap)
+    bool merged = true;
+    while (merged && memberIdx.size() > 1) {
+        merged = false;
+        for (std::size_t a = 0; a < memberIdx.size() && !merged; ++a) {
+            for (std::size_t b = a + 1; b < memberIdx.size() && !merged; ++b) {
+                if (boxesOverlap(boxes[a], boxes[b])) {
+                    memberIdx[a].insert(memberIdx[a].end(), memberIdx[b].begin(),
+                                        memberIdx[b].end());
+                    boxes[a].Add(boxes[b]);
+                    memberIdx.erase(memberIdx.begin() + b);
+                    boxes.erase(boxes.begin() + b);
+                    merged = true;
+                }
+            }
+        }
+    }
+
+    if (memberIdx.size() < 2) {
+        return;  // single cluster: nothing to splice
+    }
+
+    ShapeIslandCache cache;
+    cache.clusterGeos.resize(memberIdx.size());
+    cache.clusterBoxes = boxes;
+    for (std::size_t c = 0; c < memberIdx.size(); ++c) {
+        for (int i : memberIdx[c]) {
+            cache.clusterGeos[c].push_back(geoBoxes[i].first);
+            cache.geoToCluster[geoBoxes[i].first] = static_cast<int>(c);
+        }
+        std::sort(cache.clusterGeos[c].begin(), cache.clusterGeos[c].end());
+    }
+
+    // attribute the compounds' children to clusters; every child must land in
+    // exactly one cluster box (they are pairwise disjoint)
+    auto attribute = [&cache](const std::vector<Part::TopoShape>& children,
+                              std::vector<std::vector<int>>& clusterIdx) {
+        clusterIdx.assign(cache.clusterBoxes.size(), {});
+        for (std::size_t i = 0; i < children.size(); ++i) {
+            Base::BoundBox3d box = children[i].getBoundBox();
+            int owner = -1;
+            for (std::size_t c = 0; c < cache.clusterBoxes.size(); ++c) {
+                if (boxesOverlap(box, cache.clusterBoxes[c])) {
+                    if (owner >= 0) {
+                        return false;  // ambiguous
+                    }
+                    owner = static_cast<int>(c);
+                }
+            }
+            if (owner < 0) {
+                return false;
+            }
+            clusterIdx[owner].push_back(static_cast<int>(i));
+        }
+        return true;
+    };
+
+    cache.wireShapes = result.getSubTopoShapes(TopAbs_WIRE);
+    cache.faceShapes = internal.getSubTopoShapes(TopAbs_FACE);
+    if (cache.wireShapes.size() < 2 || cache.faceShapes.empty()) {
+        return;
+    }
+
+    // Multi-wire faces (nested profiles/holes) are excluded: FaceMaker's
+    // postBuild() threads name-collision state across faces and maps hole
+    // wires at the compound level, which a spliced compound cannot reproduce
+    // exactly (found by SKETCH_SHAPECACHE_CHECK on a rect-in-rect sketch).
+    for (const auto& face : cache.faceShapes) {
+        if (face.countSubShapes(TopAbs_WIRE) != 1) {
+            return;
+        }
+    }
+
+    if (!attribute(cache.wireShapes, cache.clusterWires)
+        || !attribute(cache.faceShapes, cache.clusterFaces)) {
+        return;
+    }
+
+    cache.valid = true;
+    islandCache = std::move(cache);
+}
+
+bool SketchObject::trySpliceIslands(
+    const std::vector<Part::Geometry*>& geometries,
+    Part::TopoShape& newResult,
+    Part::TopoShape& newInternal
+)
+{
+    if (!islandCache.valid || islandsDisabled() || !builtShapeValid
+        || builtShapeMakeInternals != MakeInternals.getValue() || !MakeInternals.getValue()) {
+        return false;
+    }
+    // strict scope: no external geometry beyond the axes
+    if (ExternalGeo.getSize() > 2 || !builtShapeExternal.empty()) {
+        return false;
+    }
+    if (builtShapeGeometry.size() != geometries.size()) {
+        return false;
+    }
+
+    // diff against the geometry the current shapes were built from
+    std::vector<int> changed;
+    for (std::size_t i = 0; i < geometries.size(); ++i) {
+        const Part::Geometry* cached = builtShapeGeometry[i].get();
+        const Part::Geometry* current = geometries[i];
+        if (cached->getTypeId() != current->getTypeId()
+            || GeometryFacade::getConstruction(cached)
+                != GeometryFacade::getConstruction(current)) {
+            return false;  // structural change
+        }
+        if (!cached->isSame(*current, Precision::Confusion(), Precision::Angular())) {
+            changed.push_back(static_cast<int>(i));
+        }
+    }
+    if (changed.empty()) {
+        return false;  // the skip-cache handles this
+    }
+
+    std::set<int> changedClusters;
+    for (int gi : changed) {
+        if (GeometryFacade::getConstruction(geometries[gi])) {
+            continue;  // construction geometry has no shape
+        }
+        auto it = islandCache.geoToCluster.find(gi);
+        if (it == islandCache.geoToCluster.end()) {
+            return false;  // unattributed shape-relevant geometry
+        }
+        changedClusters.insert(it->second);
+    }
+    if (changedClusters.empty()) {
+        // only construction geometry moved: the shapes are unchanged
+        newResult = Shape.getShape();
+        newInternal = InternalShape.getShape();
+        return true;
+    }
+    if (changedClusters.size() >= islandCache.clusterBoxes.size()) {
+        return false;  // nothing to reuse
+    }
+
+    // rebuild each changed cluster in isolation
+    struct RebuiltCluster
+    {
+        int cluster;
+        Part::TopoShape wire;
+        Part::TopoShape face;
+        Base::BoundBox3d box;
+    };
+    std::vector<RebuiltCluster> rebuilt;
+    rebuilt.reserve(changedClusters.size());
+
+    try {
+        for (int c : changedClusters) {
+            // strict pairing: exactly one wire and one face to replace
+            if (islandCache.clusterWires[c].size() != 1
+                || islandCache.clusterFaces[c].size() != 1) {
+                return false;
+            }
+
+            std::vector<Part::TopoShape> clusterEdges;
+            Base::BoundBox3d box;
+            for (int gi : islandCache.clusterGeos[c]) {
+                const Part::Geometry* geo = geometries[gi];
+                auto indexedName = Data::IndexedName::fromConst("Edge", gi + 1);
+                Part::TopoShape edge = getEdge(geo, convertSubName(indexedName, false).c_str());
+                if (edge.isNull()) {
+                    return false;
+                }
+                clusterEdges.push_back(edge);
+                box.Add(edge.getBoundBox());
+            }
+            box.Enlarge(islandBoxTolerance);
+
+            Part::TopoShape wireComp(0, getDocument()->getStringHasher());
+            wireComp.makeElementWires(clusterEdges, Part::OpCodes::Sketch);
+            auto newWires = wireComp.getSubTopoShapes(TopAbs_WIRE);
+            if (newWires.size() != 1) {
+                return false;
+            }
+
+            Part::TopoShape faceShape(getID(), getDocument()->getStringHasher());
+            faceShape = faceShape.makeElementFace(newWires,
+                    /*op*/"",
+                    /*maker*/"Part::FaceMakerBuildFace",
+                    /*pln*/nullptr);
+            auto newFaces = faceShape.getSubTopoShapes(TopAbs_FACE);
+            if (newFaces.size() != 1) {
+                return false;
+            }
+
+            // no open wires may appear
+            Part::WireJoiner joiner;
+            joiner.setTightBound(true);
+            joiner.setMergeEdges(true);
+            joiner.addShape(clusterEdges);
+            Part::TopoShape openWires(getID(), getDocument()->getStringHasher());
+            joiner.getOpenWires(openWires, "SKF");
+            if (!openWires.isNull()) {
+                return false;
+            }
+
+            rebuilt.push_back({c, newWires.front(), newFaces.front(), box});
+        }
+
+        // the moved clusters must remain disjoint from everything else
+        for (const auto& rb : rebuilt) {
+            for (std::size_t c = 0; c < islandCache.clusterBoxes.size(); ++c) {
+                if (static_cast<int>(c) == rb.cluster) {
+                    continue;
+                }
+                const Base::BoundBox3d* other = &islandCache.clusterBoxes[c];
+                for (const auto& rb2 : rebuilt) {
+                    if (rb2.cluster == static_cast<int>(c)) {
+                        other = &rb2.box;
+                        break;
+                    }
+                }
+                if (boxesOverlap(rb.box, *other)) {
+                    return false;
+                }
+            }
+        }
+
+        // positional splice
+        std::vector<Part::TopoShape> wires = islandCache.wireShapes;
+        std::vector<Part::TopoShape> faces = islandCache.faceShapes;
+        for (const auto& rb : rebuilt) {
+            wires[islandCache.clusterWires[rb.cluster].front()] = rb.wire;
+            faces[islandCache.clusterFaces[rb.cluster].front()] = rb.face;
+        }
+
+        Part::TopoShape result(0, getDocument()->getStringHasher());
+        result.makeElementCompound(wires);
+        result.Tag = getID();
+
+        Part::TopoShape internal(getID(), getDocument()->getStringHasher());
+        internal.makeElementCompound(faces);
+
+        // commit to the cache
+        for (const auto& rb : rebuilt) {
+            islandCache.wireShapes[islandCache.clusterWires[rb.cluster].front()] = rb.wire;
+            islandCache.faceShapes[islandCache.clusterFaces[rb.cluster].front()] = rb.face;
+            islandCache.clusterBoxes[rb.cluster] = rb.box;
+        }
+
+        newResult = result;
+        newInternal = internal;
+        return true;
+    }
+    catch (Base::Exception& e) {
+        FC_WARN("island splice failed, falling back to full rebuild: " << e.what());
+    }
+    catch (Standard_Failure& e) {
+        FC_WARN("island splice failed, falling back to full rebuild: " << e.GetMessageString());
+    }
+    return false;
+}
+// clang-format off
 
 static const char *hasSketchMarker(const char *name) {
     static std::string marker(Part::TopoShape::elementMapPrefix()+Part::OpCodes::Sketch);
