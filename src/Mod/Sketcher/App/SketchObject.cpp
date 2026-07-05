@@ -54,7 +54,11 @@
 #include <Mod/Part/App/TopoShapeOpCode.h>
 #include <Mod/Part/App/WireJoiner.h>
 
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
 #include <memory>
+#include <sstream>
 
 #include "GeoEnum.h"
 #include "SketchObject.h"
@@ -65,6 +69,69 @@
 
 #undef DEBUG
 // #define DEBUG
+
+namespace
+{
+// SKETCH_EXECPROF=1 — per-recompute phase timing of SketchObject::execute()/
+// buildShape() on stderr, for profiling dense-sketch recompute cost.
+inline bool execProfEnabled()
+{
+    static const bool enabled = (std::getenv("SKETCH_EXECPROF") != nullptr);
+    return enabled;
+}
+
+using ProfClock = std::chrono::steady_clock;
+
+inline double profMs(ProfClock::time_point start, ProfClock::time_point end)
+{
+    return std::chrono::duration<double, std::milli>(end - start).count();
+}
+
+inline ProfClock::time_point profNow()
+{
+    return execProfEnabled() ? ProfClock::now() : ProfClock::time_point {};
+}
+
+// SKETCH_NO_SHAPECACHE=1 disables the buildShape() skip-cache;
+// SKETCH_SHAPECACHE_CHECK=1 validates it (rebuild on a hit anyway and warn if
+// the result differs from the cached shape).
+inline bool shapeCacheDisabled()
+{
+    static const bool disabled = (std::getenv("SKETCH_NO_SHAPECACHE") != nullptr);
+    return disabled;
+}
+
+inline bool shapeCacheCheckEnabled()
+{
+    static const bool enabled = (std::getenv("SKETCH_SHAPECACHE_CHECK") != nullptr);
+    return enabled;
+}
+
+// content compare for the buildShape() skip-cache; tolerances follow the
+// codebase convention for geometric identity (OCC modeling tolerance)
+bool isSameShapeGeometry(const std::vector<std::unique_ptr<Part::Geometry>>& cached,
+                         const std::vector<Part::Geometry*>& current)
+{
+    if (cached.size() != current.size()) {
+        return false;
+    }
+    for (std::size_t i = 0; i < cached.size(); ++i) {
+        const Part::Geometry* a = cached[i].get();
+        const Part::Geometry* b = current[i];
+        if (a->getTypeId() != b->getTypeId()) {
+            return false;
+        }
+        if (Sketcher::GeometryFacade::getConstruction(a)
+            != Sketcher::GeometryFacade::getConstruction(b)) {
+            return false;
+        }
+        if (!a->isSame(*b, Precision::Confusion(), Precision::Angular())) {
+            return false;
+        }
+    }
+    return true;
+}
+}  // namespace
 
 // clang-format off
 using namespace Sketcher;
@@ -188,6 +255,7 @@ short SketchObject::mustExecute() const
 
 App::DocumentObjectExecReturn* SketchObject::execute()
 {
+    const auto tp0 = profNow();
     try {
         App::DocumentObjectExecReturn* rtn = Part2DObject::execute();// to positionBySupport
         if (rtn != App::DocumentObject::StdReturn)
@@ -197,6 +265,8 @@ App::DocumentObjectExecReturn* SketchObject::execute()
     catch (const Base::Exception& e) {
         return new App::DocumentObjectExecReturn(e.what());
     }
+
+    const auto tp1 = profNow();
 
     // setup and diagnose the sketch
     try {
@@ -210,6 +280,8 @@ App::DocumentObjectExecReturn* SketchObject::execute()
         // we cannot trust the constraints of external geometries, so remove them
         //  delConstraintsToExternal();
     }
+
+    const auto tp2 = profNow();
 
     // This includes a regular solve including full geometry update, except when an error
     // ensues
@@ -239,9 +311,19 @@ App::DocumentObjectExecReturn* SketchObject::execute()
         return new App::DocumentObjectExecReturn("Solving the sketch failed", this);
     }
 
+    const auto tp3 = profNow();
+
     // this is not necessary for sketch representation in edit mode, unless we want to trigger an
     // update of the objects that depend on this sketch (like pads)
     buildShape();
+
+    if (execProfEnabled()) {
+        const auto tp4 = ProfClock::now();
+        std::cerr << "[EXECPROF] execute: base=" << profMs(tp0, tp1)
+                  << " extGeo+accept=" << profMs(tp1, tp2) << " solve=" << profMs(tp2, tp3)
+                  << " buildShape=" << profMs(tp3, tp4) << " total=" << profMs(tp0, tp4)
+                  << std::endl;
+    }
 
     return App::DocumentObject::StdReturn;
 }
@@ -256,6 +338,8 @@ static bool inline checkSmallEdge(const Part::TopoShape &s) {
 // clang-format on
 void SketchObject::buildShape()
 {
+    const auto tp0 = profNow();
+
     // We use the following instead to map element names
 
     std::vector<Part::TopoShape> shapes;
@@ -284,6 +368,52 @@ void SketchObject::buildShape()
 
     // get the geometry after running the solver
     auto geometries = solvedSketch.extractGeometry();
+
+    const bool shapeCacheOff = shapeCacheDisabled();
+    const bool shapeCacheCheck = shapeCacheCheckEnabled();
+
+    auto isSameExternalGeometry = [this]() {
+        if (static_cast<int>(builtShapeExternal.size())
+            != std::max(ExternalGeo.getSize() - 2, 0)) {
+            return false;
+        }
+        for (int i = 2; i < ExternalGeo.getSize(); ++i) {
+            auto geo = ExternalGeo[i];
+            auto egf = ExternalGeometryFacade::getFacade(geo);
+            const auto& [cachedGeo, cachedDefining] = builtShapeExternal[i - 2];
+            if (egf->testFlag(ExternalGeometryExtension::Defining) != cachedDefining
+                || geo->getTypeId() != cachedGeo->getTypeId()
+                || !cachedGeo->isSame(*geo, Precision::Confusion(), Precision::Angular())) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const bool shapeCacheHit = !shapeCacheOff && builtShapeValid
+        && builtShapeMakeInternals == MakeInternals.getValue()
+        && isSameShapeGeometry(builtShapeGeometry, geometries) && isSameExternalGeometry();
+
+    if (shapeCacheHit && !shapeCacheCheck) {
+        // The solved geometry is content-identical to what Shape/InternalShape
+        // were built from: the OCC rebuild (edges/wires/FaceMaker/WireJoiner)
+        // would reproduce the same shapes, so keep the current property values.
+        for (auto geo : geometries) {
+            delete geo;
+        }
+        if (execProfEnabled()) {
+            std::cerr << "[EXECPROF] buildShape: cache hit, rebuild skipped" << std::endl;
+        }
+        return;
+    }
+
+    Part::TopoShape checkPrevShape;
+    Part::TopoShape checkPrevInternal;
+    if (shapeCacheHit && shapeCacheCheck) {
+        checkPrevShape = Shape.getShape();
+        checkPrevInternal = InternalShape.getShape();
+    }
+
     for (auto geo : geometries) {
         ++geoId;
         if (GeometryFacade::getConstruction(geo)) {
@@ -302,9 +432,22 @@ void SketchObject::buildShape()
         }
     }
 
+    // the extracted clones become the skip-cache reference for the next call
+    builtShapeGeometry.clear();
+    builtShapeGeometry.reserve(geometries.size());
     for (auto geo : geometries) {
-        delete geo;
+        builtShapeGeometry.emplace_back(geo);
     }
+    builtShapeExternal.clear();
+    for (int i = 2; i < ExternalGeo.getSize(); ++i) {
+        auto geo = ExternalGeo[i];
+        auto egf = ExternalGeometryFacade::getFacade(geo);
+        builtShapeExternal.emplace_back(
+            std::unique_ptr<Part::Geometry>(geo->clone()),
+            egf->testFlag(ExternalGeometryExtension::Defining));
+    }
+    builtShapeMakeInternals = MakeInternals.getValue();
+    builtShapeValid = !shapeCacheOff;
 
     for (int i = 2; i < ExternalGeo.getSize(); ++i) {
         auto geo = ExternalGeo[i];
@@ -333,6 +476,9 @@ void SketchObject::buildShape()
         Shape.setValue(Part::TopoShape());
         return;
     }
+
+    const auto tp1 = profNow();
+
     Part::TopoShape result(0, getDocument()->getStringHasher());
     if (vertices.empty()) {
         // Notice here we supply op code Part::OpCodes::Sketch to makeElementWires().
@@ -355,11 +501,54 @@ void SketchObject::buildShape()
         result.makeElementCompound(results);
     }
     result.Tag = getID();
+
+    const auto tp2 = profNow();
+
     InternalShape.setValue(buildInternals(result.located(TopLoc_Location())));
+
+    const auto tp3 = profNow();
+
     // Must set Shape property after InternalShape so that
     // GeoFeature::updateElementReference() can run properly on change of Shape
     // property, because some reference may pointing to the InternalShape
     Shape.setValue(result);
+
+    if (shapeCacheHit && shapeCacheCheck) {
+        // validation mode: the cache claimed a hit — the rebuilt shapes must
+        // structurally match what skipping would have kept
+        auto describe = [](const Part::TopoShape& shape) {
+            std::ostringstream os;
+            if (shape.isNull()) {
+                os << "null";
+                return os.str();
+            }
+            os << "V" << shape.countSubShapes(TopAbs_VERTEX) << " E"
+               << shape.countSubShapes(TopAbs_EDGE) << " W" << shape.countSubShapes(TopAbs_WIRE)
+               << " F" << shape.countSubShapes(TopAbs_FACE);
+            return os.str();
+        };
+        const std::string freshShape = describe(result);
+        const std::string prevShape = describe(checkPrevShape);
+        const std::string freshInternal = describe(InternalShape.getShape());
+        const std::string prevInternal = describe(checkPrevInternal);
+        if (freshShape != prevShape || freshInternal != prevInternal) {
+            Base::Console().warning(
+                "[SKETCH_SHAPECACHE MISMATCH] Shape fresh=%s cached=%s | InternalShape "
+                "fresh=%s cached=%s\n",
+                freshShape.c_str(),
+                prevShape.c_str(),
+                freshInternal.c_str(),
+                prevInternal.c_str());
+        }
+    }
+
+    if (execProfEnabled()) {
+        const auto tp4 = ProfClock::now();
+        std::cerr << "[EXECPROF] buildShape: edges=" << profMs(tp0, tp1)
+                  << " wires=" << profMs(tp1, tp2) << " internals=" << profMs(tp2, tp3)
+                  << " setShape=" << profMs(tp3, tp4) << " total=" << profMs(tp0, tp4)
+                  << std::endl;
+    }
 }
 // clang-format off
 
@@ -400,12 +589,23 @@ Part::TopoShape SketchObject::buildInternals(const Part::TopoShape &edges) const
         return Part::TopoShape();
 
     try {
+        const auto tp0 = profNow();
+
+        const auto wires = edges.getSubTopoShapes(TopAbs_WIRE);
+
         Part::TopoShape result(getID(), getDocument()->getStringHasher());
-        result = result.makeElementFace(edges.getSubTopoShapes(TopAbs_WIRE),
+        result = result.makeElementFace(wires,
                 /*op*/"",
                 /*maker*/"Part::FaceMakerBuildFace",
                 /*pln*/nullptr
         );
+
+        const auto tp1 = profNow();
+
+        // NOTE: do not try to skip the WireJoiner when all wires report
+        // isClosed() — TestSketcherApp has sketches (self-intersecting /
+        // degenerate closed wires whose face fails to build) where the
+        // tight-bound analysis still yields open wires.
 
         // Append open wires (edges not part of any closed face)
         Part::WireJoiner joiner;
@@ -414,6 +614,12 @@ Part::TopoShape SketchObject::buildInternals(const Part::TopoShape &edges) const
         joiner.addShape(edges);
         Part::TopoShape openWires(getID(), getDocument()->getStringHasher());
         joiner.getOpenWires(openWires, "SKF");
+
+        if (execProfEnabled()) {
+            const auto tp2 = ProfClock::now();
+            std::cerr << "[EXECPROF] buildInternals: face=" << profMs(tp0, tp1)
+                      << " wireJoiner=" << profMs(tp1, tp2) << std::endl;
+        }
 
         if (openWires.isNull()) {
             return result;  // No open wires, return either face or empty toposhape

@@ -1251,6 +1251,20 @@ private:
     std::unique_ptr<GeoHistory> geoHistory;
 
     mutable std::map<std::string, std::string> internalElementMap;
+
+    // buildShape() skip-cache (transient, never persisted): the solved geometry
+    // the current Shape/InternalShape property values were built from. When the
+    // next execute() produces content-identical geometry (Geometry::isSame),
+    // the whole OCC rebuild (edges, wires, FaceMaker, WireJoiner) is skipped —
+    // it dominates recompute cost on dense sketches. A content compare is used
+    // instead of explicit invalidation so a stale cache can only cost a rebuild,
+    // never produce a wrong shape. SKETCH_NO_SHAPECACHE=1 disables the skip;
+    // SKETCH_SHAPECACHE_CHECK=1 rebuilds on a hit anyway and warns if the result
+    // differs from the cached shape.
+    std::vector<std::unique_ptr<Part::Geometry>> builtShapeGeometry;
+    std::vector<std::pair<std::unique_ptr<Part::Geometry>, bool>> builtShapeExternal;
+    bool builtShapeMakeInternals = false;
+    bool builtShapeValid = false;
 };
 
 inline int SketchObject::initTemporaryMove(std::vector<GeoElementId> moved, bool fine /*=true*/)
