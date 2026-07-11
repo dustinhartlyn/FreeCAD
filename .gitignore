@@ -72,3 +72,23 @@ tsupdate_stdout.log
 # pixi environments
 *.egg-info
 .pixi
+
+# planeGCS optimization project — local tracking files (not for upstream)
+# All agent-internal scratch/planning/status files live under Agent_Notes/.
+# One rule here catches everything in it, present and future, regardless of
+# filename — do not add individual filenames to this list again.
+/Agent_Notes/
+.roomodes
+3DxWare/
+tests/lib/
+
+# Custom tools (.roo/tools/) ARE meant to be committed and shared with the
+# team — they are reviewed, human/tool-writer-authored automation, not
+# scratch. Without these negations the blanket ".*" rule above would
+# silently swallow them.
+!/.roo/
+!/.roo/tools/
+!/.roo/tools/**
+# ...but never the installed dependency tree -- package.json/package-lock.json
+# are committed so teammates can `npm install` themselves; node_modules is not.
+/.roo/tools/node_modules/
