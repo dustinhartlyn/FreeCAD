@@ -3232,7 +3232,8 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                 }
 
                 // Steepest descent direction
-                double alpha = g_c.squaredNorm() / (Jx_c * g_c).squaredNorm();
+                double Jxg_c_sq = (Jx_c * g_c).squaredNorm();
+                double alpha = (Jxg_c_sq > 0.0) ? g_c.squaredNorm() / Jxg_c_sq : 0.0;
                 h_sd_c.noalias() = alpha * g_c;
 
                 // Gauss-Newton step

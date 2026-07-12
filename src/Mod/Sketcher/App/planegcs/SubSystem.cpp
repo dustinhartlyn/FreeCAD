@@ -414,5 +414,3 @@ void SubSystem::printResidual()
 
 
 }  // namespace GCS
-
-// Force Legacy Baseline Rebuild
