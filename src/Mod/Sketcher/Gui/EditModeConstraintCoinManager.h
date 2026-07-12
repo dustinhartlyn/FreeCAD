@@ -147,6 +147,20 @@ public:
 private:
     void rebuildConstraintNodes(const GeoListFacade& geolistfacade);  // with specific geometry
 
+    // create the coin separator for one constraint (structure depends on type)
+    SoSeparator* createConstraintNode(
+        Sketcher::Constraint* it,
+        const GeoListFacade& geolistfacade,
+        SbVec3f norm
+    );
+
+    // incremental insert/remove of constraint separators on count change;
+    // returns false when a full rebuild is required
+    bool trySyncConstraintNodes(
+        const GeoListFacade& geolistfacade,
+        const std::vector<Sketcher::Constraint*>& constrlist
+    );
+
     void rebuildConstraintNodes(
         const GeoListFacade& geolistfacade,
         const std::vector<Sketcher::Constraint*> constrlist,
