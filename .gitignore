@@ -82,13 +82,5 @@ tsupdate_stdout.log
 3DxWare/
 tests/lib/
 
-# Custom tools (.roo/tools/) ARE meant to be committed and shared with the
-# team — they are reviewed, human/tool-writer-authored automation, not
-# scratch. Without these negations the blanket ".*" rule above would
-# silently swallow them.
-!/.roo/
-!/.roo/tools/
-!/.roo/tools/**
-# ...but never the installed dependency tree -- package.json/package-lock.json
-# are committed so teammates can `npm install` themselves; node_modules is not.
-/.roo/tools/node_modules/
+# .roo/ is local agent tooling/config and should never be pushed to the
+# shared repo; the blanket ".*" rule above already covers it.
