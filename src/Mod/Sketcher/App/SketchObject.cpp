@@ -882,6 +882,179 @@ void SketchObject::rebuildIslandCache(
     islandCache = std::move(cache);
 }
 
+bool SketchObject::trySpliceIslandDeletion(
+    const std::vector<Part::Geometry*>& geometries,
+    Part::TopoShape& newResult,
+    Part::TopoShape& newInternal
+)
+{
+    // Align: the new geometry list must be an ordered subsequence of the
+    // cached one (deletion preserves relative order). Any surviving geometry
+    // that moved or changed type breaks the alignment -> full rebuild.
+    std::vector<int> deletedOld;
+    std::size_t j = 0;
+    for (std::size_t i = 0; i < builtShapeGeometry.size(); ++i) {
+        const Part::Geometry* cached = builtShapeGeometry[i].get();
+        if (j < geometries.size() && cached->getTypeId() == geometries[j]->getTypeId()
+            && GeometryFacade::getConstruction(cached)
+                == GeometryFacade::getConstruction(geometries[j])
+            && cached->isSame(*geometries[j], Precision::Confusion(), Precision::Angular())) {
+            ++j;
+        }
+        else {
+            deletedOld.push_back(static_cast<int>(i));
+        }
+    }
+    if (j != geometries.size()) {
+        return false;  // not a pure ordered deletion
+    }
+
+    // deleted construction geometry has no shape; collect the clusters of the
+    // shape-relevant deleted geometry
+    std::set<int> deletedClusters;
+    std::set<int> deletedShapeGeos;
+    for (int gi : deletedOld) {
+        if (GeometryFacade::getConstruction(builtShapeGeometry[gi].get())) {
+            continue;
+        }
+        auto it = islandCache.geoToCluster.find(gi);
+        if (it == islandCache.geoToCluster.end()) {
+            return false;  // unattributed shape-relevant geometry
+        }
+        deletedClusters.insert(it->second);
+        deletedShapeGeos.insert(gi);
+    }
+
+    if (deletedClusters.empty()) {
+        // only construction geometry was deleted: the shapes are unchanged
+        newResult = Shape.getShape();
+        newInternal = InternalShape.getShape();
+        return true;
+    }
+
+    // every touched cluster must be deleted entirely: a partially deleted
+    // island changes its wire/face and needs the full pipeline
+    for (int c : deletedClusters) {
+        for (int gi : islandCache.clusterGeos[c]) {
+            if (deletedShapeGeos.find(gi) == deletedShapeGeos.end()) {
+                return false;
+            }
+        }
+    }
+    if (deletedClusters.size() >= islandCache.clusterBoxes.size()) {
+        return false;  // nothing left to reuse
+    }
+
+    // positions of the deleted clusters' children in the compounds
+    std::set<int> deadWires;
+    std::set<int> deadFaces;
+    for (int c : deletedClusters) {
+        if (islandCache.clusterWires[c].size() != 1
+            || islandCache.clusterFaces[c].size() != 1) {
+            return false;
+        }
+        deadWires.insert(islandCache.clusterWires[c].front());
+        deadFaces.insert(islandCache.clusterFaces[c].front());
+    }
+
+    std::vector<Part::TopoShape> wires;
+    std::vector<Part::TopoShape> faces;
+    for (std::size_t i = 0; i < islandCache.wireShapes.size(); ++i) {
+        if (deadWires.find(static_cast<int>(i)) == deadWires.end()) {
+            wires.push_back(islandCache.wireShapes[i]);
+        }
+    }
+    for (std::size_t i = 0; i < islandCache.faceShapes.size(); ++i) {
+        if (deadFaces.find(static_cast<int>(i)) == deadFaces.end()) {
+            faces.push_back(islandCache.faceShapes[i]);
+        }
+    }
+    if (wires.empty() || faces.empty()) {
+        return false;
+    }
+
+    try {
+        Part::TopoShape result(0, getDocument()->getStringHasher());
+        result.makeElementCompound(wires);
+        result.Tag = getID();
+
+        Part::TopoShape internal(getID(), getDocument()->getStringHasher());
+        internal.makeElementCompound(faces);
+
+        // re-key the cache against the new geometry indexing
+        std::map<int, int> oldToNew;
+        {
+            std::set<int> deletedSet(deletedOld.begin(), deletedOld.end());
+            int nj = 0;
+            for (std::size_t i = 0; i < builtShapeGeometry.size(); ++i) {
+                if (deletedSet.find(static_cast<int>(i)) == deletedSet.end()) {
+                    oldToNew[static_cast<int>(i)] = nj++;
+                }
+            }
+        }
+        auto newPos = [](const std::set<int>& dead, int old) {
+            int shift = 0;
+            for (int d : dead) {
+                if (d < old) {
+                    ++shift;
+                }
+                else {
+                    break;
+                }
+            }
+            return old - shift;
+        };
+
+        ShapeIslandCache cache;
+        cache.wireShapes = wires;
+        cache.faceShapes = faces;
+        for (std::size_t c = 0; c < islandCache.clusterGeos.size(); ++c) {
+            if (deletedClusters.find(static_cast<int>(c)) != deletedClusters.end()) {
+                continue;
+            }
+            std::vector<int> geos;
+            for (int gi : islandCache.clusterGeos[c]) {
+                auto it = oldToNew.find(gi);
+                if (it == oldToNew.end()) {
+                    return false;
+                }
+                geos.push_back(it->second);
+            }
+            const int nc = static_cast<int>(cache.clusterGeos.size());
+            for (int g : geos) {
+                cache.geoToCluster[g] = nc;
+            }
+            cache.clusterGeos.push_back(std::move(geos));
+            cache.clusterBoxes.push_back(islandCache.clusterBoxes[c]);
+            std::vector<int> cw;
+            std::vector<int> cf;
+            for (int w : islandCache.clusterWires[c]) {
+                cw.push_back(newPos(deadWires, w));
+            }
+            for (int f : islandCache.clusterFaces[c]) {
+                cf.push_back(newPos(deadFaces, f));
+            }
+            cache.clusterWires.push_back(std::move(cw));
+            cache.clusterFaces.push_back(std::move(cf));
+        }
+        cache.valid = cache.clusterBoxes.size() >= 2;
+        islandCache = std::move(cache);
+
+        newResult = result;
+        newInternal = internal;
+        return true;
+    }
+    catch (Base::Exception& e) {
+        FC_WARN("island deletion splice failed, falling back to full rebuild: " << e.what());
+    }
+    catch (Standard_Failure& e) {
+        FC_WARN("island deletion splice failed, falling back to full rebuild: "
+                << e.GetMessageString());
+    }
+    islandCache = ShapeIslandCache {};
+    return false;
+}
+
 bool SketchObject::trySpliceIslands(
     const std::vector<Part::Geometry*>& geometries,
     Part::TopoShape& newResult,
@@ -897,6 +1070,10 @@ bool SketchObject::trySpliceIslands(
         return false;
     }
     if (builtShapeGeometry.size() != geometries.size()) {
+        if (geometries.size() < builtShapeGeometry.size()) {
+            // pure deletion of whole islands can be spliced too
+            return trySpliceIslandDeletion(geometries, newResult, newInternal);
+        }
         return false;
     }
 

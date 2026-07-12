@@ -1297,6 +1297,14 @@ private:
         Part::TopoShape& newInternal
     );
 
+    // pure whole-island deletion: drop the deleted clusters' wires/faces from
+    // the previous compounds instead of rebuilding everything
+    bool trySpliceIslandDeletion(
+        const std::vector<Part::Geometry*>& geometries,
+        Part::TopoShape& newResult,
+        Part::TopoShape& newInternal
+    );
+
     void rebuildIslandCache(
         const std::vector<std::pair<int, Base::BoundBox3d>>& geoBoxes,
         const Part::TopoShape& result,
