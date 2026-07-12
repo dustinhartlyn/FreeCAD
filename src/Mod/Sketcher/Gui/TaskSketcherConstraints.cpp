@@ -35,8 +35,11 @@
 #include <boost/core/ignore_unused.hpp>
 #include <fmt/format.h>
 #include <fmt/ranges.h>
+#include <chrono>
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <limits>
 
 #include <App/Application.h>
@@ -1130,7 +1133,7 @@ void TaskSketcherConstraints::onSettingsExtendedInformationChanged(bool value)
         hGrp->SetBool("ExtendedConstraintInformation", value);
     }
 
-    slotConstraintsChanged();
+    updateConstraintsList();
 }
 
 void TaskSketcherConstraints::onSettingsHideInternalAligmentChanged(bool value)
@@ -1143,7 +1146,7 @@ void TaskSketcherConstraints::onSettingsHideInternalAligmentChanged(bool value)
         hGrp->SetBool("HideInternalAlignment", value);
     }
 
-    slotConstraintsChanged();
+    updateConstraintsList();
 }
 
 void TaskSketcherConstraints::onSettingsRestrictVisibilityChanged(bool value)
@@ -1309,7 +1312,7 @@ void TaskSketcherConstraints::onListWidgetConstraintsUpdateDrivingStatus(QListWi
 
     Gui::Application::Instance->commandManager().runCommandByName(
         "Sketcher_ToggleDrivingConstraint");
-    slotConstraintsChanged();
+    updateConstraintsList();
 }
 
 void TaskSketcherConstraints::onListWidgetConstraintsUpdateActiveStatus(QListWidgetItem* item,
@@ -1322,7 +1325,7 @@ void TaskSketcherConstraints::onListWidgetConstraintsUpdateActiveStatus(QListWid
 
     Gui::Application::Instance->commandManager().runCommandByName(
         "Sketcher_ToggleActiveConstraint");
-    slotConstraintsChanged();
+    updateConstraintsList();
 }
 
 void TaskSketcherConstraints::onListWidgetConstraintsItemActivated(QListWidgetItem* item)
@@ -1444,7 +1447,7 @@ void TaskSketcherConstraints::updateList()
         filterList->getMultiFilter();// moved here in case the filter is changed programmatically.
 
     // new constraints have to be added first
-    slotConstraintsChanged();
+    updateConstraintsList();
 
     // enforce constraint visibility
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath(
@@ -1698,7 +1701,7 @@ void TaskSketcherConstraints::change3DViewVisibilityToTrackFilter(bool filterEna
     }
 
     if (constrIdsToSetVisible.empty() && constrIdsToSetHidden.empty()) {
-        slotConstraintsChanged();
+        updateConstraintsList();
     }
 }
 
@@ -1873,7 +1876,27 @@ bool TaskSketcherConstraints::isConstraintFiltered(QListWidgetItem* item)
 
 void TaskSketcherConstraints::slotConstraintsChanged()
 {
+    // The solver signal fires on every solve; one rebuild when the event loop
+    // spins covers the whole burst. Direct callers that need the list current
+    // immediately use updateConstraintsList() instead.
+    if (constraintsUpdatePending) {
+        return;
+    }
+    constraintsUpdatePending = true;
+    QTimer::singleShot(0, this, [this]() {
+        constraintsUpdatePending = false;
+        updateConstraintsList();
+    });
+}
+
+void TaskSketcherConstraints::updateConstraintsList()
+{
     assert(sketchView);
+
+    // SKETCH_DRAWPROF=1 — time the constraint task-panel rebuild per solve.
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    auto profT0 = drawProf ? std::chrono::steady_clock::now()
+                           : std::chrono::steady_clock::time_point {};
 
     constraintMap.clear();
     selectionBuffer.clear();
@@ -1917,6 +1940,14 @@ void TaskSketcherConstraints::slotConstraintsChanged()
         it->setHidden(!visible);
         it->setData(Qt::EditRole, QString::fromStdString(constraint->Name));
         model->blockSignals(tmpBlock);
+    }
+
+    if (drawProf) {
+        std::cerr << "[DRAWPROF-TP] constraintsPanel="
+                  << std::chrono::duration<double, std::milli>(
+                         std::chrono::steady_clock::now() - profT0)
+                         .count()
+                  << " ms items=" << vals.size() << std::endl;
     }
 }
 
