@@ -130,7 +130,7 @@
     </message>
     <message>
       <location filename="../../../JointObject.py" line="55"/>
-      <location filename="../../../JointObject.py" line="1888"/>
+      <location filename="../../../JointObject.py" line="1896"/>
       <source>Distance</source>
       <translation>距离</translation>
     </message>
@@ -175,22 +175,27 @@
       <translation>失效链接：</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1696"/>
+      <location filename="../../../JointObject.py" line="1238"/>
+      <source>Edit Joint</source>
+      <translation>编辑接合点</translation>
+    </message>
+    <message>
+      <location filename="../../../JointObject.py" line="1704"/>
       <source>Select 2 elements from 2 separate parts</source>
       <translation>从两个独立的零件中选择两个元素</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1890"/>
+      <location filename="../../../JointObject.py" line="1898"/>
       <source>Radius 1</source>
       <translation>半径 1</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1892"/>
+      <location filename="../../../JointObject.py" line="1900"/>
       <source>Thread pitch</source>
       <translation>螺距</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1894"/>
+      <location filename="../../../JointObject.py" line="1902"/>
       <source>Pitch radius</source>
       <translation>节距半径</translation>
     </message>
@@ -677,7 +682,7 @@ SLOPE 定义了在 time = T1 和 T2 附近，从 0 到 H1、从 H2 到 0 之间�
       <translation>配合的第 {order} 参考</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1280"/>
+      <location filename="../../../JointObject.py" line="1288"/>
       <source>The object to ground</source>
       <translation>要固定的对象</translation>
     </message>
@@ -1140,7 +1145,7 @@ The files are named "runPreDrag.asmt" and "dragging.log" and are located in the 
   <context>
     <name>Assembly::AssemblyLink</name>
     <message>
-      <location filename="../../../App/AssemblyLink.cpp" line="689"/>
+      <location filename="../../../App/AssemblyLink.cpp" line="690"/>
       <source>Joints</source>
       <translation>关节</translation>
     </message>
@@ -1369,12 +1374,12 @@ The files are named "runPreDrag.asmt" and "dragging.log" and are located in the 
     <message>
       <location filename="../../../CommandCreateJoint.py" line="150"/>
       <source>Slider Joint</source>
-      <translation>滑块连接</translation>
+      <translation>滑块配合</translation>
     </message>
     <message>
       <location filename="../../../CommandCreateJoint.py" line="155"/>
       <source>Creates a slider joint that allows linear movement along a single axis, but restricts rotation between selected parts</source>
-      <translation>创建滑块配合，允许所选零件之间沿单轴线移动，但它们之间的旋转</translation>
+      <translation>创建滑块配合，允许所选零件之间沿单轴线移动，但限制它们之间的旋转</translation>
     </message>
   </context>
   <context>

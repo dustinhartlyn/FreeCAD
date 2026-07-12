@@ -130,9 +130,9 @@
     </message>
     <message>
       <location filename="../../../JointObject.py" line="55"/>
-      <location filename="../../../JointObject.py" line="1888"/>
+      <location filename="../../../JointObject.py" line="1896"/>
       <source>Distance</source>
-      <translation>Відстань</translation>
+      <translation>Відстань Х</translation>
     </message>
     <message>
       <location filename="../../../JointObject.py" line="56"/>
@@ -175,22 +175,27 @@
       <translation>Пошкоджений зв'язок у: </translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1696"/>
+      <location filename="../../../JointObject.py" line="1238"/>
+      <source>Edit Joint</source>
+      <translation type="unfinished">Edit Joint</translation>
+    </message>
+    <message>
+      <location filename="../../../JointObject.py" line="1704"/>
       <source>Select 2 elements from 2 separate parts</source>
       <translation>Виберіть 2 елементи з 2 окремих деталей</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1890"/>
+      <location filename="../../../JointObject.py" line="1898"/>
       <source>Radius 1</source>
       <translation>Радіус 1</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1892"/>
+      <location filename="../../../JointObject.py" line="1900"/>
       <source>Thread pitch</source>
       <translation>Крок різьби</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1894"/>
+      <location filename="../../../JointObject.py" line="1902"/>
       <source>Pitch radius</source>
       <translation>Радіус кроку</translation>
     </message>
@@ -482,44 +487,39 @@ SLOPE — крутизна переходів між 0 та H1 і H2 до 0 в �
       <translation>Недостатньо кадрів для створення анімації.</translation>
     </message>
     <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1053"/>
+      <location filename="../../../CommandCreateSimulation.py" line="1068"/>
       <source>Save Animation</source>
       <translation>Зберегти анімацію</translation>
     </message>
     <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1075"/>
+      <location filename="../../../CommandCreateSimulation.py" line="1093"/>
+      <source>Pillow (PIL) is not installed. It is required for video export.</source>
+      <translation type="unfinished">Pillow (PIL) is not installed. It is required for video export.</translation>
+    </message>
+    <message>
+      <location filename="../../../CommandCreateSimulation.py" line="1100"/>
       <source>Generating Frames…</source>
       <translation>Генерація кадрів…</translation>
     </message>
     <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1076"/>
+      <location filename="../../../CommandCreateSimulation.py" line="1101"/>
       <source>Cancel</source>
       <translation>Скасувати</translation>
     </message>
     <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1103"/>
+      <location filename="../../../CommandCreateSimulation.py" line="1128"/>
       <source>Assembling animation…</source>
       <translation>Анімація збірки…</translation>
     </message>
     <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1119"/>
+      <location filename="../../../CommandCreateSimulation.py" line="1150"/>
       <source>An error occurred while saving the animation</source>
       <translation>Виникла помилка під час збереження анімації</translation>
     </message>
     <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1137"/>
-      <source>Pillow (PIL) is not installed. It is required for GIF export.</source>
-      <translation>Pillow (PIL) не встановлено. Потрібно для експорту GIF.</translation>
-    </message>
-    <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1160"/>
-      <source>OpenCV is not installed. It is required for video export.</source>
-      <translation>OpenCV не встановлено. Потрібно для експорту відео.</translation>
-    </message>
-    <message>
-      <location filename="../../../CommandCreateSimulation.py" line="1177"/>
-      <source>Could not open video writer. Check codecs.</source>
-      <translation>Не вдалося відкрити засіб запису відео. Перевірте кодеки.</translation>
+      <location filename="../../../CommandCreateSimulation.py" line="1184"/>
+      <source>PyAv is not installed. It is required for video export.</source>
+      <translation type="unfinished">PyAv is not installed. It is required for video export.</translation>
     </message>
     <message>
       <location filename="../../../InitGui.py" line="160"/>
@@ -677,7 +677,7 @@ SLOPE — крутизна переходів між 0 та H1 і H2 до 0 в �
       <translation>Посилання {order} на з'єднання</translation>
     </message>
     <message>
-      <location filename="../../../JointObject.py" line="1280"/>
+      <location filename="../../../JointObject.py" line="1288"/>
       <source>The object to ground</source>
       <translation>Об'єкт для закріплення</translation>
     </message>
@@ -748,7 +748,7 @@ SLOPE — крутизна переходів між 0 та H1 і H2 до 0 в �
     <message>
       <location filename="../panels/TaskAssemblyCreateJoint.ui" line="79"/>
       <source>Distance</source>
-      <translation>Відстань</translation>
+      <translation>Відстань Х</translation>
     </message>
     <message>
       <location filename="../panels/TaskAssemblyCreateJoint.ui" line="103"/>
@@ -1140,7 +1140,7 @@ The files are named "runPreDrag.asmt" and "dragging.log" and are located in the 
   <context>
     <name>Assembly::AssemblyLink</name>
     <message>
-      <location filename="../../../App/AssemblyLink.cpp" line="689"/>
+      <location filename="../../../App/AssemblyLink.cpp" line="690"/>
       <source>Joints</source>
       <translation>З'єднання</translation>
     </message>

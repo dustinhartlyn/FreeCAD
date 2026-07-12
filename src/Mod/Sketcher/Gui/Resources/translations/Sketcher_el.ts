@@ -17,27 +17,27 @@
   <context>
     <name>CmdSketcherCompConstrainRadDia</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9253"/>
+      <location filename="../../CommandConstraints.cpp" line="9420"/>
       <source>Radius/Diameter Dimension</source>
       <translation>Διάσταση Ακτίνας/Διάμετρος</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9254"/>
+      <location filename="../../CommandConstraints.cpp" line="9421"/>
       <source>Constrains the radius or diameter of an arc or a circle</source>
       <translation>Περιορίζει την ακτίνα ή τη διάμετρο ενός τόξου ή ενός κύκλου. (Σου επιτρέπει να «κλειδώσεις» το μέγεθος του κύκλου δίνοντας μια συγκεκριμένη τιμή.)</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9364"/>
+      <location filename="../../CommandConstraints.cpp" line="9531"/>
       <source>Constrain radius</source>
       <translation>Περιορισμός Aκτίνας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9370"/>
+      <location filename="../../CommandConstraints.cpp" line="9537"/>
       <source>Constrain diameter</source>
       <translation>Περιορισμός Διαμέτρου</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9376"/>
+      <location filename="../../CommandConstraints.cpp" line="9543"/>
       <source>Constrain auto radius/diameter</source>
       <translation>Περιορισμός αυτόματης Ακτίνας/Διαμέτρου</translation>
     </message>
@@ -317,365 +317,365 @@ invalid constraints, and degenerate geometry</source>
   <context>
     <name>Command</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4076"/>
+      <location filename="../../CommandConstraints.cpp" line="4243"/>
       <source>Add 'Lock' constraint</source>
       <translation>Προσθήκη περιορισμού "Κλειδώματος"</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4130"/>
+      <location filename="../../CommandConstraints.cpp" line="4297"/>
       <source>Add relative 'Lock' constraint</source>
       <translation>Προσθήκη σχετικού περιορισμού "Κλειδώματος"</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4196"/>
+      <location filename="../../CommandConstraints.cpp" line="4363"/>
       <source>Add fixed constraint</source>
       <translation>Προσθήκη σταθερού περιορισμού</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4415"/>
+      <location filename="../../CommandConstraints.cpp" line="4582"/>
       <source>Add block constraint</source>
       <translation>Προσθήκη περιορισμού Κλειδώματος</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4755"/>
-      <location filename="../../CommandConstraints.cpp" line="4938"/>
+      <location filename="../../CommandConstraints.cpp" line="4922"/>
+      <location filename="../../CommandConstraints.cpp" line="5105"/>
       <source>Add coincident constraint</source>
       <translation>Προσθήκη περιορισμού Συμπίπτουσας συμπεριφοράς</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5174"/>
-      <location filename="../../CommandConstraints.cpp" line="5497"/>
+      <location filename="../../CommandConstraints.cpp" line="5341"/>
+      <location filename="../../CommandConstraints.cpp" line="5664"/>
       <source>Add distance from horizontal axis constraint</source>
       <translation>Προσθήκη απόστασης από τον περιορισμό του Οριζόντιου άξονα</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5186"/>
-      <location filename="../../CommandConstraints.cpp" line="5511"/>
+      <location filename="../../CommandConstraints.cpp" line="5353"/>
+      <location filename="../../CommandConstraints.cpp" line="5678"/>
       <source>Add distance from vertical axis constraint</source>
       <translation>Προσθήκη περιορισμού απόστασης από τον Κατακόρυφο άξονα</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5198"/>
-      <location filename="../../CommandConstraints.cpp" line="5524"/>
+      <location filename="../../CommandConstraints.cpp" line="5365"/>
+      <location filename="../../CommandConstraints.cpp" line="5691"/>
       <source>Add point to point distance constraint</source>
       <translation>Προσθήκη περιορισμού απόστασης από Σημείο σε Σημείο</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2552"/>
+      <location filename="../../CommandConstraints.cpp" line="2719"/>
       <source>Add point to line Distance constraint</source>
       <translation>Προσθήκη σημείου σε γραμμή Περιορισμός Απόστασης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5322"/>
-      <location filename="../../CommandConstraints.cpp" line="5673"/>
+      <location filename="../../CommandConstraints.cpp" line="5489"/>
+      <location filename="../../CommandConstraints.cpp" line="5840"/>
       <source>Add circle to circle distance constraint</source>
       <translation>Προσθήκη περιορισμού απόστασης από Κύκλο σε Κύκλο</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5365"/>
+      <location filename="../../CommandConstraints.cpp" line="5532"/>
       <source>Add circle to line distance constraint</source>
       <translation>Προσθήκη περιορισμού απόστασης από Κύκλο σε Γραμμή</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2650"/>
-      <location filename="../../CommandConstraints.cpp" line="2673"/>
-      <location filename="../../CommandConstraints.cpp" line="2741"/>
-      <location filename="../../CommandConstraints.cpp" line="2825"/>
-      <location filename="../../CommandConstraints.cpp" line="5413"/>
-      <location filename="../../CommandConstraints.cpp" line="5440"/>
-      <location filename="../../CommandConstraints.cpp" line="5568"/>
+      <location filename="../../CommandConstraints.cpp" line="2817"/>
+      <location filename="../../CommandConstraints.cpp" line="2840"/>
+      <location filename="../../CommandConstraints.cpp" line="2908"/>
+      <location filename="../../CommandConstraints.cpp" line="2992"/>
+      <location filename="../../CommandConstraints.cpp" line="5580"/>
+      <location filename="../../CommandConstraints.cpp" line="5607"/>
+      <location filename="../../CommandConstraints.cpp" line="5735"/>
       <source>Add length constraint</source>
       <translation>Προσθήκη περιορισμού Μήκους</translation>
     </message>
     <message>
       <location filename="../../CommandConstraints.cpp" line="2054"/>
-      <location filename="../../CommandConstraints.cpp" line="2245"/>
-      <location filename="../../CommandConstraints.cpp" line="3466"/>
+      <location filename="../../CommandConstraints.cpp" line="2232"/>
+      <location filename="../../CommandConstraints.cpp" line="3633"/>
       <source>Dimension</source>
       <translation>Διάσταση</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2521"/>
+      <location filename="../../CommandConstraints.cpp" line="2688"/>
       <source>Add lock constraint</source>
       <translation>Προσθήκη περιορισμού κλειδώματος</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2517"/>
+      <location filename="../../CommandConstraints.cpp" line="2684"/>
       <source>Add 'Distance to origin' constraint</source>
       <translation>Προσθήκη περιορισμού «Απόσταση από την προέλευση»</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2533"/>
-      <location filename="../../CommandConstraints.cpp" line="3147"/>
-      <location filename="../../CommandConstraints.cpp" line="3384"/>
+      <location filename="../../CommandConstraints.cpp" line="2700"/>
+      <location filename="../../CommandConstraints.cpp" line="3314"/>
+      <location filename="../../CommandConstraints.cpp" line="3551"/>
       <source>Add Distance constraint</source>
       <translation>Προσθήκη περιορισμού Απόστασης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2538"/>
-      <location filename="../../CommandConstraints.cpp" line="2567"/>
-      <location filename="../../CommandConstraints.cpp" line="2601"/>
+      <location filename="../../CommandConstraints.cpp" line="2705"/>
+      <location filename="../../CommandConstraints.cpp" line="2734"/>
+      <location filename="../../CommandConstraints.cpp" line="2768"/>
       <source>Add 'Horizontal' constraints</source>
       <translation>Προσθήκη περιορισμών 'Οριζόντιας' ευθυγράμμισης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2542"/>
-      <location filename="../../CommandConstraints.cpp" line="2574"/>
-      <location filename="../../CommandConstraints.cpp" line="2608"/>
+      <location filename="../../CommandConstraints.cpp" line="2709"/>
+      <location filename="../../CommandConstraints.cpp" line="2741"/>
+      <location filename="../../CommandConstraints.cpp" line="2775"/>
       <source>Add 'Vertical' constraints</source>
       <translation>Προσθήκη περιορισμών 'Κάθετης' ευθυγράμμισης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2557"/>
-      <location filename="../../CommandConstraints.cpp" line="2620"/>
+      <location filename="../../CommandConstraints.cpp" line="2724"/>
+      <location filename="../../CommandConstraints.cpp" line="2787"/>
       <source>Add Symmetry constraint</source>
       <translation>Προσθήκη περιορισμού Συμμετρίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2580"/>
-      <location filename="../../CommandConstraints.cpp" line="2752"/>
+      <location filename="../../CommandConstraints.cpp" line="2747"/>
+      <location filename="../../CommandConstraints.cpp" line="2919"/>
       <source>Add Symmetry constraints</source>
       <translation>Προσθήκη περιορισμών Συμμετρίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2625"/>
-      <location filename="../../CommandConstraints.cpp" line="2637"/>
+      <location filename="../../CommandConstraints.cpp" line="2792"/>
+      <location filename="../../CommandConstraints.cpp" line="2804"/>
       <source>Add Distance constraints</source>
       <translation>Προσθήκη περιορισμών Απόστασης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2683"/>
+      <location filename="../../CommandConstraints.cpp" line="2850"/>
       <source>Add Horizontal constraint</source>
       <translation>Προσθήκη περιορισμού Οριζόντιας ευθυγράμμισης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2688"/>
+      <location filename="../../CommandConstraints.cpp" line="2855"/>
       <source>Add Vertical constraint</source>
       <translation>Προσθήκη περιορισμού Κατακόρυφης ευθυγράμμισης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2692"/>
-      <location filename="../../CommandConstraints.cpp" line="4367"/>
+      <location filename="../../CommandConstraints.cpp" line="2859"/>
+      <location filename="../../CommandConstraints.cpp" line="4534"/>
       <source>Add Block constraint</source>
       <translation>Προσθήκη περιορισμού "Κλειδώματος"</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2707"/>
+      <location filename="../../CommandConstraints.cpp" line="2874"/>
       <source>Add Angle constraint</source>
       <translation>Προσθήκη περιορισμού Γωνίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2717"/>
-      <location filename="../../CommandConstraints.cpp" line="2840"/>
-      <location filename="../../CommandConstraints.cpp" line="2850"/>
-      <location filename="../../CommandConstraints.cpp" line="2888"/>
+      <location filename="../../CommandConstraints.cpp" line="2884"/>
+      <location filename="../../CommandConstraints.cpp" line="3007"/>
+      <location filename="../../CommandConstraints.cpp" line="3017"/>
+      <location filename="../../CommandConstraints.cpp" line="3055"/>
       <source>Add Equality constraint</source>
       <translation>Προσθήκη περιορισμού Ισότητας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2728"/>
+      <location filename="../../CommandConstraints.cpp" line="2895"/>
       <source>Add Equality constraints</source>
       <translation>Προσθήκη περιορισμών Ισότητας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10877"/>
+      <location filename="../../CommandConstraints.cpp" line="11044"/>
       <source>Add Group constraint</source>
       <translation type="unfinished">Add Group constraint</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11301"/>
+      <location filename="../../CommandConstraints.cpp" line="11468"/>
       <source>Activate/Deactivate constraints</source>
       <translation>Ενεργοποίηση/Απενεργοποίηση περιορισμών</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2776"/>
-      <location filename="../../CommandConstraints.cpp" line="2809"/>
+      <location filename="../../CommandConstraints.cpp" line="2943"/>
+      <location filename="../../CommandConstraints.cpp" line="2976"/>
       <source>Add arc angle constraint</source>
       <translation>Προσθήκη περιορισμού Γωνίας Τόξου</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2830"/>
+      <location filename="../../CommandConstraints.cpp" line="2997"/>
       <source>Add concentric and length constraint</source>
       <translation>Προσθήκη περιορισμού Ομόκεντρης θέσης και Μήκους</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3364"/>
+      <location filename="../../CommandConstraints.cpp" line="3531"/>
       <source>Add DistanceX constraint</source>
       <translation>Προσθήκη Οριζόντιας απόστασης (X)</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3374"/>
+      <location filename="../../CommandConstraints.cpp" line="3541"/>
       <source>Add DistanceY constraint</source>
       <translation>Προσθήκη κάθετου μήκους (Υ)</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4675"/>
-      <location filename="../../CommandConstraints.cpp" line="4854"/>
+      <location filename="../../CommandConstraints.cpp" line="4842"/>
+      <location filename="../../CommandConstraints.cpp" line="5021"/>
       <source>Add point on object constraint</source>
       <translation>Σημείο πάνω σε αντικείμενο</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2781"/>
-      <location filename="../../CommandConstraints.cpp" line="2813"/>
+      <location filename="../../CommandConstraints.cpp" line="2948"/>
+      <location filename="../../CommandConstraints.cpp" line="2980"/>
       <source>Add arc length constraint</source>
       <translation>Ορισμός μήκους τόξου</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5241"/>
-      <location filename="../../CommandConstraints.cpp" line="5618"/>
+      <location filename="../../CommandConstraints.cpp" line="5408"/>
+      <location filename="../../CommandConstraints.cpp" line="5785"/>
       <source>Add point to line distance constraint</source>
       <translation>Απόσταση σημείου από γραμμή</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5271"/>
+      <location filename="../../CommandConstraints.cpp" line="5438"/>
       <source>Add point to circle distance constraint</source>
       <translation>Απόσταση σημείου από κύκλο</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5859"/>
-      <location filename="../../CommandConstraints.cpp" line="5985"/>
+      <location filename="../../CommandConstraints.cpp" line="6026"/>
+      <location filename="../../CommandConstraints.cpp" line="6152"/>
       <source>Add point to point horizontal distance constraint</source>
       <translation>Οριζόντια απόσταση σημείων</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5900"/>
+      <location filename="../../CommandConstraints.cpp" line="6067"/>
       <source>Add fixed x-coordinate constraint</source>
       <translation>Κλείδωμα οριζόντιας θέσης Χ</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6159"/>
-      <location filename="../../CommandConstraints.cpp" line="6281"/>
+      <location filename="../../CommandConstraints.cpp" line="6326"/>
+      <location filename="../../CommandConstraints.cpp" line="6448"/>
       <source>Add point to point vertical distance constraint</source>
       <translation>Κάθετη απόσταση σημείων</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6197"/>
+      <location filename="../../CommandConstraints.cpp" line="6364"/>
       <source>Add fixed y-coordinate constraint</source>
       <translation>Κλείδωμα κάθετης θέσης Υ</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6429"/>
-      <location filename="../../CommandConstraints.cpp" line="6473"/>
+      <location filename="../../CommandConstraints.cpp" line="6596"/>
+      <location filename="../../CommandConstraints.cpp" line="6640"/>
       <source>Add parallel constraint</source>
       <translation>Παραλληλία Γραμμών</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6594"/>
-      <location filename="../../CommandConstraints.cpp" line="6632"/>
-      <location filename="../../CommandConstraints.cpp" line="6733"/>
-      <location filename="../../CommandConstraints.cpp" line="6897"/>
-      <location filename="../../CommandConstraints.cpp" line="6947"/>
-      <location filename="../../CommandConstraints.cpp" line="7096"/>
-      <location filename="../../CommandConstraints.cpp" line="7145"/>
-      <location filename="../../CommandConstraints.cpp" line="7201"/>
+      <location filename="../../CommandConstraints.cpp" line="6761"/>
+      <location filename="../../CommandConstraints.cpp" line="6799"/>
+      <location filename="../../CommandConstraints.cpp" line="6900"/>
+      <location filename="../../CommandConstraints.cpp" line="7064"/>
+      <location filename="../../CommandConstraints.cpp" line="7114"/>
+      <location filename="../../CommandConstraints.cpp" line="7263"/>
+      <location filename="../../CommandConstraints.cpp" line="7312"/>
+      <location filename="../../CommandConstraints.cpp" line="7368"/>
       <source>Add perpendicular constraint</source>
       <translation>Καθετότητα Γραμμών</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6772"/>
+      <location filename="../../CommandConstraints.cpp" line="6939"/>
       <source>Add perpendicularity constraint</source>
       <translation>Προσθήκη Καθετότητας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7337"/>
+      <location filename="../../CommandConstraints.cpp" line="7504"/>
       <source>Swap coincident+tangency with ptp tangency</source>
       <translation>Μετατροπή απλής ένωσης και ομαλής επαφής σε άμεση σύνδεση χωρίς γωνία</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7467"/>
-      <location filename="../../CommandConstraints.cpp" line="7568"/>
-      <location filename="../../CommandConstraints.cpp" line="7617"/>
-      <location filename="../../CommandConstraints.cpp" line="7826"/>
-      <location filename="../../CommandConstraints.cpp" line="8012"/>
-      <location filename="../../CommandConstraints.cpp" line="8082"/>
-      <location filename="../../CommandConstraints.cpp" line="8115"/>
+      <location filename="../../CommandConstraints.cpp" line="7634"/>
+      <location filename="../../CommandConstraints.cpp" line="7735"/>
+      <location filename="../../CommandConstraints.cpp" line="7784"/>
+      <location filename="../../CommandConstraints.cpp" line="7993"/>
+      <location filename="../../CommandConstraints.cpp" line="8179"/>
+      <location filename="../../CommandConstraints.cpp" line="8249"/>
+      <location filename="../../CommandConstraints.cpp" line="8282"/>
       <source>Add tangent constraint</source>
       <translation>Προσθήκη ομαλής επαφής (χωρίς γωνία)</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7663"/>
-      <location filename="../../CommandConstraints.cpp" line="7677"/>
-      <location filename="../../CommandConstraints.cpp" line="7691"/>
-      <location filename="../../CommandConstraints.cpp" line="7718"/>
-      <location filename="../../CommandConstraints.cpp" line="7733"/>
-      <location filename="../../CommandConstraints.cpp" line="7760"/>
-      <location filename="../../CommandConstraints.cpp" line="7775"/>
-      <location filename="../../CommandConstraints.cpp" line="7803"/>
-      <location filename="../../CommandConstraints.cpp" line="7899"/>
-      <location filename="../../CommandConstraints.cpp" line="7913"/>
-      <location filename="../../CommandConstraints.cpp" line="7928"/>
-      <location filename="../../CommandConstraints.cpp" line="7955"/>
+      <location filename="../../CommandConstraints.cpp" line="7830"/>
+      <location filename="../../CommandConstraints.cpp" line="7844"/>
+      <location filename="../../CommandConstraints.cpp" line="7858"/>
+      <location filename="../../CommandConstraints.cpp" line="7885"/>
+      <location filename="../../CommandConstraints.cpp" line="7900"/>
+      <location filename="../../CommandConstraints.cpp" line="7927"/>
+      <location filename="../../CommandConstraints.cpp" line="7942"/>
       <location filename="../../CommandConstraints.cpp" line="7970"/>
-      <location filename="../../CommandConstraints.cpp" line="7997"/>
+      <location filename="../../CommandConstraints.cpp" line="8066"/>
+      <location filename="../../CommandConstraints.cpp" line="8080"/>
+      <location filename="../../CommandConstraints.cpp" line="8095"/>
+      <location filename="../../CommandConstraints.cpp" line="8122"/>
+      <location filename="../../CommandConstraints.cpp" line="8137"/>
+      <location filename="../../CommandConstraints.cpp" line="8164"/>
       <source>Add tangent constraint point</source>
       <translation>Προσθήκη Εφαπτομένης σε Σημείο</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="2785"/>
-      <location filename="../../CommandConstraints.cpp" line="2789"/>
-      <location filename="../../CommandConstraints.cpp" line="2796"/>
-      <location filename="../../CommandConstraints.cpp" line="2801"/>
-      <location filename="../../CommandConstraints.cpp" line="8334"/>
-      <location filename="../../CommandConstraints.cpp" line="8378"/>
-      <location filename="../../CommandConstraints.cpp" line="8407"/>
-      <location filename="../../CommandConstraints.cpp" line="8484"/>
+      <location filename="../../CommandConstraints.cpp" line="2952"/>
+      <location filename="../../CommandConstraints.cpp" line="2956"/>
+      <location filename="../../CommandConstraints.cpp" line="2963"/>
+      <location filename="../../CommandConstraints.cpp" line="2968"/>
+      <location filename="../../CommandConstraints.cpp" line="8501"/>
+      <location filename="../../CommandConstraints.cpp" line="8545"/>
+      <location filename="../../CommandConstraints.cpp" line="8574"/>
+      <location filename="../../CommandConstraints.cpp" line="8651"/>
       <source>Add radius constraint</source>
       <translation>Προσθήκη περιορισμού Ακτίνας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8685"/>
-      <location filename="../../CommandConstraints.cpp" line="8717"/>
-      <location filename="../../CommandConstraints.cpp" line="8738"/>
-      <location filename="../../CommandConstraints.cpp" line="8814"/>
+      <location filename="../../CommandConstraints.cpp" line="8852"/>
+      <location filename="../../CommandConstraints.cpp" line="8884"/>
+      <location filename="../../CommandConstraints.cpp" line="8905"/>
+      <location filename="../../CommandConstraints.cpp" line="8981"/>
       <source>Add diameter constraint</source>
       <translation>Προσθήκη περιορισμού διαμέτρου</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9010"/>
-      <location filename="../../CommandConstraints.cpp" line="9058"/>
-      <location filename="../../CommandConstraints.cpp" line="9093"/>
-      <location filename="../../CommandConstraints.cpp" line="9182"/>
+      <location filename="../../CommandConstraints.cpp" line="9177"/>
+      <location filename="../../CommandConstraints.cpp" line="9225"/>
+      <location filename="../../CommandConstraints.cpp" line="9260"/>
+      <location filename="../../CommandConstraints.cpp" line="9349"/>
       <source>Add radiam constraint</source>
       <translation>Ορισμός Ακτίνας ή Διαμέτρου</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="539"/>
-      <location filename="../../CommandConstraints.cpp" line="9517"/>
-      <location filename="../../CommandConstraints.cpp" line="9633"/>
-      <location filename="../../CommandConstraints.cpp" line="9659"/>
-      <location filename="../../CommandConstraints.cpp" line="9748"/>
-      <location filename="../../CommandConstraints.cpp" line="9787"/>
+      <location filename="../../CommandConstraints.cpp" line="542"/>
+      <location filename="../../CommandConstraints.cpp" line="9684"/>
+      <location filename="../../CommandConstraints.cpp" line="9800"/>
+      <location filename="../../CommandConstraints.cpp" line="9826"/>
+      <location filename="../../CommandConstraints.cpp" line="9915"/>
+      <location filename="../../CommandConstraints.cpp" line="9954"/>
       <source>Add angle constraint</source>
       <translation>Ορισμός Γωνίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7360"/>
+      <location filename="../../CommandConstraints.cpp" line="7527"/>
       <source>Swap point on object and tangency with point to curve tangency</source>
       <translation>Εναλλαγή σημείου σε αντικείμενο με επαφή (εφαπτομένη)</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10049"/>
-      <location filename="../../CommandConstraints.cpp" line="10104"/>
+      <location filename="../../CommandConstraints.cpp" line="10216"/>
+      <location filename="../../CommandConstraints.cpp" line="10271"/>
       <source>Add equality constraint</source>
       <translation>Κάνε τα σχήματα ίσα</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10273"/>
-      <location filename="../../CommandConstraints.cpp" line="10332"/>
-      <location filename="../../CommandConstraints.cpp" line="10353"/>
-      <location filename="../../CommandConstraints.cpp" line="10469"/>
-      <location filename="../../CommandConstraints.cpp" line="10510"/>
-      <location filename="../../CommandConstraints.cpp" line="10584"/>
+      <location filename="../../CommandConstraints.cpp" line="10440"/>
+      <location filename="../../CommandConstraints.cpp" line="10499"/>
+      <location filename="../../CommandConstraints.cpp" line="10520"/>
+      <location filename="../../CommandConstraints.cpp" line="10636"/>
+      <location filename="../../CommandConstraints.cpp" line="10677"/>
+      <location filename="../../CommandConstraints.cpp" line="10751"/>
       <source>Add symmetric constraint</source>
       <translation>Προσθήκη συμμετρίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10746"/>
+      <location filename="../../CommandConstraints.cpp" line="10913"/>
       <source>Add Snell's law constraint</source>
       <translation>Προσθήκη περιορισμού νόμου Snell</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11214"/>
+      <location filename="../../CommandConstraints.cpp" line="11381"/>
       <source>Toggle constraint to driving/reference</source>
       <translation>Εναλλαγή Περιορισμών απο Κύρια σε Βοηθητική και αντίστροφα</translation>
     </message>
@@ -715,78 +715,73 @@ invalid constraints, and degenerate geometry</source>
       <translation>Συγχώνευση σχεδίων</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="134"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="135"/>
       <source>Add sketch line</source>
       <translation>Προσθήκη γραμμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="506"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="503"/>
       <source>Add sketch box</source>
       <translation>Προσθήκη πλαισίου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="285"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="281"/>
       <source>Add sketch arc</source>
       <translation>Προσθήκη τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="214"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="211"/>
       <source>Add sketch circle</source>
       <translation>Προσθήκη κύκλου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="213"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="210"/>
       <source>Add sketch ellipse</source>
       <translation>Προσθήκη έλλειψης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="330"/>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="211"/>
       <source>Add sketch arc of ellipse</source>
       <translation>Προσθήκη ελλειπτικό τόξο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="290"/>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="210"/>
       <source>Add sketch arc of hyperbola</source>
       <translation>Προσθήκη τόξου ομαλής καμπύλης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="240"/>
-      <source>Add sketch arc of Parabola</source>
-      <translation>Σχεδίαση Παραβολικού Τόξου</translation>
-    </message>
-    <message>
-      <location filename="../../DrawSketchHandlerPoint.h" line="96"/>
+      <location filename="../../DrawSketchHandlerPoint.h" line="95"/>
       <source>Add sketch point</source>
       <translation>Προσθήκη σημείου στο σχέδιο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="212"/>
-      <location filename="../../DrawSketchHandlerFillet.h" line="270"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="209"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="267"/>
       <source>Create fillet</source>
       <translation>Δημιουργία στρογγυλέματος</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTrimming.h" line="182"/>
+      <location filename="../../DrawSketchHandlerTrimming.h" line="179"/>
       <source>Trim edge</source>
       <translation>Περικοπή ακμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExtend.h" line="293"/>
+      <location filename="../../DrawSketchHandlerExtend.h" line="290"/>
       <source>Extend edge</source>
       <translation>Επέκταση ακμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSplitting.h" line="160"/>
+      <location filename="../../DrawSketchHandlerSplitting.h" line="156"/>
       <source>Split edge</source>
       <translation>Διαχωρισμός Ακμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExternal.h" line="184"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="181"/>
       <source>Add external geometry</source>
       <translation>Προσθήκη εξωτερικής γεωμετρίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSlot.h" line="179"/>
+      <location filename="../../DrawSketchHandlerSlot.h" line="175"/>
       <source>Add slot</source>
       <translation>Σχεδίαση εσοχής (οπή)</translation>
     </message>
@@ -872,7 +867,7 @@ invalid constraints, and degenerate geometry</source>
       <translation>Εμφάνιση/Απόκρυψη περιορισμών στον εικονικό χώρο</translation>
     </message>
     <message>
-      <location filename="../../TaskSketcherConstraints.cpp" line="1732"/>
+      <location filename="../../TaskSketcherConstraints.cpp" line="1720"/>
       <source>Update constraint's virtual space</source>
       <translation>Ενημέρωση περιορισμού στον εικονικό χώρο</translation>
     </message>
@@ -887,110 +882,115 @@ invalid constraints, and degenerate geometry</source>
       <translation type="unfinished">Delete constraints</translation>
     </message>
     <message>
-      <location filename="../../TaskSketcherConstraints.cpp" line="1382"/>
+      <location filename="../../TaskSketcherConstraints.cpp" line="1370"/>
       <source>Rename sketch constraint</source>
       <translation>Μετονομασία περιορισμού σχεδίου</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="2107"/>
+      <location filename="../../ViewProviderSketch.cpp" line="2133"/>
       <source>Drag Point</source>
       <translation>Σύρσιμο Σημείου</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="2107"/>
+      <location filename="../../ViewProviderSketch.cpp" line="2133"/>
       <source>Drag Curve</source>
       <translation>Σύρσιμο Καμπύλης</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="2108"/>
+      <location filename="../../ViewProviderSketch.cpp" line="2134"/>
       <source>Drag geometries</source>
       <translation>Σύρσιμο Γεωμετριών</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="1349"/>
+      <location filename="../../ViewProviderSketch.cpp" line="1354"/>
       <source>Drag Constraint</source>
       <translation>Σύρσιμο Περιορισμού</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="1598"/>
-      <location filename="../../CommandConstraints.cpp" line="11079"/>
       <location filename="../../TaskSketcherConstraints.cpp" line="1337"/>
+      <location filename="../../ViewProviderSketch.cpp" line="1603"/>
+      <location filename="../../CommandConstraints.cpp" line="11246"/>
       <source>Modify sketch constraints</source>
       <translation>Τροποποίηση περιορισμών σχεδίου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="182"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="179"/>
       <source>Create a carbon copy</source>
       <translation>Δημιουργία πιστού αντιγράφου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="431"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="428"/>
       <source>Offset</source>
       <translation>Μετατόπιση</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="111"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="108"/>
       <source>Add polygon</source>
       <translation>Προσθήκη Πολυγώνου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="206"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="203"/>
       <source>Add sketch arc slot</source>
       <translation>Προσθήκη τοξωτής σχισμής στο σχέδιο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="149"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="148"/>
       <source>Rotate geometries</source>
       <translation>Περιστροφή Γεωμετριών</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerScale.h" line="131"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="128"/>
       <source>Scale geometries</source>
       <translation>Αλλαγή μεγέθους γεωμετριών</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="122"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="121"/>
       <source>Translate geometries</source>
       <translation>Μετατόπιση γεωμετριών</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="140"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="137"/>
       <source>Symmetry geometries</source>
       <translation>Συμμετρία γεωμετριών</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="467"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="464"/>
       <source>Add line to sketch polyline</source>
       <translation>Προσθήκη γραμμής σε πολυγραμμή σχεδίου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="497"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="494"/>
       <source>Add arc to sketch polyline</source>
       <translation>Προσθήκη τόξου σε πολυγραμμή σχεδίου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="943"/>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1261"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="940"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1269"/>
       <source>Add sketch polyline</source>
       <translation type="unfinished">Add sketch polyline</translation>
     </message>
     <message>
-      <location filename="../../CommandAlterGeometry.cpp" line="183"/>
+      <location filename="../../CommandAlterGeometry.cpp" line="249"/>
       <source>Toggle construction geometry</source>
       <translation>Εναλλαγή κατασκευαστικής λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandler.cpp" line="946"/>
+      <location filename="../../DrawSketchHandler.cpp" line="1115"/>
       <location filename="../../DrawSketchDefaultHandler.h" line="943"/>
       <source>Add Auto-Constraints</source>
       <translation>Προσθήκη Αυτόματων Περιορισμών</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="99"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="626"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="773"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="96"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="633"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="780"/>
       <source>Add Sketch B-Spline</source>
       <translation>Προσθήκη Σκίτσου B-Spline</translation>
+    </message>
+    <message>
+      <location filename="../../DrawSketchHandlerText.h" line="130"/>
+      <source>Add sketch Text</source>
+      <translation type="unfinished">Add sketch Text</translation>
     </message>
     <message>
       <location filename="../../EditTextDialog.cpp" line="114"/>
@@ -998,9 +998,9 @@ invalid constraints, and degenerate geometry</source>
       <translation type="unfinished">Modify sketch text constraint</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="131"/>
-      <source>Add sketch Text</source>
-      <translation type="unfinished">Add sketch Text</translation>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="170"/>
+      <source>Add sketch arc of parabola</source>
+      <translation type="unfinished">Add sketch arc of parabola</translation>
     </message>
   </context>
   <context>
@@ -1014,54 +1014,54 @@ invalid constraints, and degenerate geometry</source>
   <context>
     <name>Exceptions</name>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2802"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2815"/>
       <source>You are requesting no change in knot multiplicity.</source>
       <translation>Δεν απαιτείτε καμία αλλαγή της πολλαπλότητας κόμβου.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2794"/>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2972"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2807"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2985"/>
       <source>B-spline Geometry Index (GeoID) is out of bounds.</source>
       <translation>Ο δείκτης (GeoID) της καμπύλης B-spline είναι εκτός ορίων.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2811"/>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2988"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2824"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="3001"/>
       <source>The Geometry Index (GeoId) provided is not a B-spline.</source>
       <translation>Το επιλεγμένο σχήμα (GeoId) δεν είναι καμπύλη B-spline.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2823"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2836"/>
       <source>The knot index is out of bounds. Note that in accordance with OCC notation, the first knot has index 1 and not zero.</source>
       <translation>Ο δείκτης κόμβου είναι εκτός ορίων. Σημειώστε πως σύμφωνα με το σύστημα σημειογραφίας του OCC, ο πρώτος κόμβος έχει δείκτη 1 και όχι μηδέν.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2839"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2852"/>
       <source>The multiplicity cannot be increased beyond the degree of the B-spline.</source>
       <translation>Η πολλαπλότητα (Ισχύ) δεν μπορεί να αυξηθεί πάνω από τον βαθμό της B-spline.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2850"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2863"/>
       <source>The multiplicity cannot be decreased beyond zero.</source>
       <translation>Η πολλαπλότητα δεν δύναται να είναι χαμηλότερη από το μηδέν.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2866"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2879"/>
       <source>OCC is unable to decrease the multiplicity within the maximum tolerance.</source>
       <translation>To ΟCC αδυνατεί να μειώσει την πολλαπλότητα εντός των ορίων μέγιστης ανοχής.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="2979"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="2992"/>
       <source>Knot cannot have zero multiplicity.</source>
       <translation>Ο κόμβος δεν μπορεί να έχει μηδενική πολλαπλότητα (Ισχύ).</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="3001"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="3014"/>
       <source>Knot multiplicity cannot be higher than the degree of the B-spline.</source>
       <translation>Η πολλαπλότητα (Ισχύ) του κόμβου δεν μπορεί να είναι μεγαλύτερη από τον βαθμό της καμπύλης B-spline.</translation>
     </message>
     <message>
-      <location filename="../../../App/SketchObjectOperations.cpp" line="3011"/>
+      <location filename="../../../App/SketchObjectOperations.cpp" line="3024"/>
       <source>Knot cannot be inserted outside the B-spline parameter range.</source>
       <translation>Ο κόμβος δεν μπορεί να εισαχθεί εκτός του εύρους παραμέτρων της καμπύλης B-spline.</translation>
     </message>
@@ -1186,143 +1186,11 @@ invalid constraints, and degenerate geometry</source>
       <translation>Χωρίς προσάρτηση</translation>
     </message>
     <message>
-      <location filename="../../CommandSketcherBSpline.cpp" line="171"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="244"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="329"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="423"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="491"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="580"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="634"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="1023"/>
-      <location filename="../../CommandSketcherBSpline.cpp" line="1144"/>
-      <location filename="../../CommandConstraints.cpp" line="449"/>
-      <location filename="../../CommandConstraints.cpp" line="456"/>
-      <location filename="../../CommandConstraints.cpp" line="3126"/>
-      <location filename="../../CommandConstraints.cpp" line="3285"/>
-      <location filename="../../CommandConstraints.cpp" line="3301"/>
-      <location filename="../../CommandConstraints.cpp" line="3614"/>
-      <location filename="../../CommandConstraints.cpp" line="4021"/>
-      <location filename="../../CommandConstraints.cpp" line="4048"/>
-      <location filename="../../CommandConstraints.cpp" line="4053"/>
-      <location filename="../../CommandConstraints.cpp" line="4307"/>
-      <location filename="../../CommandConstraints.cpp" line="4340"/>
-      <location filename="../../CommandConstraints.cpp" line="4345"/>
-      <location filename="../../CommandConstraints.cpp" line="4639"/>
-      <location filename="../../CommandConstraints.cpp" line="4669"/>
-      <location filename="../../CommandConstraints.cpp" line="4692"/>
-      <location filename="../../CommandConstraints.cpp" line="4722"/>
-      <location filename="../../CommandConstraints.cpp" line="4739"/>
-      <location filename="../../CommandConstraints.cpp" line="4869"/>
-      <location filename="../../CommandConstraints.cpp" line="4891"/>
-      <location filename="../../CommandConstraints.cpp" line="4920"/>
-      <location filename="../../CommandConstraints.cpp" line="5131"/>
-      <location filename="../../CommandConstraints.cpp" line="5143"/>
-      <location filename="../../CommandConstraints.cpp" line="5392"/>
-      <location filename="../../CommandConstraints.cpp" line="5400"/>
-      <location filename="../../CommandConstraints.cpp" line="5466"/>
-      <location filename="../../CommandConstraints.cpp" line="5592"/>
-      <location filename="../../CommandConstraints.cpp" line="5697"/>
-      <location filename="../../CommandConstraints.cpp" line="5782"/>
-      <location filename="../../CommandConstraints.cpp" line="5795"/>
-      <location filename="../../CommandConstraints.cpp" line="5828"/>
-      <location filename="../../CommandConstraints.cpp" line="5890"/>
-      <location filename="../../CommandConstraints.cpp" line="5926"/>
-      <location filename="../../CommandConstraints.cpp" line="5961"/>
-      <location filename="../../CommandConstraints.cpp" line="6083"/>
-      <location filename="../../CommandConstraints.cpp" line="6096"/>
-      <location filename="../../CommandConstraints.cpp" line="6127"/>
-      <location filename="../../CommandConstraints.cpp" line="6189"/>
-      <location filename="../../CommandConstraints.cpp" line="6223"/>
-      <location filename="../../CommandConstraints.cpp" line="6257"/>
-      <location filename="../../CommandConstraints.cpp" line="6379"/>
-      <location filename="../../CommandConstraints.cpp" line="6414"/>
-      <location filename="../../CommandConstraints.cpp" line="6423"/>
-      <location filename="../../CommandConstraints.cpp" line="6462"/>
-      <location filename="../../CommandConstraints.cpp" line="6561"/>
-      <location filename="../../CommandConstraints.cpp" line="6573"/>
-      <location filename="../../CommandConstraints.cpp" line="6627"/>
-      <location filename="../../CommandConstraints.cpp" line="6705"/>
-      <location filename="../../CommandConstraints.cpp" line="6715"/>
-      <location filename="../../CommandConstraints.cpp" line="6756"/>
-      <location filename="../../CommandConstraints.cpp" line="6767"/>
-      <location filename="../../CommandConstraints.cpp" line="6797"/>
-      <location filename="../../CommandConstraints.cpp" line="6818"/>
-      <location filename="../../CommandConstraints.cpp" line="6996"/>
-      <location filename="../../CommandConstraints.cpp" line="7017"/>
-      <location filename="../../CommandConstraints.cpp" line="7196"/>
-      <location filename="../../CommandConstraints.cpp" line="7416"/>
-      <location filename="../../CommandConstraints.cpp" line="7428"/>
-      <location filename="../../CommandConstraints.cpp" line="7462"/>
-      <location filename="../../CommandConstraints.cpp" line="7533"/>
-      <location filename="../../CommandConstraints.cpp" line="7553"/>
-      <location filename="../../CommandConstraints.cpp" line="7562"/>
-      <location filename="../../CommandConstraints.cpp" line="7591"/>
-      <location filename="../../CommandConstraints.cpp" line="7600"/>
-      <location filename="../../CommandConstraints.cpp" line="7611"/>
-      <location filename="../../CommandConstraints.cpp" line="7639"/>
-      <location filename="../../CommandConstraints.cpp" line="7820"/>
-      <location filename="../../CommandConstraints.cpp" line="7873"/>
-      <location filename="../../CommandConstraints.cpp" line="8065"/>
-      <location filename="../../CommandConstraints.cpp" line="8110"/>
-      <location filename="../../CommandConstraints.cpp" line="8235"/>
-      <location filename="../../CommandConstraints.cpp" line="8248"/>
-      <location filename="../../CommandConstraints.cpp" line="8314"/>
-      <location filename="../../CommandConstraints.cpp" line="8322"/>
-      <location filename="../../CommandConstraints.cpp" line="8478"/>
-      <location filename="../../CommandConstraints.cpp" line="8598"/>
-      <location filename="../../CommandConstraints.cpp" line="8611"/>
-      <location filename="../../CommandConstraints.cpp" line="8656"/>
-      <location filename="../../CommandConstraints.cpp" line="8674"/>
-      <location filename="../../CommandConstraints.cpp" line="8800"/>
-      <location filename="../../CommandConstraints.cpp" line="8808"/>
-      <location filename="../../CommandConstraints.cpp" line="8916"/>
-      <location filename="../../CommandConstraints.cpp" line="8929"/>
-      <location filename="../../CommandConstraints.cpp" line="8990"/>
-      <location filename="../../CommandConstraints.cpp" line="8998"/>
-      <location filename="../../CommandConstraints.cpp" line="9176"/>
-      <location filename="../../CommandConstraints.cpp" line="9461"/>
-      <location filename="../../CommandConstraints.cpp" line="9474"/>
-      <location filename="../../CommandConstraints.cpp" line="9510"/>
-      <location filename="../../CommandConstraints.cpp" line="9608"/>
-      <location filename="../../CommandConstraints.cpp" line="9621"/>
-      <location filename="../../CommandConstraints.cpp" line="9686"/>
-      <location filename="../../CommandConstraints.cpp" line="9780"/>
-      <location filename="../../CommandConstraints.cpp" line="9934"/>
-      <location filename="../../CommandConstraints.cpp" line="9948"/>
-      <location filename="../../CommandConstraints.cpp" line="9966"/>
-      <location filename="../../CommandConstraints.cpp" line="9973"/>
-      <location filename="../../CommandConstraints.cpp" line="9994"/>
-      <location filename="../../CommandConstraints.cpp" line="10027"/>
-      <location filename="../../CommandConstraints.cpp" line="10043"/>
-      <location filename="../../CommandConstraints.cpp" line="10098"/>
-      <location filename="../../CommandConstraints.cpp" line="10194"/>
-      <location filename="../../CommandConstraints.cpp" line="10209"/>
-      <location filename="../../CommandConstraints.cpp" line="10242"/>
-      <location filename="../../CommandConstraints.cpp" line="10253"/>
-      <location filename="../../CommandConstraints.cpp" line="10266"/>
-      <location filename="../../CommandConstraints.cpp" line="10294"/>
-      <location filename="../../CommandConstraints.cpp" line="10325"/>
-      <location filename="../../CommandConstraints.cpp" line="10375"/>
-      <location filename="../../CommandConstraints.cpp" line="10406"/>
-      <location filename="../../CommandConstraints.cpp" line="10421"/>
-      <location filename="../../CommandConstraints.cpp" line="10462"/>
-      <location filename="../../CommandConstraints.cpp" line="10486"/>
-      <location filename="../../CommandConstraints.cpp" line="10551"/>
-      <location filename="../../CommandConstraints.cpp" line="10561"/>
-      <location filename="../../CommandConstraints.cpp" line="10571"/>
-      <location filename="../../CommandConstraints.cpp" line="10647"/>
-      <location filename="../../CommandConstraints.cpp" line="10657"/>
-      <location filename="../../CommandConstraints.cpp" line="10682"/>
-      <location filename="../../CommandConstraints.cpp" line="10692"/>
-      <location filename="../../CommandConstraints.cpp" line="10710"/>
-      <location filename="../../CommandConstraints.cpp" line="10838"/>
-      <location filename="../../CommandConstraints.cpp" line="10848"/>
-      <location filename="../../CommandConstraints.cpp" line="11084"/>
-      <location filename="../../CommandConstraints.cpp" line="11160"/>
-      <location filename="../../CommandConstraints.cpp" line="11172"/>
-      <location filename="../../CommandConstraints.cpp" line="11208"/>
-      <location filename="../../CommandConstraints.cpp" line="11283"/>
-      <location filename="../../CommandConstraints.cpp" line="11295"/>
+      <location filename="../../CommandSketcherVirtualSpace.cpp" line="116"/>
+      <location filename="../../CommandSketcherVirtualSpace.cpp" line="127"/>
+      <location filename="../../CommandSketcherVirtualSpace.cpp" line="157"/>
+      <location filename="../../CommandAlterGeometry.cpp" line="231"/>
+      <location filename="../../CommandAlterGeometry.cpp" line="242"/>
       <location filename="../../CommandSketcherTools.cpp" line="463"/>
       <location filename="../../CommandSketcherTools.cpp" line="1107"/>
       <location filename="../../CommandSketcherTools.cpp" line="1436"/>
@@ -1335,17 +1203,149 @@ invalid constraints, and degenerate geometry</source>
       <location filename="../../CommandSketcherTools.cpp" line="2334"/>
       <location filename="../../CommandSketcherTools.cpp" line="2381"/>
       <location filename="../../CommandSketcherTools.cpp" line="2446"/>
-      <location filename="../../CommandSketcherVirtualSpace.cpp" line="116"/>
-      <location filename="../../CommandSketcherVirtualSpace.cpp" line="127"/>
-      <location filename="../../CommandSketcherVirtualSpace.cpp" line="157"/>
-      <location filename="../../CommandAlterGeometry.cpp" line="165"/>
-      <location filename="../../CommandAlterGeometry.cpp" line="176"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="171"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="244"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="329"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="423"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="491"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="580"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="634"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="1023"/>
+      <location filename="../../CommandSketcherBSpline.cpp" line="1144"/>
+      <location filename="../../CommandConstraints.cpp" line="452"/>
+      <location filename="../../CommandConstraints.cpp" line="459"/>
+      <location filename="../../CommandConstraints.cpp" line="3293"/>
+      <location filename="../../CommandConstraints.cpp" line="3452"/>
+      <location filename="../../CommandConstraints.cpp" line="3468"/>
+      <location filename="../../CommandConstraints.cpp" line="3781"/>
+      <location filename="../../CommandConstraints.cpp" line="4188"/>
+      <location filename="../../CommandConstraints.cpp" line="4215"/>
+      <location filename="../../CommandConstraints.cpp" line="4220"/>
+      <location filename="../../CommandConstraints.cpp" line="4474"/>
+      <location filename="../../CommandConstraints.cpp" line="4507"/>
+      <location filename="../../CommandConstraints.cpp" line="4512"/>
+      <location filename="../../CommandConstraints.cpp" line="4806"/>
+      <location filename="../../CommandConstraints.cpp" line="4836"/>
+      <location filename="../../CommandConstraints.cpp" line="4859"/>
+      <location filename="../../CommandConstraints.cpp" line="4889"/>
+      <location filename="../../CommandConstraints.cpp" line="4906"/>
+      <location filename="../../CommandConstraints.cpp" line="5036"/>
+      <location filename="../../CommandConstraints.cpp" line="5058"/>
+      <location filename="../../CommandConstraints.cpp" line="5087"/>
+      <location filename="../../CommandConstraints.cpp" line="5298"/>
+      <location filename="../../CommandConstraints.cpp" line="5310"/>
+      <location filename="../../CommandConstraints.cpp" line="5559"/>
+      <location filename="../../CommandConstraints.cpp" line="5567"/>
+      <location filename="../../CommandConstraints.cpp" line="5633"/>
+      <location filename="../../CommandConstraints.cpp" line="5759"/>
+      <location filename="../../CommandConstraints.cpp" line="5864"/>
+      <location filename="../../CommandConstraints.cpp" line="5949"/>
+      <location filename="../../CommandConstraints.cpp" line="5962"/>
+      <location filename="../../CommandConstraints.cpp" line="5995"/>
+      <location filename="../../CommandConstraints.cpp" line="6057"/>
+      <location filename="../../CommandConstraints.cpp" line="6093"/>
+      <location filename="../../CommandConstraints.cpp" line="6128"/>
+      <location filename="../../CommandConstraints.cpp" line="6250"/>
+      <location filename="../../CommandConstraints.cpp" line="6263"/>
+      <location filename="../../CommandConstraints.cpp" line="6294"/>
+      <location filename="../../CommandConstraints.cpp" line="6356"/>
+      <location filename="../../CommandConstraints.cpp" line="6390"/>
+      <location filename="../../CommandConstraints.cpp" line="6424"/>
+      <location filename="../../CommandConstraints.cpp" line="6546"/>
+      <location filename="../../CommandConstraints.cpp" line="6581"/>
+      <location filename="../../CommandConstraints.cpp" line="6590"/>
+      <location filename="../../CommandConstraints.cpp" line="6629"/>
+      <location filename="../../CommandConstraints.cpp" line="6728"/>
+      <location filename="../../CommandConstraints.cpp" line="6740"/>
+      <location filename="../../CommandConstraints.cpp" line="6794"/>
+      <location filename="../../CommandConstraints.cpp" line="6872"/>
+      <location filename="../../CommandConstraints.cpp" line="6882"/>
+      <location filename="../../CommandConstraints.cpp" line="6923"/>
+      <location filename="../../CommandConstraints.cpp" line="6934"/>
+      <location filename="../../CommandConstraints.cpp" line="6964"/>
+      <location filename="../../CommandConstraints.cpp" line="6985"/>
+      <location filename="../../CommandConstraints.cpp" line="7163"/>
+      <location filename="../../CommandConstraints.cpp" line="7184"/>
+      <location filename="../../CommandConstraints.cpp" line="7363"/>
+      <location filename="../../CommandConstraints.cpp" line="7583"/>
+      <location filename="../../CommandConstraints.cpp" line="7595"/>
+      <location filename="../../CommandConstraints.cpp" line="7629"/>
+      <location filename="../../CommandConstraints.cpp" line="7700"/>
+      <location filename="../../CommandConstraints.cpp" line="7720"/>
+      <location filename="../../CommandConstraints.cpp" line="7729"/>
+      <location filename="../../CommandConstraints.cpp" line="7758"/>
+      <location filename="../../CommandConstraints.cpp" line="7767"/>
+      <location filename="../../CommandConstraints.cpp" line="7778"/>
+      <location filename="../../CommandConstraints.cpp" line="7806"/>
+      <location filename="../../CommandConstraints.cpp" line="7987"/>
+      <location filename="../../CommandConstraints.cpp" line="8040"/>
+      <location filename="../../CommandConstraints.cpp" line="8232"/>
+      <location filename="../../CommandConstraints.cpp" line="8277"/>
+      <location filename="../../CommandConstraints.cpp" line="8402"/>
+      <location filename="../../CommandConstraints.cpp" line="8415"/>
+      <location filename="../../CommandConstraints.cpp" line="8481"/>
+      <location filename="../../CommandConstraints.cpp" line="8489"/>
+      <location filename="../../CommandConstraints.cpp" line="8645"/>
+      <location filename="../../CommandConstraints.cpp" line="8765"/>
+      <location filename="../../CommandConstraints.cpp" line="8778"/>
+      <location filename="../../CommandConstraints.cpp" line="8823"/>
+      <location filename="../../CommandConstraints.cpp" line="8841"/>
+      <location filename="../../CommandConstraints.cpp" line="8967"/>
+      <location filename="../../CommandConstraints.cpp" line="8975"/>
+      <location filename="../../CommandConstraints.cpp" line="9083"/>
+      <location filename="../../CommandConstraints.cpp" line="9096"/>
+      <location filename="../../CommandConstraints.cpp" line="9157"/>
+      <location filename="../../CommandConstraints.cpp" line="9165"/>
+      <location filename="../../CommandConstraints.cpp" line="9343"/>
+      <location filename="../../CommandConstraints.cpp" line="9628"/>
+      <location filename="../../CommandConstraints.cpp" line="9641"/>
+      <location filename="../../CommandConstraints.cpp" line="9677"/>
+      <location filename="../../CommandConstraints.cpp" line="9775"/>
+      <location filename="../../CommandConstraints.cpp" line="9788"/>
+      <location filename="../../CommandConstraints.cpp" line="9853"/>
+      <location filename="../../CommandConstraints.cpp" line="9947"/>
+      <location filename="../../CommandConstraints.cpp" line="10101"/>
+      <location filename="../../CommandConstraints.cpp" line="10115"/>
+      <location filename="../../CommandConstraints.cpp" line="10133"/>
+      <location filename="../../CommandConstraints.cpp" line="10140"/>
+      <location filename="../../CommandConstraints.cpp" line="10161"/>
+      <location filename="../../CommandConstraints.cpp" line="10194"/>
+      <location filename="../../CommandConstraints.cpp" line="10210"/>
+      <location filename="../../CommandConstraints.cpp" line="10265"/>
+      <location filename="../../CommandConstraints.cpp" line="10361"/>
+      <location filename="../../CommandConstraints.cpp" line="10376"/>
+      <location filename="../../CommandConstraints.cpp" line="10409"/>
+      <location filename="../../CommandConstraints.cpp" line="10420"/>
+      <location filename="../../CommandConstraints.cpp" line="10433"/>
+      <location filename="../../CommandConstraints.cpp" line="10461"/>
+      <location filename="../../CommandConstraints.cpp" line="10492"/>
+      <location filename="../../CommandConstraints.cpp" line="10542"/>
+      <location filename="../../CommandConstraints.cpp" line="10573"/>
+      <location filename="../../CommandConstraints.cpp" line="10588"/>
+      <location filename="../../CommandConstraints.cpp" line="10629"/>
+      <location filename="../../CommandConstraints.cpp" line="10653"/>
+      <location filename="../../CommandConstraints.cpp" line="10718"/>
+      <location filename="../../CommandConstraints.cpp" line="10728"/>
+      <location filename="../../CommandConstraints.cpp" line="10738"/>
+      <location filename="../../CommandConstraints.cpp" line="10814"/>
+      <location filename="../../CommandConstraints.cpp" line="10824"/>
+      <location filename="../../CommandConstraints.cpp" line="10849"/>
+      <location filename="../../CommandConstraints.cpp" line="10859"/>
+      <location filename="../../CommandConstraints.cpp" line="10877"/>
+      <location filename="../../CommandConstraints.cpp" line="11005"/>
+      <location filename="../../CommandConstraints.cpp" line="11015"/>
+      <location filename="../../CommandConstraints.cpp" line="11251"/>
+      <location filename="../../CommandConstraints.cpp" line="11327"/>
+      <location filename="../../CommandConstraints.cpp" line="11339"/>
+      <location filename="../../CommandConstraints.cpp" line="11375"/>
+      <location filename="../../CommandConstraints.cpp" line="11450"/>
+      <location filename="../../CommandConstraints.cpp" line="11462"/>
       <source>Wrong selection</source>
       <translation>Λάθος επιλογή</translation>
     </message>
     <message>
-      <location filename="../../CommandAlterGeometry.cpp" line="166"/>
-      <location filename="../../CommandAlterGeometry.cpp" line="177"/>
+      <location filename="../../CommandAlterGeometry.cpp" line="232"/>
+      <location filename="../../CommandAlterGeometry.cpp" line="243"/>
       <source>Select edges from the sketch</source>
       <translation>Επιλέξτε ακμές (γραμμές) από το σχέδιο</translation>
     </message>
@@ -1360,322 +1360,322 @@ invalid constraints, and degenerate geometry</source>
       <translation>Περιορισμός διαστάσεων</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="450"/>
+      <location filename="../../CommandConstraints.cpp" line="453"/>
       <source>Cannot add a constraint between two external geometries.</source>
       <translation>Αδυναμία προσθήκης περιορισμού μεταξύ δύο εξωτερικών γεωμετριών.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="457"/>
+      <location filename="../../CommandConstraints.cpp" line="460"/>
       <source>Cannot add a constraint between two fixed geometries. Fixed geometries include external geometry, blocked geometry, and special points such as B-spline knot points.</source>
       <translation>Δεν είναι δυνατή η προσθήκη περιορισμού μεταξύ δύο σταθερών γεωμετριών. Οι σταθερές γεωμετρίες περιλαμβάνουν εξωτερική γεωμετρία, φραγμένη γεωμετρία, και ειδικά σημεία όπως σημεία κόμβων καμπύλης B-spline.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1013"/>
+      <location filename="../../CommandConstraints.cpp" line="1016"/>
       <source>Sketcher Constraint Substitution</source>
       <translation>Αντικατάσταση περιορισμού Σχεδιασμού</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1125"/>
+      <location filename="../../CommandConstraints.cpp" line="1128"/>
       <source>One of the selected has to be on the sketch.</source>
       <translation>Ένα από τα επιλεγμένα πρέπει να βρίσκεται στο σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3615"/>
+      <location filename="../../CommandConstraints.cpp" line="3782"/>
       <source>Select an edge from the sketch.</source>
       <translation>Επιλέξτε μια ακμή από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3579"/>
-      <location filename="../../CommandConstraints.cpp" line="3588"/>
-      <location filename="../../CommandConstraints.cpp" line="3640"/>
-      <location filename="../../CommandConstraints.cpp" line="3664"/>
-      <location filename="../../CommandConstraints.cpp" line="3718"/>
-      <location filename="../../CommandConstraints.cpp" line="3752"/>
+      <location filename="../../CommandConstraints.cpp" line="3746"/>
+      <location filename="../../CommandConstraints.cpp" line="3755"/>
+      <location filename="../../CommandConstraints.cpp" line="3807"/>
+      <location filename="../../CommandConstraints.cpp" line="3831"/>
+      <location filename="../../CommandConstraints.cpp" line="3885"/>
+      <location filename="../../CommandConstraints.cpp" line="3919"/>
       <source>Impossible constraint</source>
       <translation>Αδύνατος περιορισμός</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3641"/>
-      <location filename="../../CommandConstraints.cpp" line="3753"/>
+      <location filename="../../CommandConstraints.cpp" line="3808"/>
+      <location filename="../../CommandConstraints.cpp" line="3920"/>
       <source>The selected edge is not a line segment.</source>
       <translation>Η επιλεγμένη ακμή (γραμμή) δεν είναι ευθύγραμμο τμήμα.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3571"/>
-      <location filename="../../CommandConstraints.cpp" line="4357"/>
-      <location filename="../../CommandConstraints.cpp" line="4409"/>
+      <location filename="../../CommandConstraints.cpp" line="3738"/>
+      <location filename="../../CommandConstraints.cpp" line="4524"/>
+      <location filename="../../CommandConstraints.cpp" line="4576"/>
       <source>Double constraint</source>
       <translation>Διπλός περιορισμός</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3572"/>
+      <location filename="../../CommandConstraints.cpp" line="3739"/>
       <source>The selected edge already has a horizontal constraint!</source>
       <translation>Η επιλεγμένη ακμή (γραμμή) έχει ήδη έναν οριζόντιο περιορισμό!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3580"/>
+      <location filename="../../CommandConstraints.cpp" line="3747"/>
       <source>The selected edge already has a vertical constraint!</source>
       <translation>Η επιλεγμένη ακμή (γραμμή) έχει ήδη έναν κάθετο περιορισμό!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3719"/>
+      <location filename="../../CommandConstraints.cpp" line="3886"/>
       <source>There are more than one fixed points selected. Select a maximum of one fixed point!</source>
       <translation>Υπάρχουν περισσότερα από ένα σταθερά σημεία επιλεγμένα. Επιλέξτε το πολύ ένα σταθερό σημείο!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4022"/>
-      <location filename="../../CommandConstraints.cpp" line="4308"/>
-      <location filename="../../CommandConstraints.cpp" line="5132"/>
+      <location filename="../../CommandConstraints.cpp" line="4189"/>
+      <location filename="../../CommandConstraints.cpp" line="4475"/>
+      <location filename="../../CommandConstraints.cpp" line="5299"/>
       <source>Select vertices from the sketch.</source>
       <translation>Επιλέξτε κορυφές από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4049"/>
+      <location filename="../../CommandConstraints.cpp" line="4216"/>
       <source>Select one vertex from the sketch other than the origin.</source>
       <translation>Επιλέξτε μια κορυφή από το σκαρίφημα εκτός από το σημείο τομής των αξόνων.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4054"/>
+      <location filename="../../CommandConstraints.cpp" line="4221"/>
       <source>Select only vertices from the sketch. The last selected vertex may be the origin.</source>
       <translation>Επιλέξτε μόνο τις κορυφές από το σχέδιο. Η τελευταία επιλεγμένη κορυφή δύναται να είναι το σημείο τομής των αξόνων.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4321"/>
+      <location filename="../../CommandConstraints.cpp" line="4488"/>
       <source>Wrong solver status</source>
       <translation>Λάθος κατάσταση επιλυτή</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4341"/>
+      <location filename="../../CommandConstraints.cpp" line="4508"/>
       <source>Select one edge from the sketch.</source>
       <translation>Επιλέξτε μια ακμή από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4346"/>
+      <location filename="../../CommandConstraints.cpp" line="4513"/>
       <source>Select only edges from the sketch.</source>
       <translation>Επιλέξτε μόνο ακμές από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4723"/>
+      <location filename="../../CommandConstraints.cpp" line="4890"/>
       <source>None of the selected points were constrained onto the respective curves, because they are part of the same element, they are both external geometry, or the edge is not eligible.</source>
       <translation>Κανένα από τα επιλεγμένα σημεία δεν περιορίστηκε πάνω στις αντίστοιχες καμπύλες, διότι ανήκουν στο ίδιο στοιχείο, είναι και τα δύο εξωτερικές γεωμετρίες ή η ακμή (γραμμή) δεν είναι κατάλληλη.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7821"/>
+      <location filename="../../CommandConstraints.cpp" line="7988"/>
       <source>Only tangent-via-point is supported with a B-spline.</source>
       <translation>Με B-spline υποστηρίζεται μόνο η εφαπτομένη μέσω σημείου.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8323"/>
-      <location filename="../../CommandConstraints.cpp" line="8999"/>
+      <location filename="../../CommandConstraints.cpp" line="8490"/>
+      <location filename="../../CommandConstraints.cpp" line="9166"/>
       <source>Select either only one or more B-spline poles or only one or more arcs or circles from the sketch, but not mixed.</source>
       <translation>Επιλέξτε από το σχέδιο είτε μόνο έναν ή περισσότερους πόλους B-spline, είτε μόνο ένα ή περισσότερα τόξα ή κύκλους, αλλά όχι ανάμεικτα.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10195"/>
-      <location filename="../../CommandConstraints.cpp" line="10210"/>
-      <location filename="../../CommandConstraints.cpp" line="10295"/>
-      <location filename="../../CommandConstraints.cpp" line="10376"/>
-      <location filename="../../CommandConstraints.cpp" line="10487"/>
+      <location filename="../../CommandConstraints.cpp" line="10362"/>
+      <location filename="../../CommandConstraints.cpp" line="10377"/>
+      <location filename="../../CommandConstraints.cpp" line="10462"/>
+      <location filename="../../CommandConstraints.cpp" line="10543"/>
+      <location filename="../../CommandConstraints.cpp" line="10654"/>
       <source>Select two points and a symmetry line, two points and a symmetry point, an element and a symmetry line or an element and a symmetry point from the sketch.</source>
       <translation type="unfinished">Select two points and a symmetry line, two points and a symmetry point, an element and a symmetry line or an element and a symmetry point from the sketch.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10243"/>
-      <location filename="../../CommandConstraints.cpp" line="10422"/>
-      <location filename="../../CommandConstraints.cpp" line="10562"/>
+      <location filename="../../CommandConstraints.cpp" line="10410"/>
+      <location filename="../../CommandConstraints.cpp" line="10589"/>
+      <location filename="../../CommandConstraints.cpp" line="10729"/>
       <source>Cannot add a symmetry constraint because the first selected element has no endpoints. Select a line or an open curve instead.</source>
       <translation type="unfinished">Cannot add a symmetry constraint because the first selected element has no endpoints. Select a line or an open curve instead.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10254"/>
-      <location filename="../../CommandConstraints.cpp" line="10572"/>
+      <location filename="../../CommandConstraints.cpp" line="10421"/>
+      <location filename="../../CommandConstraints.cpp" line="10739"/>
       <source>Cannot add a symmetry constraint because the second selected element is not a line. Select a line or an axis instead.</source>
       <translation type="unfinished">Cannot add a symmetry constraint because the second selected element is not a line. Select a line or an axis instead.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10267"/>
-      <location filename="../../CommandConstraints.cpp" line="10407"/>
+      <location filename="../../CommandConstraints.cpp" line="10434"/>
+      <location filename="../../CommandConstraints.cpp" line="10574"/>
       <source>Cannot add a symmetry constraint between an element and its end points!</source>
       <translation type="unfinished">Cannot add a symmetry constraint between an element and its end points!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10552"/>
+      <location filename="../../CommandConstraints.cpp" line="10719"/>
       <source>Cannot add a symmetry constraint between an element and itself.</source>
       <translation type="unfinished">Cannot add a symmetry constraint between an element and itself.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10632"/>
+      <location filename="../../CommandConstraints.cpp" line="10799"/>
       <source>Select two endpoints of lines to act as rays, and an edge representing a boundary. The first selected point corresponds to index n1, second to n2, and the value sets the ratio n2/n1.</source>
       <comment>Constraint_SnellsLaw</comment>
       <translation>Πιλέξτε δύο άκρα γραμμών που θα λειτουργήσουν ως ακτίνες και μια ακμή που θα αντιπροσωπεύει το όριο. Το πρώτο επιλεγμένο σημείο αντιστοιχεί στον δείκτη n1, το δεύτερο στον n2, και η τιμή ορίζει την αναλογία n2/n1.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10658"/>
+      <location filename="../../CommandConstraints.cpp" line="10825"/>
       <source>Number of selected objects is not 3</source>
       <translation>Ο αριθμός των επιλεγμένων αντικειμένων δεν είναι 3</translation>
     </message>
     <message>
       <location filename="../../CommandSketcherBSpline.cpp" line="623"/>
       <location filename="../../CommandSketcherBSpline.cpp" line="1185"/>
-      <location filename="../../CommandConstraints.cpp" line="1042"/>
+      <location filename="../../CommandConstraints.cpp" line="1045"/>
       <source>Error</source>
       <translation>Σφάλμα</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4572"/>
+      <location filename="../../CommandConstraints.cpp" line="4739"/>
       <source>Endpoint to endpoint tangency was applied instead.</source>
       <translation>Εφαρμόστηκε περιορισμός επαφής μεταξύ άκρων εναλλακτικά.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4740"/>
+      <location filename="../../CommandConstraints.cpp" line="4907"/>
       <source>Select two or more vertices from the sketch for a coincident constraint, or two or more circles, ellipses, arcs or arcs of ellipse for a concentric constraint.</source>
       <translation>Επιλέξτε δύο ή περισσότερες κορυφές από το σχέδιο για περιορισμό ταύτισης, ή δύο ή περισσότερους κύκλους, ελλείψεις ή τόξα για περιορισμό ομοκεντρικότητας.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4921"/>
+      <location filename="../../CommandConstraints.cpp" line="5088"/>
       <source>Select two vertices from the sketch for a coincident constraint, or two circles, ellipses, arcs or arcs of ellipse for a concentric constraint.</source>
       <translation>Επιλέξτε δύο κορυφές από το σχέδιο για περιορισμό ταύτισης, ή δύο κύκλους, ελλείψεις ή τόξα για περιορισμό ομοκεντρικότητας.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5144"/>
+      <location filename="../../CommandConstraints.cpp" line="5311"/>
       <source>Select exactly one line or one point and one line or two points from the sketch.</source>
       <translation>Επιλέξτε ακριβώς μια γραμμή ή ένα σημείο και μια γραμμή ή δύο σημεία από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5401"/>
+      <location filename="../../CommandConstraints.cpp" line="5568"/>
       <source>Cannot add a length constraint on an axis!</source>
       <translation>Αδύνατη η προσθήκη περιορισμού μήκους σε άξονα!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5467"/>
-      <location filename="../../CommandConstraints.cpp" line="5698"/>
+      <location filename="../../CommandConstraints.cpp" line="5634"/>
+      <location filename="../../CommandConstraints.cpp" line="5865"/>
       <source>Select exactly one line or one point and one line or two points or two circles from the sketch.</source>
       <translation>Επιλέξτε από το σχέδιο ακριβώς μία γραμμή, ή ένα σημείο και μία γραμμή, ή δύο σημεία, ή δύο κύκλους.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5593"/>
+      <location filename="../../CommandConstraints.cpp" line="5760"/>
       <source>This constraint does not make sense for non-linear curves.</source>
       <translation>Αυτός ο περιορισμός δεν εφαρμόζεται για μη γραμμικές καμπύλες.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4524"/>
+      <location filename="../../CommandConstraints.cpp" line="4691"/>
       <source>Endpoint to edge tangency was applied instead.</source>
       <translation>Αντ' αυτού, εφαρμόστηκε ομαλή επαφή του άκρου πάνω στην ακμή (γραμμή).</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5783"/>
-      <location filename="../../CommandConstraints.cpp" line="6084"/>
-      <location filename="../../CommandConstraints.cpp" line="8236"/>
-      <location filename="../../CommandConstraints.cpp" line="8599"/>
-      <location filename="../../CommandConstraints.cpp" line="8917"/>
-      <location filename="../../CommandConstraints.cpp" line="9462"/>
+      <location filename="../../CommandConstraints.cpp" line="5950"/>
+      <location filename="../../CommandConstraints.cpp" line="6251"/>
+      <location filename="../../CommandConstraints.cpp" line="8403"/>
+      <location filename="../../CommandConstraints.cpp" line="8766"/>
+      <location filename="../../CommandConstraints.cpp" line="9084"/>
+      <location filename="../../CommandConstraints.cpp" line="9629"/>
       <source>Select the right things from the sketch.</source>
       <translation>Επιλέξτε τα κατάλληλα στοιχεία από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4693"/>
-      <location filename="../../CommandConstraints.cpp" line="4870"/>
-      <location filename="../../CommandConstraints.cpp" line="6628"/>
-      <location filename="../../CommandConstraints.cpp" line="6768"/>
-      <location filename="../../CommandConstraints.cpp" line="6819"/>
-      <location filename="../../CommandConstraints.cpp" line="7018"/>
-      <location filename="../../CommandConstraints.cpp" line="7197"/>
-      <location filename="../../CommandConstraints.cpp" line="7463"/>
-      <location filename="../../CommandConstraints.cpp" line="7612"/>
-      <location filename="../../CommandConstraints.cpp" line="7640"/>
-      <location filename="../../CommandConstraints.cpp" line="7874"/>
-      <location filename="../../CommandConstraints.cpp" line="8111"/>
-      <location filename="../../CommandConstraints.cpp" line="8657"/>
-      <location filename="../../CommandConstraints.cpp" line="8809"/>
-      <location filename="../../CommandConstraints.cpp" line="9511"/>
-      <location filename="../../CommandConstraints.cpp" line="9609"/>
-      <location filename="../../CommandConstraints.cpp" line="9781"/>
-      <location filename="../../CommandConstraints.cpp" line="10711"/>
+      <location filename="../../CommandConstraints.cpp" line="4860"/>
+      <location filename="../../CommandConstraints.cpp" line="5037"/>
+      <location filename="../../CommandConstraints.cpp" line="6795"/>
+      <location filename="../../CommandConstraints.cpp" line="6935"/>
+      <location filename="../../CommandConstraints.cpp" line="6986"/>
+      <location filename="../../CommandConstraints.cpp" line="7185"/>
+      <location filename="../../CommandConstraints.cpp" line="7364"/>
+      <location filename="../../CommandConstraints.cpp" line="7630"/>
+      <location filename="../../CommandConstraints.cpp" line="7779"/>
+      <location filename="../../CommandConstraints.cpp" line="7807"/>
+      <location filename="../../CommandConstraints.cpp" line="8041"/>
+      <location filename="../../CommandConstraints.cpp" line="8278"/>
+      <location filename="../../CommandConstraints.cpp" line="8824"/>
+      <location filename="../../CommandConstraints.cpp" line="8976"/>
+      <location filename="../../CommandConstraints.cpp" line="9678"/>
+      <location filename="../../CommandConstraints.cpp" line="9776"/>
+      <location filename="../../CommandConstraints.cpp" line="9948"/>
+      <location filename="../../CommandConstraints.cpp" line="10878"/>
       <source>Select an edge that is not a B-spline weight.</source>
       <translation>Επιλέξτε μια ακμή (γραμμή) που να μην είναι βάρος B-spline.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4614"/>
+      <location filename="../../CommandConstraints.cpp" line="4781"/>
       <source>Select either several points, or several conics for concentricity.</source>
       <translation>Επιλέξτε είτε αρκετά σημεία, είτε αρκετές κωνικές τομές για ομοκεντρικότητα.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4617"/>
+      <location filename="../../CommandConstraints.cpp" line="4784"/>
       <source>Select either one point and several curves, or one curve and several points</source>
       <translation>Επιλέξτε είτε ένα σημείο και αρκετές καμπύλες, είτε μία καμπύλη και αρκετά σημεία</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4620"/>
+      <location filename="../../CommandConstraints.cpp" line="4787"/>
       <source>Select either one point and several curves or one curve and several points for pointOnObject, or several points for coincidence, or several conics for concentricity.</source>
       <translation>Επιλέξτε είτε ένα σημείο και αρκετές καμπύλες ή μία καμπύλη και αρκετά σημεία για «Σημείο σε αντικείμενο», είτε αρκετά σημεία για ταύτιση, είτε αρκετές κωνικές τομές για ομοκεντρικότητα.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4892"/>
+      <location filename="../../CommandConstraints.cpp" line="5059"/>
       <source>None of the selected points were constrained onto the respective curves, either because they are parts of the same element, or because they are both external geometry.</source>
       <translation>Κανένα από τα επιλεγμένα σημεία δεν ήταν περιορισμένο πάνω στις αντίστοιχες καμπύλες, είτε επειδή είναι τμήματα του ίδιου στοιχείου, είτε επειδή ανήκουν και τα δύο στο ίδιο στοιχείο εξωτερικής γεωμετρίας.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5393"/>
+      <location filename="../../CommandConstraints.cpp" line="5560"/>
       <source>Cannot add a length constraint on this selection!</source>
       <translation>Αδυναμία προσθήκης περιορισμού μήκους σε αυτή την επιλογή!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5796"/>
-      <location filename="../../CommandConstraints.cpp" line="5927"/>
-      <location filename="../../CommandConstraints.cpp" line="6097"/>
-      <location filename="../../CommandConstraints.cpp" line="6224"/>
+      <location filename="../../CommandConstraints.cpp" line="5963"/>
+      <location filename="../../CommandConstraints.cpp" line="6094"/>
+      <location filename="../../CommandConstraints.cpp" line="6264"/>
+      <location filename="../../CommandConstraints.cpp" line="6391"/>
       <source>Select exactly one line or up to two points from the sketch.</source>
       <translation>Επιλέξτε ακριβώς μια γραμμή ή έως και δύο σημεία από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5829"/>
+      <location filename="../../CommandConstraints.cpp" line="5996"/>
       <source>Cannot add a horizontal length constraint on an axis!</source>
       <translation>Αδύνατη η προσθήκη περιορισμού οριζόντιου μήκους σε άξονα!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5891"/>
+      <location filename="../../CommandConstraints.cpp" line="6058"/>
       <source>Cannot add a fixed x-coordinate constraint on the origin point!</source>
       <translation>Αδυναμία προσθήκης σταθερού περιορισμού συντεταγμένων x στο σημείο αρχής!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5962"/>
-      <location filename="../../CommandConstraints.cpp" line="6258"/>
+      <location filename="../../CommandConstraints.cpp" line="6129"/>
+      <location filename="../../CommandConstraints.cpp" line="6425"/>
       <source>This constraint only makes sense on a line segment or a pair of points.</source>
       <translation>Αυτός ο περιορισμός εφαρμόζεται μόνο σε ευθύγραμμο τμήμα ή σε ένα ζεύγος σημείων.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6128"/>
+      <location filename="../../CommandConstraints.cpp" line="6295"/>
       <source>Cannot add a vertical length constraint on an axis!</source>
       <translation>Αδύνατη η προσθήκη κατακόρυφου μήκους σε άξονα!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6190"/>
+      <location filename="../../CommandConstraints.cpp" line="6357"/>
       <source>Cannot add a fixed y-coordinate constraint on the origin point!</source>
       <translation>Δεν είναι δυνατή η προσθήκη ενός σταθερού περιορισμού συντεταγμένων y στο σημείο αρχής!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6380"/>
+      <location filename="../../CommandConstraints.cpp" line="6547"/>
       <source>Select two or more lines from the sketch.</source>
       <translation>Επιλέξτε δύο ή περισσότερες γραμμές από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6415"/>
+      <location filename="../../CommandConstraints.cpp" line="6582"/>
       <source>One selected edge is not a valid line.</source>
       <translation>Μία από τις επιλεγμένες γραμμές δεν είναι έγκυρη γραμμή.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6424"/>
-      <location filename="../../CommandConstraints.cpp" line="9949"/>
+      <location filename="../../CommandConstraints.cpp" line="6591"/>
+      <location filename="../../CommandConstraints.cpp" line="10116"/>
       <source>Select at least two lines from the sketch.</source>
       <translation>Επιλέξτε τουλάχιστον δύο γραμμές από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6463"/>
+      <location filename="../../CommandConstraints.cpp" line="6630"/>
       <source>The selected edge is not a valid line.</source>
       <translation>Η επιλεγμένη γραμμή δεν είναι έγκυρη.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6552"/>
+      <location filename="../../CommandConstraints.cpp" line="6719"/>
       <source>There is a number of ways this constraint can be applied.
 
 Accepted combinations: two curves; an endpoint and a curve; two endpoints; two curves and a point.</source>
@@ -1685,35 +1685,35 @@ Accepted combinations: two curves; an endpoint and a curve; two endpoints; two c
 Αποδεκτοί συνδυασμοί: δύο καμπύλες· ένα αρχικό σημείο και μια καμπύλη· ένα αρχικό και ένα τελικό σημείο· δύο καμπύλες και ένα σημείο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6557"/>
+      <location filename="../../CommandConstraints.cpp" line="6724"/>
       <source>Select some geometry from the sketch.</source>
       <comment>perpendicular constraint</comment>
       <translation>Επιλέξτε γεωμετρικά στοιχεία από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6716"/>
-      <location filename="../../CommandConstraints.cpp" line="6757"/>
+      <location filename="../../CommandConstraints.cpp" line="6883"/>
+      <location filename="../../CommandConstraints.cpp" line="6924"/>
       <source>Cannot add a perpendicularity constraint at an unconnected point!</source>
       <translation>Αδύνατη η προσθήκη περιορισμού καθετότητας σε ένα ασύνδετο σημείο!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6798"/>
-      <location filename="../../CommandConstraints.cpp" line="6997"/>
+      <location filename="../../CommandConstraints.cpp" line="6965"/>
+      <location filename="../../CommandConstraints.cpp" line="7164"/>
       <source>One of the selected edges should be a line.</source>
       <translation>Μια από τις επιλεγμένες ακμές θα πρέπει να είναι γραμμή.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7348"/>
+      <location filename="../../CommandConstraints.cpp" line="7515"/>
       <source>Endpoint to endpoint tangency was applied. The coincident constraint was deleted.</source>
       <translation>Εφαρμόστηκε περιορισμός επαφής μεταξύ άκρων. Ο περιορισμός ταύτισης διαγράφηκε.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7376"/>
+      <location filename="../../CommandConstraints.cpp" line="7543"/>
       <source>Endpoint to edge tangency was applied. The point on object constraint was deleted.</source>
       <translation>Εφαρμόστηκε ομαλή επαφή άκρου-με-γραμμή. Ο περιορισμός «σημείο σε αντικείμενο» διαγράφηκε.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7407"/>
+      <location filename="../../CommandConstraints.cpp" line="7574"/>
       <source>There are a number of ways this constraint can be applied.
 
 Accepted combinations: two curves; an endpoint and a curve; two endpoints; two curves and a point.</source>
@@ -1723,201 +1723,201 @@ Accepted combinations: two curves; an endpoint and a curve; two endpoints; two c
 Αποδεκτοί συνδυασμοί: δύο καμπύλες· ένα αρχικό σημείο και μια καμπύλη· ένα αρχικό και ένα τελικό σημείο· δύο καμπύλες και ένα σημείο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7412"/>
+      <location filename="../../CommandConstraints.cpp" line="7579"/>
       <source>Select some geometry from the sketch.</source>
       <comment>tangent constraint</comment>
       <translation>Επιλέξτε γεωμετρικά στοιχεία από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7563"/>
-      <location filename="../../CommandConstraints.cpp" line="7601"/>
-      <location filename="../../CommandConstraints.cpp" line="8066"/>
+      <location filename="../../CommandConstraints.cpp" line="7730"/>
+      <location filename="../../CommandConstraints.cpp" line="7768"/>
+      <location filename="../../CommandConstraints.cpp" line="8233"/>
       <source>Cannot add a tangency constraint at an unconnected point!</source>
       <translation>Αδύνατη η προσθήκη περιορισμού επαφής σε ένα ασύνδετο σημείο!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7554"/>
-      <location filename="../../CommandConstraints.cpp" line="7592"/>
+      <location filename="../../CommandConstraints.cpp" line="7721"/>
+      <location filename="../../CommandConstraints.cpp" line="7759"/>
       <source>Tangent constraint at B-spline knot is only supported with lines!</source>
       <translation>Ο περιορισμός εφαπτομένης σε κόμβο B-spline υποστηρίζεται μόνο με γραμμές!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="505"/>
+      <location filename="../../CommandConstraints.cpp" line="508"/>
       <source>One or two point-on-object constraints were deleted, since the latest constraint being applied internally applies point-on-object as well.</source>
       <translation>Ένας ή δύο περιορισμοί «σημείο σε αντικείμενο» διαγράφηκαν, καθώς ο τελευταίος περιορισμός που εφαρμόστηκε περιλαμβάνει ήδη την ίδια λειτουργία.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1019"/>
+      <location filename="../../CommandConstraints.cpp" line="1022"/>
       <source>Keep notifying about constraint substitutions</source>
       <translation>Να συνεχιστεί η ενημέρωση σχετικά με την αντικατάσταση περιορισμών</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1043"/>
+      <location filename="../../CommandConstraints.cpp" line="1046"/>
       <source>Unexpected error. More information may be available in the report view.</source>
       <translation>Μη αναμενόμενο σφάλμα. Περισσότερες πληροφορίες μπορεί να είναι διαθέσιμες στην προβολή αναφοράς.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1093"/>
+      <location filename="../../CommandConstraints.cpp" line="1096"/>
       <source>Only the sketch and its support are allowed to be selected</source>
       <translation>Επιτρέπεται η επιλογή μόνο του σχεδίου και της βάσης υποστήριξής του</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1104"/>
+      <location filename="../../CommandConstraints.cpp" line="1107"/>
       <source>Only the sketch and its support may be selected</source>
       <translation>Επιτρέπεται η επιλογή μόνο του σχεδίου και της βάσης υποστήριξής του</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1116"/>
+      <location filename="../../CommandConstraints.cpp" line="1119"/>
       <source>Only the sketch and its support  may be selected</source>
       <translation>Επιτρέπεται να επιλεγούν μόνο το σχέδιο και η βάση υποστήριξής του</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3589"/>
-      <location filename="../../CommandConstraints.cpp" line="4358"/>
-      <location filename="../../CommandConstraints.cpp" line="4410"/>
+      <location filename="../../CommandConstraints.cpp" line="3756"/>
+      <location filename="../../CommandConstraints.cpp" line="4525"/>
+      <location filename="../../CommandConstraints.cpp" line="4577"/>
       <source>The selected edge already has a block constraint!</source>
       <translation>Η επιλεγμένη γραμμή έχει ήδη έναν περιορισμό ακινητοποίησης!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3665"/>
+      <location filename="../../CommandConstraints.cpp" line="3832"/>
       <source>The selected items cannot be constrained horizontally or vertically!</source>
       <translation>Τα επιλεγμένα στοιχεία δεν μπορούν να περιοριστούν οριζόντια ή κάθετα!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4322"/>
+      <location filename="../../CommandConstraints.cpp" line="4489"/>
       <source>A block constraint cannot be added if the sketch is unsolved or there are redundant and conflicting constraints.</source>
       <translation>Δεν είναι δυνατή η προσθήκη περιορισμού ακινητοποίησης αν το σχέδιο δεν έχει επιλυθεί ή αν υπάρχουν περιττοί και αντικρουόμενοι κανόνες.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4592"/>
+      <location filename="../../CommandConstraints.cpp" line="4759"/>
       <source>B-spline knot to endpoint tangency was applied instead.</source>
       <translation>Αντ' αυτού, εφαρμόστηκε ομαλή επαφή μεταξύ κόμβου B-spline και άκρου.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6574"/>
-      <location filename="../../CommandConstraints.cpp" line="7429"/>
+      <location filename="../../CommandConstraints.cpp" line="6741"/>
+      <location filename="../../CommandConstraints.cpp" line="7596"/>
       <source>Wrong number of selected objects!</source>
       <translation>Λάθος αριθμός επιλεγμένων αντικειμένων!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6706"/>
-      <location filename="../../CommandConstraints.cpp" line="7534"/>
+      <location filename="../../CommandConstraints.cpp" line="6873"/>
+      <location filename="../../CommandConstraints.cpp" line="7701"/>
       <source>With 3 objects, there must be 2 curves and 1 point.</source>
       <translation>Με 3 αντικείμενα, πρέπει να υπάρχουν 2 καμπύλες και 1 σημείο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8249"/>
-      <location filename="../../CommandConstraints.cpp" line="8315"/>
-      <location filename="../../CommandConstraints.cpp" line="8612"/>
-      <location filename="../../CommandConstraints.cpp" line="8675"/>
-      <location filename="../../CommandConstraints.cpp" line="8930"/>
-      <location filename="../../CommandConstraints.cpp" line="8991"/>
+      <location filename="../../CommandConstraints.cpp" line="8416"/>
+      <location filename="../../CommandConstraints.cpp" line="8482"/>
+      <location filename="../../CommandConstraints.cpp" line="8779"/>
+      <location filename="../../CommandConstraints.cpp" line="8842"/>
+      <location filename="../../CommandConstraints.cpp" line="9097"/>
+      <location filename="../../CommandConstraints.cpp" line="9158"/>
       <source>Select one or more arcs or circles from the sketch.</source>
       <translation>Επιλέξτε ένα ή περισσότερα τόξα ή κύκλους από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8479"/>
-      <location filename="../../CommandConstraints.cpp" line="8801"/>
-      <location filename="../../CommandConstraints.cpp" line="9177"/>
+      <location filename="../../CommandConstraints.cpp" line="8646"/>
+      <location filename="../../CommandConstraints.cpp" line="8968"/>
+      <location filename="../../CommandConstraints.cpp" line="9344"/>
       <source>Constraint only applies to arcs or circles.</source>
       <translation>Ο περιορισμός εφαρμόζεται μόνο σε τόξα ή κύκλους.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9475"/>
-      <location filename="../../CommandConstraints.cpp" line="9687"/>
+      <location filename="../../CommandConstraints.cpp" line="9642"/>
+      <location filename="../../CommandConstraints.cpp" line="9854"/>
       <source>Select one or two lines from the sketch. Or select two edges and a point.</source>
       <translation>Επιλέξτε μια ή δύο γραμμές από το σχέδιο. Ή επιλέξτε δύο ακμές και ένα σημείο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="533"/>
+      <location filename="../../CommandConstraints.cpp" line="536"/>
       <source>Parallel lines</source>
       <translation>Παράλληλες γραμμές</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="534"/>
+      <location filename="../../CommandConstraints.cpp" line="537"/>
       <source>An angle constraint cannot be set for two parallel lines.</source>
       <translation>Δεν δύναται να οριστεί γωνιακός περιορισμός για δύο παράλληλες γραμμές.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9622"/>
+      <location filename="../../CommandConstraints.cpp" line="9789"/>
       <source>Cannot add an angle constraint on an axis!</source>
       <translation>Αδύνατη η προσθήκη γωνιακού περιορισμού σε άξονα!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9935"/>
+      <location filename="../../CommandConstraints.cpp" line="10102"/>
       <source>Select two edges from the sketch.</source>
       <translation>Επιλέξτε δύο ακμές από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9967"/>
+      <location filename="../../CommandConstraints.cpp" line="10134"/>
       <source>Select two or more compatible edges.</source>
       <translation>Επιλέξτε δύο ή περισσότερες συμβατές ακμές.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9974"/>
+      <location filename="../../CommandConstraints.cpp" line="10141"/>
       <source>Sketch axes cannot be used in equality constraints.</source>
       <translation>Οι άξονες σχεδίου δεν μπορούν να χρησιμοποιηθούν για περιορισμούς ισότητας.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9995"/>
+      <location filename="../../CommandConstraints.cpp" line="10162"/>
       <source>Equality for B-spline edge currently unsupported.</source>
       <translation>Δεν υποστηρίζονται περιορισμοί ισότητας σε ακμές καμπύλης B-spline επί του παρόντος.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3127"/>
-      <location filename="../../CommandConstraints.cpp" line="10028"/>
-      <location filename="../../CommandConstraints.cpp" line="10044"/>
-      <location filename="../../CommandConstraints.cpp" line="10099"/>
+      <location filename="../../CommandConstraints.cpp" line="3294"/>
+      <location filename="../../CommandConstraints.cpp" line="10195"/>
+      <location filename="../../CommandConstraints.cpp" line="10211"/>
+      <location filename="../../CommandConstraints.cpp" line="10266"/>
       <source>Select two or more edges of similar type.</source>
       <translation>Επιλέξτε δύο ή περισσότερες ακμές παρόμοιου τύπου.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10463"/>
+      <location filename="../../CommandConstraints.cpp" line="10630"/>
       <source>Cannot add a symmetry constraint between a line and its end points.</source>
       <translation>Αδυναμία προσθήκης περιορισμού συμμετρίας μεταξύ μιας γραμμής και των άκρων της.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3286"/>
-      <location filename="../../CommandConstraints.cpp" line="3302"/>
-      <location filename="../../CommandConstraints.cpp" line="10326"/>
+      <location filename="../../CommandConstraints.cpp" line="3453"/>
+      <location filename="../../CommandConstraints.cpp" line="3469"/>
+      <location filename="../../CommandConstraints.cpp" line="10493"/>
       <source>Cannot add a symmetry constraint between a line and its end points!</source>
       <translation>Αδύνατη η προσθήκη περιορισμού μεταξύ μιας γραμμής και του αρχικού ή του τελικού της σημείου!</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10641"/>
-      <location filename="../../CommandConstraints.cpp" line="10833"/>
+      <location filename="../../CommandConstraints.cpp" line="10808"/>
+      <location filename="../../CommandConstraints.cpp" line="11000"/>
       <source>Selected objects are not just geometry from one sketch.</source>
       <translation>Τα επιλεγμένα στοιχεία δεν είναι μόνο γεωμετρικά στοιχεία από το ίδιο σκαρίφημα.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10683"/>
+      <location filename="../../CommandConstraints.cpp" line="10850"/>
       <source>Cannot create constraint with external geometry only.</source>
       <translation>Αδυναμία δημιουργίας περιορισμού μόνο με εξωτερική γεωμετρία.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10693"/>
+      <location filename="../../CommandConstraints.cpp" line="10860"/>
       <source>Incompatible geometry is selected.</source>
       <translation>Έχει επιλεγεί μη συμβατή γεωμετρία.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10849"/>
+      <location filename="../../CommandConstraints.cpp" line="11016"/>
       <source>No geometries selected</source>
       <translation type="unfinished">No geometries selected</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11085"/>
+      <location filename="../../CommandConstraints.cpp" line="11252"/>
       <source>Select one dimensional constraint from the sketch.</source>
       <translation>Επιλέξτε έναν περιορισμό διάστασης από το σχέδιο.</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11161"/>
-      <location filename="../../CommandConstraints.cpp" line="11173"/>
-      <location filename="../../CommandConstraints.cpp" line="11209"/>
-      <location filename="../../CommandConstraints.cpp" line="11284"/>
-      <location filename="../../CommandConstraints.cpp" line="11296"/>
       <location filename="../../CommandSketcherVirtualSpace.cpp" line="117"/>
       <location filename="../../CommandSketcherVirtualSpace.cpp" line="128"/>
       <location filename="../../CommandSketcherVirtualSpace.cpp" line="158"/>
+      <location filename="../../CommandConstraints.cpp" line="11328"/>
+      <location filename="../../CommandConstraints.cpp" line="11340"/>
+      <location filename="../../CommandConstraints.cpp" line="11376"/>
+      <location filename="../../CommandConstraints.cpp" line="11451"/>
+      <location filename="../../CommandConstraints.cpp" line="11463"/>
       <source>Select constraints from the sketch.</source>
       <translation>Επιλέξτε τους περιορισμούς από το σχέδιο.</translation>
     </message>
@@ -2071,38 +2071,38 @@ Accepted combinations: two curves; an endpoint and a curve; two endpoints; two c
       <translation>Προς το παρόν δεν υποστηρίζεται η μεταφορά εξωτερικής γεωμετρίας σε άλλο οπτικό επίπεδο. Η εξωτερική γεωμετρία θα παραλειφθεί</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="92"/>
+      <location filename="../../DrawSketchHandlerText.h" line="91"/>
       <source>Text</source>
       <translation>Κείμενο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="245"/>
+      <location filename="../../DrawSketchHandlerText.h" line="244"/>
       <source>Text parameters</source>
       <translation type="unfinished">Text parameters</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="726"/>
+      <location filename="../../DrawSketchHandlerText.h" line="725"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="736"/>
-      <location filename="../../DrawSketchHandlerText.h" line="744"/>
+      <location filename="../../DrawSketchHandlerText.h" line="735"/>
+      <location filename="../../DrawSketchHandlerText.h" line="743"/>
       <source>%1 pick bottom-left point</source>
       <translation type="unfinished">%1 pick bottom-left point</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="740"/>
+      <location filename="../../DrawSketchHandlerText.h" line="739"/>
       <source>%1 pick top-left point</source>
       <translation type="unfinished">%1 pick top-left point</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="748"/>
+      <location filename="../../DrawSketchHandlerText.h" line="747"/>
       <source>%1 pick bottom-right point</source>
       <translation type="unfinished">%1 pick bottom-right point</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1059"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1056"/>
       <source>Polyline Parameters</source>
       <translation type="unfinished">Polyline Parameters</translation>
     </message>
@@ -2110,42 +2110,42 @@ Accepted combinations: two curves; an endpoint and a curve; two endpoints; two c
   <context>
     <name>SketcherGui::CarbonCopySelection</name>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="81"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="78"/>
       <source>Carbon copy would cause a circular dependency.</source>
       <translation>Η δημιουργία πιστού αντιγράφου θα προκαλέσει κυκλική εξάρτηση.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="86"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="83"/>
       <source>This object is in another document.</source>
       <translation>Αυτό το αντικείμενο βρίσκεται σε κάποιο άλλο έγγραφο.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="89"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="86"/>
       <source>This object belongs to another body. Hold Ctrl to allow cross-references.</source>
       <translation>Αυτό το αντικείμενο ανήκει σε άλλο σώμα (Body). Κρατήστε πατημένο το Ctrl για να επιτραπούν οι διασταυρούμενες αναφορές.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="95"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="92"/>
       <source>This object belongs to another body and it contains external geometry. Cross-reference not allowed.</source>
       <translation>Αυτό το αντικείμενο ανήκει σε άλλο σώμα (Body) και περιέχει εξωτερική γεωμετρία. Δεν επιτρέπεται η διασταυρούμενη αναφορά.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="101"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="98"/>
       <source>This object belongs to another part.</source>
       <translation>Αυτό το αντικείμενο ανήκει σε κάποιο άλλο εξάρτημα.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="104"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="101"/>
       <source>The selected sketch is not parallel to this sketch. Hold Ctrl+Alt to allow non-parallel sketches.</source>
       <translation>Το επιλεγμένο σχέδιο δεν είναι παράλληλο με αυτό το σχέδιο. Κρατήστε πατημένα τα πλήκτρα Ctrl+Alt για να επιτρέψει τα μη παράλληλα σχέδια.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="110"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="107"/>
       <source>The XY axes of the selected sketch do not have the same direction as this sketch. Hold Ctrl+Alt to disregard it.</source>
       <translation>Οι άξονες XY του επιλεγμένου σχεδίου έχουν διαφορετικές διευθύνσεις από τους άξονες αυτού του σχεδίου. Κρατήστε πιεσμένα τα πλήκτρα Ctrl+Alt για να γίνει παράβλεψη.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="116"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="113"/>
       <source>The origin of the selected sketch is not aligned with the origin of this sketch. Hold Ctrl+Alt to disregard it.</source>
       <translation>Το σημείο τομής των αξόνων του επιλεγμένου σχεδίου δεν ταυτίζεται με το σημείο τομής των αξόνων αυτού του σχεδίου. Κρατήστε πιεσμένα τα πλήκτρα Ctrl+Alt για να γίνει παράβλεψη.</translation>
     </message>
@@ -2540,12 +2540,12 @@ Accepted combinations: two curves; an endpoint and a curve; two endpoints; two c
       <translation>Λόγος n2/n1:</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10722"/>
+      <location filename="../../CommandConstraints.cpp" line="10889"/>
       <source>Refractive Index Ratio</source>
       <translation>Λόγος Δείκτη Διάθλασης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10723"/>
+      <location filename="../../CommandConstraints.cpp" line="10890"/>
       <source>Ratio n2/n1:</source>
       <translation>Λόγος n2/n1:</translation>
     </message>
@@ -2779,22 +2779,22 @@ Accepted combinations: two curves; an endpoint and a curve; two endpoints; two c
   <context>
     <name>SketcherGui::ExternalSelection</name>
     <message>
-      <location filename="../../DrawSketchHandlerExternal.h" line="72"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="69"/>
       <source>Linking this will cause circular dependency.</source>
       <translation>Η δημιουργία συνδέσμου θα προκαλέσει κυκλική εξάρτηση.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExternal.h" line="75"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="72"/>
       <source>This object is in another document.</source>
       <translation>Αυτό το αντικείμενο βρίσκεται σε κάποιο άλλο έγγραφο.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExternal.h" line="78"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="75"/>
       <source>This object belongs to another body, can't link.</source>
       <translation>Αυτό το αντικείμενο ανήκει σε κάποιο άλλο σώμα, αδύνατη η σύνδεση.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExternal.h" line="83"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="80"/>
       <source>This object belongs to another part, can't link.</source>
       <translation>Αυτό το αντικείμενο ανήκει σε κάποιο άλλο εξάρτημα, αδύνατη η σύνδεση.</translation>
     </message>
@@ -3724,18 +3724,18 @@ However, no constraints linking to the endpoints were found.</source>
       <translation>Απόκρυψη εσωτερικής ευθυγράμμισης (στο παράθυρο εργαλείων)</translation>
     </message>
     <message>
-      <location filename="../../TaskSketcherConstraints.cpp" line="1744"/>
-      <location filename="../../TaskSketcherConstraints.cpp" line="1773"/>
+      <location filename="../../TaskSketcherConstraints.cpp" line="1732"/>
+      <location filename="../../TaskSketcherConstraints.cpp" line="1761"/>
       <source>Error</source>
       <translation>Σφάλμα</translation>
     </message>
     <message>
-      <location filename="../../TaskSketcherConstraints.cpp" line="1744"/>
+      <location filename="../../TaskSketcherConstraints.cpp" line="1732"/>
       <source>Impossible to update visibility tracking:</source>
       <translation>Αδυναμία ενημέρωσης της καταγραφής ορατότητας:</translation>
     </message>
     <message>
-      <location filename="../../TaskSketcherConstraints.cpp" line="1773"/>
+      <location filename="../../TaskSketcherConstraints.cpp" line="1761"/>
       <source>Impossible to update visibility:</source>
       <translation>Αδύνατη η ενημέρωση της ορατότητας:</translation>
     </message>
@@ -4081,112 +4081,112 @@ This is done by analyzing the sketch geometries and constraints.</source>
   <context>
     <name>SketcherGui::ViewProviderSketch</name>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="3884"/>
+      <location filename="../../ViewProviderSketch.cpp" line="3978"/>
       <source>A dialog is already open in the task panel</source>
       <translation type="unfinished">A dialog is already open in the task panel</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="3908"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4002"/>
       <source>The sketch is invalid and cannot be edited.</source>
       <translation>Το σχέδιο είναι μη έγκυρο και δε δύναται να υποστεί επεξεργασία.</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4104"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4198"/>
       <source>The following constraint is partially redundant:</source>
       <translation>Ο ακόλουθος περιορισμός είναι εν μέρει περιττός:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4105"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4199"/>
       <source>The following constraints are partially redundant:</source>
       <translation>Οι ακόλουθοι περιορισμοί είναι εν μέρει περιττοί:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="3857"/>
+      <location filename="../../ViewProviderSketch.cpp" line="3951"/>
       <source>Edit Sketch</source>
       <translation>Επεξεργασία Σχεδίου</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="3885"/>
+      <location filename="../../ViewProviderSketch.cpp" line="3979"/>
       <source>Close this dialog?</source>
       <translation>Να κλείσει αυτό το παράθυρο διαλόγου;</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="3906"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4000"/>
       <source>Invalid Sketch</source>
       <translation>&gt;Μη Έγκυρο Σχέδιο</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="3907"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4001"/>
       <source>Open the sketch validation tool?</source>
       <translation>Να ανοίξει το εργαλείο επικύρωσης σχεδίου;</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4090"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4184"/>
       <source>Remove the following constraint:</source>
       <translation>Αφαίρεση του ακόλουθου περιορισμού:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4091"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4185"/>
       <source>Remove at least one of the following constraints:</source>
       <translation>Αφαιρέστε τουλάχιστον έναν από τους ακόλουθους περιορισμούς:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4097"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4191"/>
       <source>Remove the following redundant constraint:</source>
       <translation>Αφαίρεση του ακόλουθου περιττού περιορισμού:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4098"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4192"/>
       <source>Remove the following redundant constraints:</source>
       <translation>Αφαίρεση των ακόλουθων περιττών περιορισμών:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4111"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4205"/>
       <source>Remove the following malformed constraint:</source>
       <translation>Αφαίρεση του ακόλουθου ελαττωματικού περιορισμού:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4112"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4206"/>
       <source>Remove the following malformed constraints:</source>
       <translation>Αφαίρεση των ακόλουθων ελαττωματικών περιορισμών:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4171"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4265"/>
       <source>Empty sketch</source>
       <translation>Κενό σχέδιο</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4176"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4270"/>
       <source>Over-constrained:</source>
       <translation>Υπερ-περιορισμένο:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4182"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4276"/>
       <source>Malformed constraints:</source>
       <translation>Ελαττωματικοί περιορισμοί:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4190"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4284"/>
       <source>Redundant constraints:</source>
       <translation>Περιττοί περιορισμοί:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4196"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4290"/>
       <source>Partially redundant:</source>
       <translation>Εν μέρει περιττό:</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4203"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4297"/>
       <source>Solver failed to converge</source>
       <translation>Το πρόγραμμα δεν μπόρεσε να βρει λύση για το σχέδιο</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4209"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4303"/>
       <source>Under-constrained:</source>
       <translation>Ελλιπώς περιορισμένο (χρειάζονται επιπλέον περιορισμοί):</translation>
     </message>
     <message numerus="yes">
-      <location filename="../../ViewProviderSketch.cpp" line="4211"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4305"/>
       <source>%n Degrees of Freedom</source>
       <translation>
         <numerusform>%n βαθμοί ελευθερίας</numerusform>
@@ -4194,7 +4194,7 @@ This is done by analyzing the sketch geometries and constraints.</source>
       </translation>
     </message>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4215"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4309"/>
       <source>Fully constrained</source>
       <translation>Πλήρως περιορισμένο</translation>
     </message>
@@ -4247,8 +4247,8 @@ This is done by analyzing the sketch geometries and constraints.</source>
   <context>
     <name>Sketcher_ConstrainDiameter</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9371"/>
-      <location filename="../../CommandConstraints.cpp" line="9373"/>
+      <location filename="../../CommandConstraints.cpp" line="9538"/>
+      <location filename="../../CommandConstraints.cpp" line="9540"/>
       <source>Fix the diameter of a circle or an arc</source>
       <translation>Όρισε τη σταθερή διάμετρο ενός κύκλου, ή ενός τόξου</translation>
     </message>
@@ -4265,12 +4265,12 @@ This is done by analyzing the sketch geometries and constraints.</source>
   <context>
     <name>Sketcher_CreateCircle</name>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="418"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="415"/>
       <source>Center</source>
       <translation>Κέντρο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="419"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="416"/>
       <source>3 rim points</source>
       <translation>3 σημεία της περιφέρειας</translation>
     </message>
@@ -4685,7 +4685,7 @@ Eigen Sparse QR algorithm is optimized for sparse matrices; usually faster</sour
   <context>
     <name>ViewProviderSketch</name>
     <message>
-      <location filename="../../ViewProviderSketch.cpp" line="4154"/>
+      <location filename="../../ViewProviderSketch.cpp" line="4248"/>
       <source>and %1 more</source>
       <translation>και %1 ακόμη</translation>
     </message>
@@ -4913,36 +4913,36 @@ The grid spacing changes if it becomes smaller than the specified pixel size.</s
 </translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="215"/>
-      <location filename="../../DrawSketchHandlerCircle.h" line="223"/>
-      <location filename="../../DrawSketchHandlerSplitting.h" line="174"/>
-      <location filename="../../DrawSketchHandlerText.h" line="182"/>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="232"/>
-      <location filename="../../DrawSketchHandlerPoint.h" line="110"/>
-      <location filename="../../DrawSketchHandlerLine.h" line="143"/>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="203"/>
-      <location filename="../../DrawSketchHandlerSlot.h" line="190"/>
-      <location filename="../../DrawSketchHandlerExtend.h" line="344"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="200"/>
+      <location filename="../../DrawSketchHandlerText.h" line="181"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="229"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="512"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="209"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="150"/>
+      <location filename="../../DrawSketchHandlerTrimming.h" line="193"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="174"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="144"/>
       <location filename="../../CommandSketcherTools.cpp" line="1385"/>
       <location filename="../../CommandSketcherTools.cpp" line="1966"/>
       <location filename="../../CommandSketcherTools.cpp" line="2403"/>
-      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="264"/>
-      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="355"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="515"/>
-      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="318"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="393"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="678"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="755"/>
-      <location filename="../../DrawSketchHandlerExternal.h" line="212"/>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="135"/>
-      <location filename="../../DrawSketchHandlerTrimming.h" line="196"/>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="148"/>
-      <location filename="../../DrawSketchHandlerRotate.h" line="175"/>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="157"/>
-      <location filename="../../DrawSketchHandlerScale.h" line="153"/>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="482"/>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="514"/>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1359"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="390"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="685"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="762"/>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="225"/>
+      <location filename="../../DrawSketchHandlerSplitting.h" line="170"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="132"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="212"/>
+      <location filename="../../DrawSketchHandlerExtend.h" line="341"/>
+      <location filename="../../DrawSketchHandlerSlot.h" line="186"/>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="226"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="479"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="511"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1382"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="220"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="147"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="154"/>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="185"/>
+      <location filename="../../DrawSketchHandlerPoint.h" line="109"/>
       <source>Error</source>
       <translation>Σφάλμα</translation>
     </message>
@@ -4978,141 +4978,134 @@ The grid spacing changes if it becomes smaller than the specified pixel size.</s
       <translation>Ο περιορισμός έχει μη έγκυρες πληροφορίες ευρετηρίου και έχει λανθασμένη μορφή.</translation>
     </message>
     <message>
+      <location filename="../../CommandSketcherTools.cpp" line="1171"/>
       <location filename="../../CommandSketcherBSpline.cpp" line="519"/>
       <location filename="../../CommandSketcherBSpline.cpp" line="662"/>
       <location filename="../../CommandSketcherBSpline.cpp" line="910"/>
-      <location filename="../../CommandConstraints.cpp" line="710"/>
-      <location filename="../../CommandConstraints.cpp" line="787"/>
-      <location filename="../../CommandConstraints.cpp" line="879"/>
-      <location filename="../../CommandConstraints.cpp" line="963"/>
-      <location filename="../../CommandConstraints.cpp" line="6932"/>
-      <location filename="../../CommandConstraints.cpp" line="7134"/>
-      <location filename="../../CommandSketcherTools.cpp" line="1171"/>
+      <location filename="../../CommandConstraints.cpp" line="713"/>
+      <location filename="../../CommandConstraints.cpp" line="790"/>
+      <location filename="../../CommandConstraints.cpp" line="882"/>
+      <location filename="../../CommandConstraints.cpp" line="966"/>
+      <location filename="../../CommandConstraints.cpp" line="7099"/>
+      <location filename="../../CommandConstraints.cpp" line="7301"/>
       <source>Invalid Constraint</source>
       <translation>Μη έγκυρος περιορισμός</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1033"/>
+      <location filename="../../CommandConstraints.cpp" line="1036"/>
       <source>Invalid constraint</source>
       <translation>Μη έγκυρος περιορισμός</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="515"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="512"/>
       <source>Failed to add arc</source>
       <translation>Αποτυχία προσθήκης τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="356"/>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="227"/>
       <source>Failed to add arc of ellipse</source>
       <translation>Αποτυχία προσθήκης τόξου έλλειψης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="319"/>
-      <source>Cannot create arc of hyperbola</source>
-      <translation>Αδυναμία δημιουργίας τόξου υπερβολής</translation>
-    </message>
-    <message>
-      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="265"/>
-      <source>Cannot create arc of parabola</source>
-      <translation>Αδυναμία δημιουργίας τόξου παραβολής</translation>
-    </message>
-    <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="394"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="391"/>
       <source>Error creating B-spline</source>
       <translation>Σφάλμα κατά τη δημιουργία καμπύλης B-spline</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="679"/>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1360"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="686"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1383"/>
       <source>Error deleting last pole/knot</source>
       <translation>Σφάλμα κατά τη διαγραφή του τελευταίου σημείου/ένωση (πόλου/κόμβου) ελέγχου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="756"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="763"/>
       <source>Error adding B-spline pole/knot</source>
       <translation>Σφάλμα κατά την προσθήκη σημείου/ένωση της καμπύλης B-spline</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="204"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="201"/>
       <source>Failed to add carbon copy</source>
       <translation>Αποτυχία προσθήκης πιστού αντιγράφου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="224"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="221"/>
       <source>Failed to add circle</source>
       <translation>Αποτυχία προσθήκης κύκλου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExtend.h" line="345"/>
+      <location filename="../../DrawSketchHandlerExtend.h" line="342"/>
       <source>Failed to extend edge</source>
       <translation>Αποτυχία επέκτασης ακμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExternal.h" line="213"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="210"/>
       <source>Failed to add external geometry</source>
       <translation>Αποτυχία προσθήκης εξωτερικής γεωμετρίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="233"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="230"/>
       <source>Failed to create fillet</source>
       <translation>Αποτυχία δημιουργίας καμπύλης σύνδεσης (φιλέτου)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="144"/>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="483"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="145"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="480"/>
       <source>Failed to add line</source>
       <translation>Αποτυχία προσθήκης γραμμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="299"/>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="222"/>
-      <location filename="../../DrawSketchHandlerCircle.h" line="230"/>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="239"/>
-      <location filename="../../DrawSketchHandlerLine.h" line="150"/>
-      <location filename="../../DrawSketchHandlerSlot.h" line="197"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="522"/>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="142"/>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="155"/>
-      <location filename="../../DrawSketchHandlerRotate.h" line="182"/>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="164"/>
-      <location filename="../../DrawSketchHandlerScale.h" line="162"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="236"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="295"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="519"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="159"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="181"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="151"/>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="232"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="139"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="219"/>
+      <location filename="../../DrawSketchHandlerSlot.h" line="193"/>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="233"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="227"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="154"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="161"/>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="192"/>
       <source>Tool execution aborted</source>
       <translation>Η εκτέλεση του εργαλείου διακόπηκε</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerPoint.h" line="111"/>
+      <location filename="../../DrawSketchHandlerPoint.h" line="110"/>
       <source>Failed to add point</source>
       <translation>Αποτυχία προσθήκης σημείου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="136"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="133"/>
       <source>Failed to add polygon</source>
       <translation>Αποτυχία προσθήκης πολυγώνου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="516"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="513"/>
       <source>Failed to add box</source>
       <translation>Αποτυχία προσθήκης πλαισίου (κουτί)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSlot.h" line="191"/>
+      <location filename="../../DrawSketchHandlerSlot.h" line="187"/>
       <source>Failed to add slot</source>
       <translation>Αποτυχία προσθήκης εσοχής (Slot)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSplitting.h" line="175"/>
+      <location filename="../../DrawSketchHandlerSplitting.h" line="171"/>
       <source>Failed to add edge</source>
       <translation>Αποτυχία προσθήκης ακμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTrimming.h" line="197"/>
+      <location filename="../../DrawSketchHandlerTrimming.h" line="194"/>
       <source>Failed to trim edge</source>
       <translation>Αποτυχία περικοπής ακμής</translation>
     </message>
     <message>
-      <location filename="../../TaskSketcherConstraints.cpp" line="1392"/>
+      <location filename="../../TaskSketcherConstraints.cpp" line="1380"/>
       <location filename="../../EditDatumDialog.cpp" line="66"/>
-      <location filename="../../EditDatumDialog.cpp" line="342"/>
+      <location filename="../../EditDatumDialog.cpp" line="339"/>
       <source>Value Error</source>
       <translation>Σφάλμα Τιμής</translation>
     </message>
@@ -5132,57 +5125,57 @@ The grid spacing changes if it becomes smaller than the specified pixel size.</s
       <translation>Μη αναμενόμενος περιττός ή αντικρουόμενος περιορισμός. Ελέγξτε τους περιορισμούς και τους αυτόματους περιορισμούς αυτής της ενέργειας.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="425"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="422"/>
       <source>Offset Error</source>
       <translation>Σφάλμα Μετατόπισης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="426"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="423"/>
       <source>Offset could not be created.</source>
       <translation>Αδυναμία δημιουργίας μετατόπισης.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1242"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1239"/>
       <source>Invalid Value</source>
       <translation>Μη Έγκυρη Τιμή</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1243"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1240"/>
       <source>Offset value can't be 0.</source>
       <translation>Η τιμή μετατόπισης δεν μπορεί να είναι 0.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="216"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="213"/>
       <source>Failed to add arc slot</source>
       <translation>Αποτυχία προσθήκης τοξοειδούς εσοχής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="233"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="230"/>
       <source>Failed to add ellipse</source>
       <translation>Αποτυχία προσθήκης έλλειψης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="176"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="175"/>
       <source>Failed to rotate</source>
       <translation>Αποτυχία περιστροφής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerScale.h" line="123"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="120"/>
       <source>Invalid scale factor. Scale factor must be a positive number.</source>
       <translation>Μη έγκυρος συντελεστής κλίμακας. Ο συντελεστής πρέπει να είναι θετικός αριθμός.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerScale.h" line="154"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="151"/>
       <source>Failed to scale</source>
       <translation>Αποτυχία αλλαγής κλίμακας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="149"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="148"/>
       <source>Failed to translate</source>
       <translation>Αποτυχία μετατόπισης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="158"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="155"/>
       <source>Failed to create symmetry</source>
       <translation>Αποτυχία δημιουργίας συμμετρίας</translation>
     </message>
@@ -5192,20 +5185,30 @@ The grid spacing changes if it becomes smaller than the specified pixel size.</s
       <translation>Μη έγκυρο όνομα περιορισμού (πρέπει να περιέχει μόνο αλφαριθμητικούς χαρακτήρες και κάτω παύλες, και δεν πρέπει να ξεκινά με ψηφίο)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="183"/>
+      <location filename="../../DrawSketchHandlerText.h" line="182"/>
       <source>Failed to add text</source>
       <translation type="unfinished">Failed to add text</translation>
+    </message>
+    <message>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="226"/>
+      <source>Failed to add arc of hyperbola</source>
+      <translation type="unfinished">Failed to add arc of hyperbola</translation>
+    </message>
+    <message>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="186"/>
+      <source>Failed to add arc of parabola</source>
+      <translation type="unfinished">Failed to add arc of parabola</translation>
     </message>
   </context>
   <context>
     <name>CmdSketcherDimension</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3481"/>
+      <location filename="../../CommandConstraints.cpp" line="3648"/>
       <source>Dimension</source>
       <translation>Διάσταση</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3482"/>
+      <location filename="../../CommandConstraints.cpp" line="3649"/>
       <source>Constrains contextually based on the selection. The type can be changed with the M key.</source>
       <translation>Επιβάλλει περιορισμούς βάσει των επιλεγμένων στοιχείων. Ο τύπος του περιορισμού μπορεί να αλλάξει με το πλήκτρο M.</translation>
     </message>
@@ -5213,12 +5216,12 @@ The grid spacing changes if it becomes smaller than the specified pixel size.</s
   <context>
     <name>CmdSketcherCompDimensionTools</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1839"/>
+      <location filename="../../CommandConstraints.cpp" line="1842"/>
       <source>Dimension</source>
       <translation>Διάσταση</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1840"/>
+      <location filename="../../CommandConstraints.cpp" line="1843"/>
       <source>Dimension tools</source>
       <translation>Εργαλεία Διαστάσεων</translation>
     </message>
@@ -5345,22 +5348,22 @@ The grid spacing changes if it becomes smaller than the specified pixel size.</s
   <context>
     <name>TaskSketcherTool_c1_offset</name>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1197"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1194"/>
       <source>Delete original geometries (U)</source>
       <translation>Διαγραφή αρχικών γεωμετριών (U)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1205"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1202"/>
       <source>Deletes the original geometry. If creating a single copy, this effectively performs a 'Move' operation.</source>
       <translation type="unfinished">Deletes the original geometry. If creating a single copy, this effectively performs a 'Move' operation.</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="481"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="480"/>
       <source>Apply equal constraints</source>
       <translation>Εφαρμογή περιορισμών ισότητας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="486"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="485"/>
       <source>If this option is selected dimensional constraints are excluded from the operation.
 Instead equal constraints are applied between the original objects and their copies.</source>
       <translation>Εάν επιλέξτε αυτό, οι περιορισμοί διαστάσεων εξαιρούνται από τη διαδικασία.
@@ -5370,12 +5373,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c2_offset</name>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1201"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1198"/>
       <source>Add offset constraint (J)</source>
       <translation>Προσθήκη περιορισμού Μετατόπισης (J)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1213"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1210"/>
       <source>Adds a distance constraint with additional construction geometries that allows the distance to modify the entire offset geometry</source>
       <translation type="unfinished">Adds a distance constraint with additional construction geometries that allows the distance to modify the entire offset geometry</translation>
     </message>
@@ -5383,32 +5386,32 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c1_rectangle</name>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2084"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2081"/>
       <source>Corner, width, height</source>
       <translation>Γωνία, Πλάτος, Ύψος</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2085"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2082"/>
       <source>Center, width, height</source>
       <translation>Κέντρο, Πλάτος, Ύψος</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2086"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2083"/>
       <source>3 corners</source>
       <translation>3 γωνίες</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2087"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2084"/>
       <source>Center, 2 corners</source>
       <translation>Κέντρο, 2 γωνίες</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2093"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2090"/>
       <source>Rounded corners (U)</source>
       <translation>Στρογγυλεμένες γωνίες (U)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2097"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2094"/>
       <source>Create a rectangle with rounded corners.</source>
       <translation>Δημιουργεί ένα ορθογώνιο με στρογγυλεμένες γωνίες.</translation>
     </message>
@@ -5416,12 +5419,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c2_rectangle</name>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2106"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2103"/>
       <source>Frame (J)</source>
       <translation>Πλαίσιο (J)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="2110"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="2107"/>
       <source>Create two rectangles with a constant offset.</source>
       <translation>Δημιουργία δύο ορθογωνίων με σταθερή απόσταση μεταξύ τους.</translation>
     </message>
@@ -5722,7 +5725,7 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_p4_rotate</name>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="510"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="509"/>
       <source>Copies (+'U'/ -'J')</source>
       <translation>Αντίγραφα (+'U'/ -'J')</translation>
     </message>
@@ -5730,12 +5733,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>ToolWidgetManager_p4</name>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="330"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="327"/>
       <source>Sides (+'U'/ -'J')</source>
       <translation>Πλευρές (+'U'/ -'J')</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="992"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="994"/>
       <source>Degree (+'U'/ -'J')</source>
       <translation>Βαθμός (+'U'/ -'J')</translation>
     </message>
@@ -5743,7 +5746,7 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c1_scale</name>
     <message>
-      <location filename="../../DrawSketchHandlerScale.h" line="673"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="670"/>
       <source>Keep original geometries (U)</source>
       <translation>Διατηρήστε τις αρχικές γεωμετρίες (U)</translation>
     </message>
@@ -5751,12 +5754,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>CmdSketcherCompConstrainTools</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1912"/>
+      <location filename="../../CommandConstraints.cpp" line="1915"/>
       <source>Constrain</source>
       <translation>Περιορισμός</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1913"/>
+      <location filename="../../CommandConstraints.cpp" line="1916"/>
       <source>Constrain tools</source>
       <translation>Εργαλεία περιορισμών</translation>
     </message>
@@ -5764,7 +5767,7 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_p3_translate</name>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="569"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="568"/>
       <source>Copies (+'U'/-'J')</source>
       <translation>Αντίγραφα (+'U'/ -'J')</translation>
     </message>
@@ -5772,7 +5775,7 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_p5_translate</name>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="573"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="572"/>
       <source>Rows (+'R'/-'F')</source>
       <translation>Σειρές (+'R'/-'F')</translation>
     </message>
@@ -5780,12 +5783,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>Sketcher_CreateArc</name>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="576"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="572"/>
       <source>Center</source>
       <translation>Κέντρο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="577"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="573"/>
       <source>3 rim points</source>
       <translation>3 σημεία της περιφέρειας</translation>
     </message>
@@ -5793,12 +5796,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>Sketcher_CreateArcSlot</name>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="613"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="610"/>
       <source>Arc ends</source>
       <translation>Άκρα Τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="614"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="611"/>
       <source>Flat ends</source>
       <translation>Επίπεδα Άκρα</translation>
     </message>
@@ -5806,12 +5809,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>Sketcher_CreateEllipse</name>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="501"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="498"/>
       <source>Center</source>
       <translation>Κέντρο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="502"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="499"/>
       <source>Axis endpoints</source>
       <translation>Άκρα Άξονα</translation>
     </message>
@@ -5819,12 +5822,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c1_fillet</name>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="474"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="471"/>
       <source>Preserve corner (U)</source>
       <translation>Διατήρηση γωνίας (U)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="478"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="475"/>
       <source>Preserves intersection point and most constraints</source>
       <translation>Διατηρεί το σημείο τομής και τους περισσότερους περιορισμούς</translation>
     </message>
@@ -5832,17 +5835,17 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>Sketcher_CreateLine</name>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="355"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="356"/>
       <source>Point, length, angle</source>
       <translation>Σημείο, Μήκος, Γωνία</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="356"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="357"/>
       <source>Point, width, height</source>
       <translation>Σημείο, Πλάτος, Ύψος</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="357"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="358"/>
       <source>2 points</source>
       <translation>2 σημεία</translation>
     </message>
@@ -5850,12 +5853,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>Sketcher_CreateOffset</name>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1179"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1176"/>
       <source>Arc</source>
       <translation>Τόξο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="1180"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="1177"/>
       <source>Intersection</source>
       <translation>Σημείο τομής</translation>
     </message>
@@ -5863,12 +5866,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c1_symmetry</name>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="283"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="280"/>
       <source>Delete original geometries (U)</source>
       <translation>Διαγραφή αρχικών γεωμετριών (U)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="287"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="284"/>
       <source>Removes the original geometry and keeps only the mirrored result.</source>
       <translation type="unfinished">Removes the original geometry and keeps only the mirrored result.</translation>
     </message>
@@ -5876,17 +5879,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c1_bspline</name>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="938"/>
-      <source>Press R to undo last point.</source>
-      <translation type="unfinished">Press R to undo last point.</translation>
-    </message>
-    <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="949"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="951"/>
       <source>Periodic (F)</source>
       <translation type="unfinished">Periodic (F)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="953"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="955"/>
       <source>Create a periodic B-spline.</source>
       <translation>Όταν ενεργοποιείτε την "Περιοδικότητα" (πατώντας το πλήκτρο R), η καμπύλη "κλείνει" αυτόματα ενώνοντας την αρχή με το τέλος της με έναν ομαλό τρόπο, δημιουργώντας έτσι ένα συνεχόμενο κλειστό σχήμα χωρίς γωνίες.</translation>
     </message>
@@ -5894,8 +5892,8 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>Sketcher_ConstrainRadius</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9365"/>
-      <location filename="../../CommandConstraints.cpp" line="9367"/>
+      <location filename="../../CommandConstraints.cpp" line="9532"/>
+      <location filename="../../CommandConstraints.cpp" line="9534"/>
       <source>Fix the radius of an arc or a circle</source>
       <translation>Προσδιορίστε την Ακτίνα ενός Τόξου ή ενός Κύκλου</translation>
     </message>
@@ -5903,8 +5901,8 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>Sketcher_ConstrainRadiam</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9378"/>
-      <location filename="../../CommandConstraints.cpp" line="9380"/>
+      <location filename="../../CommandConstraints.cpp" line="9545"/>
+      <location filename="../../CommandConstraints.cpp" line="9547"/>
       <source>Fix the radius/diameter of an arc or a circle</source>
       <translation>Προσδιορίστε την Ακτίνα/Διάμετρο ενός τόξου ή ενός κύκλου</translation>
     </message>
@@ -5912,12 +5910,12 @@ Instead equal constraints are applied between the original objects and their cop
   <context>
     <name>TaskSketcherTool_c1_translate</name>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="533"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="532"/>
       <source>Apply equal constraints</source>
       <translation>Εφαρμογή περιορισμών ισότητας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="537"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="536"/>
       <source>If this option is selected dimensional constraints are excluded from the operation.
 Instead equal constraints are applied between the original objects and their copies.</source>
       <translation>Εάν επιλέξτε αυτό, οι περιορισμοί διαστάσεων εξαιρούνται από τη διαδικασία.
@@ -6156,12 +6154,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherToggleConstruction</name>
     <message>
-      <location filename="../../CommandAlterGeometry.cpp" line="69"/>
+      <location filename="../../CommandAlterGeometry.cpp" line="103"/>
       <source>Toggle Construction Geometry</source>
       <translation>Εναλλαγή Γεωμετρίας Κατασκευής</translation>
     </message>
     <message>
-      <location filename="../../CommandAlterGeometry.cpp" line="70"/>
+      <location filename="../../CommandAlterGeometry.cpp" line="104"/>
       <source>Toggles between defining geometry and construction geometry modes</source>
       <translation>Αυτή η εντολή σας επιτρέπει να αλλάζετε μεταξύ της κανονικής σχεδίασης (λευκές γραμμές) και της σχεδίασης κατασκευής (μπλε γραμμές). Μπορείτε επίσης να την χρησιμοποιήσετε για να μετατρέψετε μια ήδη υπάρχουσα γραμμή από "κανονική" σε "βοηθητική" και το αντίστροφο</translation>
     </message>
@@ -6169,12 +6167,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompToggleConstraints</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1943"/>
+      <location filename="../../CommandConstraints.cpp" line="1946"/>
       <source>Toggle Constraints</source>
       <translation>Εναλλαγή Περιορισμών</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="1944"/>
+      <location filename="../../CommandConstraints.cpp" line="1947"/>
       <source>Toggle constrain tools</source>
       <translation>Εμφάνιση/Απόκρυψη εργαλείων περιορισμού</translation>
     </message>
@@ -6182,12 +6180,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompHorizontalVertical</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3535"/>
+      <location filename="../../CommandConstraints.cpp" line="3702"/>
       <source>Horizontal/Vertical Constraint</source>
       <translation>Οριζόντιος/Κατακόρυφος Περιορισμός</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3536"/>
+      <location filename="../../CommandConstraints.cpp" line="3703"/>
       <source>Constrains the selected elements either horizontally or vertically</source>
       <translation>Εργαλείο που ευθυγραμμίζει αυτόματα μια γραμμή. Αν η γραμμή που επιλέξατε είναι σχεδόν οριζόντια, την κάνει εντελώς οριζόντια. Αν είναι σχεδόν όρθια, την κάνει εντελώς κατακόρυφη</translation>
     </message>
@@ -6195,12 +6193,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainHorVer</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3853"/>
+      <location filename="../../CommandConstraints.cpp" line="4020"/>
       <source>Horizontal/Vertical Constraint</source>
       <translation>Οριζόντιος/Κατακόρυφος Περιορισμός</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3854"/>
+      <location filename="../../CommandConstraints.cpp" line="4021"/>
       <source>Constrains the selected elements either horizontally or vertically, based on their closest alignment</source>
       <translation>Εργαλείο που ευθυγραμμίζει αυτόματα μια γραμμή. Αν η γραμμή που επιλέξατε είναι σχεδόν οριζόντια, την κάνει εντελώς οριζόντια. Αν είναι σχεδόν όρθια, την κάνει εντελώς κατακόρυφη</translation>
     </message>
@@ -6208,12 +6206,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainHorizontal</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3899"/>
+      <location filename="../../CommandConstraints.cpp" line="4066"/>
       <source>Horizontal Constraint</source>
       <translation>Περιορισμός Οριζοντίωσης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3900"/>
+      <location filename="../../CommandConstraints.cpp" line="4067"/>
       <source>Constrains the selected elements horizontally</source>
       <translation>Αυτή η εντολή αναγκάζει μια γραμμή να γίνει εντελώς οριζόντια</translation>
     </message>
@@ -6221,12 +6219,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainVertical</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3944"/>
+      <location filename="../../CommandConstraints.cpp" line="4111"/>
       <source>Vertical Constraint</source>
       <translation>Περιορισμός Καθετότητας (με τον κατακόρυφο άξονα Y)</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3945"/>
+      <location filename="../../CommandConstraints.cpp" line="4112"/>
       <source>Constrains the selected elements vertically</source>
       <translation>Αυτή η εντολή αναγκάζει μια γραμμή να γίνει εντελώς κατακόρυφη (όρθια)</translation>
     </message>
@@ -6234,12 +6232,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainLock</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3990"/>
+      <location filename="../../CommandConstraints.cpp" line="4157"/>
       <source>Lock Position</source>
       <translation>Κλείδωμα Θέσης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="3991"/>
+      <location filename="../../CommandConstraints.cpp" line="4158"/>
       <source>Constrains the selected vertices by adding horizontal and vertical distance constraints</source>
       <translation>Αυτή η εντολή «Κλειδώνει» ένα σημείο ή μια γραμμή στη συγκεκριμένη θέση που βρίσκεται εκείνη τη στιγμή. Εφαρμόζει αυτόματα δύο περιορισμούς (οριζόντιο και κατακόρυφο) ώστε το στοιχείο να μην μπορεί να μετακινηθεί καθόλου με το ποντίκι</translation>
     </message>
@@ -6247,12 +6245,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainBlock</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4276"/>
+      <location filename="../../CommandConstraints.cpp" line="4443"/>
       <source>Block Constraint</source>
       <translation>Περιορισμός Κλειδώματος</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4277"/>
+      <location filename="../../CommandConstraints.cpp" line="4444"/>
       <source>Constrains the selected edges as fixed</source>
       <translation>Αυτή η εντολή χρησιμοποιείται για να «παγώσει» ένα σχήμα (γραμμές (ακμές) ή μια καμπύλη B-spline) στην ακριβή θέση και μορφή που έχει εκείνη τη στιγμή, χρησιμοποιώντας μόνο έναν περιορισμό</translation>
     </message>
@@ -6260,12 +6258,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainCoincidentUnified</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4477"/>
+      <location filename="../../CommandConstraints.cpp" line="4644"/>
       <source>Coincident Constraint</source>
       <translation>Περιορισμός Ταύτισης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4478"/>
+      <location filename="../../CommandConstraints.cpp" line="4645"/>
       <source>Constrains the selected elements to be coincident</source>
       <translation>Αυτή η εντολή «ενώνει» δύο ή περισσότερα σημεία μεταξύ τους, αναγκάζοντάς τα να βρίσκονται στην ίδια ακριβώς θέση</translation>
     </message>
@@ -6273,12 +6271,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainCoincident</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4992"/>
+      <location filename="../../CommandConstraints.cpp" line="5159"/>
       <source>Coincident Constraint</source>
       <translation>Περιορισμός Ταύτισης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="4993"/>
+      <location filename="../../CommandConstraints.cpp" line="5160"/>
       <source>Constrains the selected elements to be coincident</source>
       <translation>Αυτή η εντολή «ενώνει» δύο ή περισσότερα σημεία μεταξύ τους, αναγκάζοντάς τα να βρίσκονται στην ίδια ακριβώς θέση</translation>
     </message>
@@ -6286,12 +6284,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainPointOnObject</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5042"/>
+      <location filename="../../CommandConstraints.cpp" line="5209"/>
       <source>Point-On-Object Constraint</source>
       <translation>Περιορισμός Σημείου πάνω σε Αντικείμενο</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5043"/>
+      <location filename="../../CommandConstraints.cpp" line="5210"/>
       <source>Constrains the selected point onto the selected object</source>
       <translation>Αυτή η εντολή αναγκάζει ένα σημείο να «πατάει» πάντα πάνω σε μια γραμμή ή έναν κύκλο. Το σημείο μπορεί να μετακινείται μπρος-πίσω κατά μήκος της γραμμής, αλλά είναι αδύνατο να βγει έξω από αυτήν</translation>
     </message>
@@ -6299,12 +6297,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainDistance</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5094"/>
+      <location filename="../../CommandConstraints.cpp" line="5261"/>
       <source>Distance Dimension</source>
       <translation>Διάσταση Απόστασης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5095"/>
+      <location filename="../../CommandConstraints.cpp" line="5262"/>
       <source>Constrains the vertical distance between two points, or from a point to the origin if one is selected</source>
       <translation>Περιορίζει την κατακόρυφη απόσταση μεταξύ δύο σημείων. Αν επιλέξετε μόνο ένα σημείο, τότε ορίζει την απόστασή του από το κεντρικό σημείο του σχεδίου (την αρχή των αξόνων)</translation>
     </message>
@@ -6312,12 +6310,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainDistanceX</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5748"/>
+      <location filename="../../CommandConstraints.cpp" line="5915"/>
       <source>Horizontal Dimension</source>
       <translation>Οριζόντια Διάσταση</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="5749"/>
+      <location filename="../../CommandConstraints.cpp" line="5916"/>
       <source>Constrains the horizontal distance between two points, or from a point to the origin if only one is selected</source>
       <translation>Περιορίζει την οριζόντια απόσταση μεταξύ δύο σημείων. Αν επιλέξετε μόνο ένα σημείο, τότε ορίζει την οριζόντια απόστασή του από το κεντρικό σημείο του σχεδίου (την αρχή των αξόνων)</translation>
     </message>
@@ -6325,12 +6323,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainDistanceY</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6049"/>
+      <location filename="../../CommandConstraints.cpp" line="6216"/>
       <source>Vertical Dimension</source>
       <translation>Κάθετη Διάσταση</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6050"/>
+      <location filename="../../CommandConstraints.cpp" line="6217"/>
       <source>Constrains the vertical distance between two points, or from a point to the origin if only one is selected</source>
       <translation type="unfinished">Constrains the vertical distance between two points, or from a point to the origin if only one is selected</translation>
     </message>
@@ -6338,12 +6336,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainParallel</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6344"/>
+      <location filename="../../CommandConstraints.cpp" line="6511"/>
       <source>Parallel Constraint</source>
       <translation>Περιορισμός Παραλληλίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6345"/>
+      <location filename="../../CommandConstraints.cpp" line="6512"/>
       <source>Constrains the selected lines to be parallel</source>
       <translation>Περιορίζει τις επιλεγμένες γραμμές ώστε να είναι παράλληλες</translation>
     </message>
@@ -6351,12 +6349,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainPerpendicular</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6507"/>
+      <location filename="../../CommandConstraints.cpp" line="6674"/>
       <source>Perpendicular Constraint</source>
       <translation>Περιορισμός Καθετότητας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="6508"/>
+      <location filename="../../CommandConstraints.cpp" line="6675"/>
       <source>Constrains the selected lines to be perpendicular</source>
       <translation>Περιορίζει τις επιλεγμένες γραμμές να είναι κάθετες μεταξύ τους. Να σχηματίζουν πάντα μια τέλεια «ορθή» γωνία (90 μοιρών)</translation>
     </message>
@@ -6364,12 +6362,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainTangent</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7291"/>
+      <location filename="../../CommandConstraints.cpp" line="7458"/>
       <source>Tangent/Collinear Constraint</source>
       <translation>Περιορισμός Εφαπτομενικότητας/Συνευθειακότητας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="7292"/>
+      <location filename="../../CommandConstraints.cpp" line="7459"/>
       <source>Constrains the selected elements to be tangent or collinear</source>
       <translation>Πρόκειται για ένα διπλό εργαλείο που εξομαλύνει τη σύνδεση μεταξύ σχημάτων:
 Εφαπτομενικότητα: Κάνει μια γραμμή να "ακουμπά" έναν κύκλο ή ένα τόξο χωρίς να τα διαπερνά, δημιουργώντας μια ομαλή μετάβαση.
@@ -6379,12 +6377,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainRadius</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8204"/>
+      <location filename="../../CommandConstraints.cpp" line="8371"/>
       <source>Radius Dimension</source>
       <translation>Διάσταση Ακτίνας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8205"/>
+      <location filename="../../CommandConstraints.cpp" line="8372"/>
       <source>Constrains the radius of the selected circle or arc</source>
       <translation>Περιορίζει το μέγεθος ενός κύκλου ή τόξου ορίζοντας την ακτίνα του. Η ακτίνα είναι η απόσταση από το κέντρο μέχρι την άκρη· αν την αλλάξετε, ο κύκλος θα μεγαλώσει ή θα μικρύνει ομοιόμορφα</translation>
     </message>
@@ -6392,12 +6390,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainDiameter</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8567"/>
+      <location filename="../../CommandConstraints.cpp" line="8734"/>
       <source>Diameter Dimension</source>
       <translation>Διάσταση Διαμέτρου</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8568"/>
+      <location filename="../../CommandConstraints.cpp" line="8735"/>
       <source>Constrains the diameter of the selected circle or arc</source>
       <translation>Περιορίζει τη διάμετρο του επιλεγμένου κύκλου ή τόξου. Είναι ο πιο συνηθισμένος τρόπος για να ορίζουμε το μέγεθος μιας τρύπας ή ενός κυλίνδρου στο σχέδιο</translation>
     </message>
@@ -6405,12 +6403,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainRadiam</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8885"/>
+      <location filename="../../CommandConstraints.cpp" line="9052"/>
       <source>Radius/Diameter Dimension</source>
       <translation>Διάσταση Ακτίνας/Διάμετρος</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="8886"/>
+      <location filename="../../CommandConstraints.cpp" line="9053"/>
       <source>Constrains the radius of the selected arc or the diameter of the selected circle</source>
       <translation>Αυτό το έξυπνο εργαλείο αναγνωρίζει τι έχετε επιλέξει: αν επιλέξετε ένα τόξο (μισό κύκλο ή καμπύλη), ορίζει την ακτίνα του. Αν επιλέξετε έναν πλήρη κύκλο, ορίζει τη διάμετρο (το συνολικό φάρδος του)</translation>
     </message>
@@ -6418,12 +6416,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainAngle</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9413"/>
+      <location filename="../../CommandConstraints.cpp" line="9580"/>
       <source>Angle Dimension</source>
       <translation>Διάσταση Γωνίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9414"/>
+      <location filename="../../CommandConstraints.cpp" line="9581"/>
       <source>Constrains the angle between two straight lines or between one line and the X-axis of the sketch if only one is selected</source>
       <translation>Αυτό το εργαλείο ορίζει πόσο ανοιχτή ή κλειστή είναι η γωνία (σε μοίρες) ανάμεσα σε δύο γραμμές. Αν επιλέξετε μόνο μία γραμμή, τότε το πρόγραμμα μετράει την κλίση που έχει αυτή η γραμμή σε σχέση με την οριζόντια γραμμή του σχεδίου (τον άξονα Χ)</translation>
     </message>
@@ -6431,12 +6429,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainEqual</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9901"/>
+      <location filename="../../CommandConstraints.cpp" line="10068"/>
       <source>Equal Constraint</source>
       <translation>Περιορισμός Ισότητας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="9903"/>
+      <location filename="../../CommandConstraints.cpp" line="10070"/>
       <source>Constrains the selected edges or circles to be equal</source>
       <translation>Αυτή η εντολή κάνει τα σχήματα που επιλέξατε πανομοιότυπα σε μέγεθος. Για παράδειγμα, αν επιλέξετε τρεις διαφορετικές γραμμές, θα αποκτήσουν όλες το ίδιο μήκος. Αν επιλέξετε δύο κύκλους, θα αποκτήσουν την ίδια διάμετρο. Έτσι, αν αλλάξετε αργότερα το μέγεθος του ενός, θα αλλάξουν αυτόματα και τα υπόλοιπα</translation>
     </message>
@@ -6444,12 +6442,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainSymmetric</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10151"/>
+      <location filename="../../CommandConstraints.cpp" line="10318"/>
       <source>Symmetric Constraint</source>
       <translation>Περιορισμός Συμμετρίας</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10152"/>
+      <location filename="../../CommandConstraints.cpp" line="10319"/>
       <source>Constrains the selected elements to be symmetric</source>
       <translation>Αυτή η εντολή αναγκάζει δύο σημεία ή αντικείμενα να απέχουν εξίσου από έναν κεντρικό άξονα ή ένα σημείο, σαν να καθρεφτίζονται. Αν μετακινήσετε το ένα στοιχείο, το άλλο θα ακολουθήσει αυτόματα στην αντίθετη πλευρά, διατηρώντας το σχέδιό σας απόλυτα Συμμετρικό</translation>
     </message>
@@ -6457,12 +6455,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherConstrainSnellsLaw</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10613"/>
+      <location filename="../../CommandConstraints.cpp" line="10780"/>
       <source>Refraction Constraint</source>
       <translation>Περιορισμός Διάθλασης</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="10614"/>
+      <location filename="../../CommandConstraints.cpp" line="10781"/>
       <source>Constrains the selected elements based on the refraction law (Snell's Law)</source>
       <translation>Αυτός ο ειδικός περιορισμός αναγκάζει δύο γραμμές να σχηματίζουν μια γωνία μεταξύ τους ακολουθώντας τους κανόνες της φυσικής για το φως. Όπως μια ακτίνα φωτός αλλάζει πορεία όταν μπαίνει στο νερό, έτσι και αυτό το εργαλείο υπολογίζει αυτόματα τη σωστή κλίση των γραμμών με βάση έναν «δείκτη διάθλασης» που ορίζετε εσείς</translation>
     </message>
@@ -6470,12 +6468,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherChangeDimensionConstraint</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11049"/>
+      <location filename="../../CommandConstraints.cpp" line="11216"/>
       <source>Edit Value</source>
       <translation>Επεξεργασία Τιμής</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11050"/>
+      <location filename="../../CommandConstraints.cpp" line="11217"/>
       <source>Edits the value of a dimensional constraint</source>
       <translation>Επεξεργάζεται την τιμή ενός περιορισμού διάστασης. Σάς επιτρέπει να αλλάξετε την τιμή σε μια μέτρηση που έχετε ήδη βάλει στο σχέδιο</translation>
     </message>
@@ -6483,12 +6481,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherToggleDrivingConstraint</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11103"/>
+      <location filename="../../CommandConstraints.cpp" line="11270"/>
       <source>Toggle Driving/Reference Constraints</source>
       <translation>Εναλλαγή Περιορισμών Κύριους/Βοηθητικούς</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11104"/>
+      <location filename="../../CommandConstraints.cpp" line="11271"/>
       <source>Toggles between driving and reference mode of the selected constraints and commands</source>
       <translation>Αυτή η λειτουργία σάς επιτρέπει να αλλάξετε τον "ρόλο" μιας διάστασης. Ένας Κύριος (driving) περιορισμός καθορίζει το μέγεθος και μετακινεί το σχέδιο, ενώ ένας Βοηθητικός (reference) περιορισμός απλώς σας δείχνει το μέγεθος χωρίς να το ελέγχει (μια απλή μέτρηση)</translation>
     </message>
@@ -6496,12 +6494,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherToggleActiveConstraint</name>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11258"/>
+      <location filename="../../CommandConstraints.cpp" line="11425"/>
       <source>Toggle Constraints</source>
       <translation>Εναλλαγή Περιορισμών</translation>
     </message>
     <message>
-      <location filename="../../CommandConstraints.cpp" line="11259"/>
+      <location filename="../../CommandConstraints.cpp" line="11426"/>
       <source>Toggles the state of the selected constraints</source>
       <translation>Αυτή η εντολή αλλάζει τη λειτουργία των περιορισμών που έχετε επιλέξει. Για παράδειγμα, μπορεί να μετατρέψει μια διάσταση από "ενεργή" (που καθορίζει το μέγεθος) σε "αναφοράς" (που απλώς εμφανίζει το μέγεθος), ή να ενεργοποιήσει/απενεργοποιήσει προσωρινά έναν περιορισμό χωρίς να τον διαγράψει</translation>
     </message>
@@ -6509,12 +6507,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreatePoint</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="114"/>
+      <location filename="../../CommandCreateGeo.cpp" line="109"/>
       <source>Point</source>
       <translation>Σημείο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="115"/>
+      <location filename="../../CommandCreateGeo.cpp" line="110"/>
       <source>Creates a point</source>
       <translation>Δημιουργεί ένα Σημείο</translation>
     </message>
@@ -6522,12 +6520,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompLine</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="145"/>
+      <location filename="../../CommandCreateGeo.cpp" line="140"/>
       <source>Polyline</source>
       <translation>Πολλαπλές Γραμμές</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="146"/>
+      <location filename="../../CommandCreateGeo.cpp" line="141"/>
       <source>Creates a continuous polyline</source>
       <translation>Αυτό το εργαλείο σάς επιτρέπει να σχεδιάσετε πολλές διαδοχικές γραμμές τη μία μετά την άλλη χωρίς διακοπή. Κάθε φορά που κάνετε κλικ, ολοκληρώνεται η μία γραμμή και ξεκινά αμέσως η επόμενη από το ίδιο ακριβώς σημείο, επιτρέποντάς σας να φτιάξετε γρήγορα σύνθετα σχήματα</translation>
     </message>
@@ -6535,12 +6533,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateLine</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="201"/>
+      <location filename="../../CommandCreateGeo.cpp" line="196"/>
       <source>Line</source>
       <translation>Γραμμή</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="202"/>
+      <location filename="../../CommandCreateGeo.cpp" line="197"/>
       <source>Creates a line</source>
       <translation>Δημιουργεί μια Γραμμή</translation>
     </message>
@@ -6548,12 +6546,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreatePolyline</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="263"/>
+      <location filename="../../CommandCreateGeo.cpp" line="258"/>
       <source>Polyline</source>
       <translation>Πολλαπλές Γραμμές</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="264"/>
+      <location filename="../../CommandCreateGeo.cpp" line="259"/>
       <source>Creates a polyline in the sketch. M key cycles through segment modes.</source>
       <translation type="unfinished">Creates a polyline in the sketch. M key cycles through segment modes.</translation>
     </message>
@@ -6561,12 +6559,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompCreateArc</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="296"/>
+      <location filename="../../CommandCreateGeo.cpp" line="291"/>
       <source>Arc</source>
       <translation>Τόξο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="297"/>
+      <location filename="../../CommandCreateGeo.cpp" line="292"/>
       <source>Creates an arc</source>
       <translation>Δημιουργεί ένα Τόξο</translation>
     </message>
@@ -6574,12 +6572,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateArc</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="366"/>
+      <location filename="../../CommandCreateGeo.cpp" line="361"/>
       <source>Arc From Center</source>
       <translation>Τόξο από Κέντρο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="367"/>
+      <location filename="../../CommandCreateGeo.cpp" line="362"/>
       <source>Creates an arc defined by a center point and an end point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα τόξο επιλέγοντας πρώτα το κέντρο της και μετά το σημείο από το οποίο θα ξεκινήσει η γραμμή. Η απόσταση ανάμεσα στα δύο αυτά σημεία καθορίζει αυτόματα πόσο μεγάλη θα είναι η καμπύλη (ακτίνα της)</translation>
     </message>
@@ -6587,12 +6585,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreate3PointArc</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="398"/>
+      <location filename="../../CommandCreateGeo.cpp" line="393"/>
       <source>Arc From 3 Points</source>
       <translation>Τόξο από 3 Σημεία</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="399"/>
+      <location filename="../../CommandCreateGeo.cpp" line="394"/>
       <source>Creates an arc defined by 2 end points and 1 point on the arc</source>
       <translation>Δημιουργεί ένα τόξο που ορίζεται από 2 τελικά σημεία και 1 σημείο πάνω στο τόξο. Σχεδιάζετε μια καμπύλη επιλέγοντας πρώτα 2 τελικά σημεία πού ξεκινάει και πού τελειώνει η γραμμή. Με το τρίτο σημείο, ορίζετε πόσο πολύ θα «φουσκώνει» η καμπύλη, τραβώντας την προς τη θέση που θέλετε</translation>
     </message>
@@ -6600,12 +6598,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateArcOfEllipse</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="434"/>
+      <location filename="../../CommandCreateGeo.cpp" line="429"/>
       <source>Elliptical Arc</source>
       <translation>Ελλειπτικό Τόξο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="435"/>
+      <location filename="../../CommandCreateGeo.cpp" line="430"/>
       <source>Creates an elliptical arc</source>
       <translation>Δημιουργεί ένα ελλειπτικό τόξο. Αντί για μια ομοιόμορφη κυκλική καμπύλη, δημιουργεί μια καμπύλη που ακολουθεί ένα ωοειδές σχήμα, ορίζοντας το κέντρο, τις δύο διαφορετικές ακτίνες του και τα σημεία που ξεκινά και τελειώνει η γραμμή</translation>
     </message>
@@ -6613,12 +6611,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateArcOfHyperbola</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="465"/>
+      <location filename="../../CommandCreateGeo.cpp" line="460"/>
       <source>Hyperbolic Arc</source>
       <translation>Υπερβολικό Τόξο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="466"/>
+      <location filename="../../CommandCreateGeo.cpp" line="461"/>
       <source>Creates a hyperbolic arc</source>
       <translation>Δημιουργεί ένα υπερβολικό τόξο. Σάς επιτρέπει να σχεδιάσετε μια ανοιχτή καμπύλη που ακολουθεί το σχήμα της υπερβολής. Είναι μια μαθηματική καμπύλη που μοιάζει με πολύ ανοιχτό «U» και χρησιμοποιείται συχνά σε εξειδικευμένα σχέδια, όπως σε ορισμένους τύπους κατόπτρων ή σε μελέτες ροής</translation>
     </message>
@@ -6626,12 +6624,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateArcOfParabola</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="495"/>
+      <location filename="../../CommandCreateGeo.cpp" line="490"/>
       <source>Parabolic Arc</source>
       <translation>Παραβολικό Τόξο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="496"/>
+      <location filename="../../CommandCreateGeo.cpp" line="491"/>
       <source>Creates a parabolic arc</source>
       <translation>Δημιουργεί ένα παραβολικό τόξο. Σάς επιτρέπει να σχεδιάσετε μια καμπύλη που έχει το σχήμα της παραβολής. Ορίζετε την εστία και την κορυφή της καμπύλης για να δημιουργήσετε αυτό το ακριβές μαθηματικό σχήμα</translation>
     </message>
@@ -6639,12 +6637,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompCreateConic</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="527"/>
+      <location filename="../../CommandCreateGeo.cpp" line="522"/>
       <source>Conic</source>
       <translation>Κωνικό</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="528"/>
+      <location filename="../../CommandCreateGeo.cpp" line="523"/>
       <source>Creates a conic</source>
       <translation>Δημιουργεί μια κωνική τομή. Σάς επιτρέπει να σχεδιάσετε καμπύλες που προκύπτουν από την τομή ενός κώνου, όπως η έλλειψη, παραβολή η υπερβολή. Αντί για έναν απλό κύκλο, μπορείτε να δημιουργήσετε πιο σύνθετες και "φυσικές" καμπύλες ορίζοντας τα σημεία εστίασης και την κλίση τους</translation>
     </message>
@@ -6652,12 +6650,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateCircle</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="594"/>
+      <location filename="../../CommandCreateGeo.cpp" line="589"/>
       <source>Circle From Center</source>
       <translation>Κύκλος από Κέντρο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="595"/>
+      <location filename="../../CommandCreateGeo.cpp" line="590"/>
       <source>Creates a circle from a center and rim point</source>
       <translation>Δημιουργεί έναν κύκλο κάνοντας δύο κλικ: το πρώτο ορίζει το κέντρο του και το δεύτερο ορίζει ένα σημείο πάνω στην εξωτερική γραμμή (την περιφέρεια). Η απόσταση ανάμεσα στα δύο κλικ καθορίζει πόσο μεγάλος θα είναι ο κύκλος</translation>
     </message>
@@ -6665,12 +6663,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreate3PointCircle</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="625"/>
+      <location filename="../../CommandCreateGeo.cpp" line="620"/>
       <source>Circle From 3 Points</source>
       <translation>Κύκλος απο 3 Σημεία</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="626"/>
+      <location filename="../../CommandCreateGeo.cpp" line="621"/>
       <source>Creates a circle from 3 perimeter points</source>
       <translation>Δημιουργεί έναν κύκλο από 3 σημεία της περιφέρειας. Είναι πολύ χρήσιμο όταν θέλετε να τοποθετήστε έναν κύκλο ανάμεσα σε τρεις υπάρχουσες γραμμές ή κορυφές του σχεδίου σας, χωρίς να γνωρίζετε από πριν πού βρίσκεται το κέντρο του</translation>
     </message>
@@ -6678,12 +6676,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateEllipseByCenter</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="665"/>
+      <location filename="../../CommandCreateGeo.cpp" line="660"/>
       <source>Ellipse From Center</source>
       <translation>Έλλειψη από Κέντρο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="666"/>
+      <location filename="../../CommandCreateGeo.cpp" line="661"/>
       <source>Creates an ellipse from a center and rim point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα ωοειδές σχήμα, από το κέντρο και ένα σημείο που ορίζει τη μία από τις δύο άκρες του. Στη συνέχεια, μετακινείτε το ποντίκι για να καθορίσετε πόσο πλατιά ή στενή θα είναι η έλλειψη</translation>
     </message>
@@ -6691,12 +6689,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateEllipseBy3Points</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="700"/>
+      <location filename="../../CommandCreateGeo.cpp" line="695"/>
       <source>Ellipse From 3 Points</source>
       <translation>Έλλειψη από 3 Σημεία</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="701"/>
+      <location filename="../../CommandCreateGeo.cpp" line="696"/>
       <source>Creates an ellipse from 3 points on its perimeter</source>
       <translation>Δημιουργεί μια έλλειψη από 3 σημεία της περιφέρειας. Σάς επιτρέπει να σχεδιάσετε μια έλλειψη ορίζοντας τρία συγκεκριμένα σημεία από τα οποία πρέπει να περνάει η εξωτερική της γραμμή</translation>
     </message>
@@ -6704,12 +6702,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompCreateRectangles</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="738"/>
+      <location filename="../../CommandCreateGeo.cpp" line="733"/>
       <source>Rectangle</source>
       <translation>Ορθογώνιο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="739"/>
+      <location filename="../../CommandCreateGeo.cpp" line="734"/>
       <source>Creates a rectangle</source>
       <translation>Δημιουργεί γρήγορα ένα ορθογώνιο παραλληλόγραμμο</translation>
     </message>
@@ -6717,12 +6715,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateRectangle</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="798"/>
+      <location filename="../../CommandCreateGeo.cpp" line="793"/>
       <source>Rectangle</source>
       <translation>Ορθογώνιο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="799"/>
+      <location filename="../../CommandCreateGeo.cpp" line="794"/>
       <source>Creates a rectangle from 2 corner points</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα ορθογώνιο κάνοντας δύο κλικ: ένα για την πρώτη γωνία και ένα για την απέναντι διαγώνια γωνία. Το FreeCAD θα φτιάξει αυτόματα τις τέσσερις πλευρές και θα τις κρατήσει οριζόντιες και κατακόρυφες</translation>
     </message>
@@ -6730,12 +6728,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateRectangleCenter</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="834"/>
+      <location filename="../../CommandCreateGeo.cpp" line="829"/>
       <source>Centered Rectangle</source>
       <translation>Κεντραρισμένο Ορθογώνιο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="835"/>
+      <location filename="../../CommandCreateGeo.cpp" line="830"/>
       <source>Creates a centered rectangle from a center and a corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα ορθογώνιο ξεκινώντας από το κέντρο του. Το πρώτο σημείο ορίζει το κέντρο και το δεύτερο ορίζει μία από τις γωνίες του. Καθώς μετακινείτε το ποντίκι, το ορθογώνιο μεγαλώνει συμμετρικά προς όλες τις πλευρές</translation>
     </message>
@@ -6743,12 +6741,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateOblong</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="871"/>
+      <location filename="../../CommandCreateGeo.cpp" line="866"/>
       <source>Rounded Rectangle</source>
       <translation>Ορθογώνιο Στρογγυλεμένων Γωνιών</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="872"/>
+      <location filename="../../CommandCreateGeo.cpp" line="867"/>
       <source>Creates a rounded rectangle from 2 corner points</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα ορθογώνιο επιλέγοντας τις δύο διαγώνιες γωνίες του, όπως και στο απλό ορθογώνιο. Η διαφορά είναι ότι το FreeCAD προσθέτει αυτόματα καμπύλες (τόξα) στις τέσσερις γωνίες του</translation>
     </message>
@@ -6756,12 +6754,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompCreateRegularPolygon</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="910"/>
+      <location filename="../../CommandCreateGeo.cpp" line="905"/>
       <source>Polygon</source>
       <translation>Πολύγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="911"/>
+      <location filename="../../CommandCreateGeo.cpp" line="906"/>
       <source>Creates a regular polygon from a center and corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε Πολύγωνα. Το πρώτο κλικ ορίζει το κέντρο του σχήματος και το δεύτερο ορίζει τη θέση μίας από τις γωνίες του, καθορίζοντας ταυτόχρονα το μέγεθος και τον προσανατολισμό του πολυγώνου</translation>
     </message>
@@ -6769,12 +6767,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateTriangle</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="982"/>
+      <location filename="../../CommandCreateGeo.cpp" line="977"/>
       <source>Triangle</source>
       <translation>Τρίγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="983"/>
+      <location filename="../../CommandCreateGeo.cpp" line="978"/>
       <source>Creates an equilateral triangle from a center and corner point</source>
       <translation>Δημιουργεί ένα ισόπλευρο τρίγωνο. Το πρώτο σημείο ορίζει το κέντρο του τριγώνου και το δεύτερο ορίζει τη θέση μιας από τις γωνίες του, καθορίζοντας έτσι το μέγεθος και την κλίση του</translation>
     </message>
@@ -6782,12 +6780,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateSquare</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1013"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1008"/>
       <source>Square</source>
       <translation>Τετράγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1014"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1009"/>
       <source>Creates a square from a center and corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα τέλειο τετράγωνο ξεκινώντας από τη μέση του. Το πρώτο σημείο ορίζει το κέντρο και το δεύτερο ορίζει μία από τις γωνίες του. Το σχήμα μεγαλώνει ομοιόμορφα προς όλες τις κατευθύνσεις καθώς μετακινείτε το ποντίκι</translation>
     </message>
@@ -6795,12 +6793,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreatePentagon</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1044"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1039"/>
       <source>Pentagon</source>
       <translation>Πεντάγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1045"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1040"/>
       <source>Creates a pentagon from a center and corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα κανονικό πεντάγωνο (σχήμα με 5 ίσες πλευρές). Το πρώτο σημείο ορίζει το κέντρο του και το δεύτερο ορίζει τη θέση μιας από τις γωνίες του, καθορίζοντας πόσο μεγάλο θα είναι</translation>
     </message>
@@ -6808,12 +6806,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateHexagon</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1075"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1070"/>
       <source>Hexagon</source>
       <translation>Εξάγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1076"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1071"/>
       <source>Creates a hexagon from a center and corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα εξάγωνο (σχήμα με 6 ίσες πλευρές). Το πρώτο σημείο ορίζει το κέντρο του και το δεύτερο ορίζει τη θέση μιας από τις γωνίες του, καθορίζοντας πόσο μεγάλο θα είναι</translation>
     </message>
@@ -6821,12 +6819,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateHeptagon</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1106"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1101"/>
       <source>Heptagon</source>
       <translation>Επτάγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1107"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1102"/>
       <source>Creates a heptagon from a center and corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα επτάγωνο (σχήμα με 7 ίσες πλευρές). Το πρώτο σημείο ορίζει το κέντρο του και το δεύτερο ορίζει τη θέση μιας από τις γωνίες του, καθορίζοντας πόσο μεγάλο θα είναι</translation>
     </message>
@@ -6834,12 +6832,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateOctagon</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1137"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1132"/>
       <source>Octagon</source>
       <translation>Οκτάγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1138"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1133"/>
       <source>Creates an octagon from a center and corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε ένα οκτάγωνο (σχήμα με 8 ίσες πλευρές). Το πρώτο σημείο ορίζει το κέντρο του και το δεύτερο ορίζει τη θέση μιας από τις γωνίες του, καθορίζοντας πόσο μεγάλο θα είναι</translation>
     </message>
@@ -6847,12 +6845,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateRegularPolygon</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1168"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1163"/>
       <source>Polygon</source>
       <translation>Πολύγωνο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1169"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1164"/>
       <source>Creates a regular polygon from a center and corner point</source>
       <translation>Με αυτό το εργαλείο σχεδιάζετε Πολύγωνα. Το πρώτο κλικ ορίζει το κέντρο του σχήματος και το δεύτερο ορίζει τη θέση μίας από τις γωνίες του, καθορίζοντας ταυτόχρονα το μέγεθος και τον προσανατολισμό του πολυγώνου</translation>
     </message>
@@ -6860,12 +6858,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompSlot</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1206"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1201"/>
       <source>Slot</source>
       <translation>Επιμήκης οπή (Slot)</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1207"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1202"/>
       <source>Slot tools</source>
       <translation>Εργαλεία Επιμήκης οπής (Slot)</translation>
     </message>
@@ -6873,12 +6871,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateSlot</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1262"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1257"/>
       <source>Slot</source>
       <translation>Επιμήκης Οπή (Slot)</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1263"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1258"/>
       <source>Creates a slot</source>
       <translation>Αυτό το εργαλείο σχεδιάζει μια «σχισμή» ή «λούκι», δηλαδή ένα σχήμα που μοιάζει με παραλληλόγραμμο με ημικυκλικές</translation>
     </message>
@@ -6886,12 +6884,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateArcSlot</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1293"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1288"/>
       <source>Arc Slot</source>
       <translation>Τοξοειδής Επιμήκης Οπή</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1294"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1289"/>
       <source>Creates an arc slot</source>
       <translation>Αυτό το εργαλείο σχεδιάζει μια «σχισμή» ή «λούκι» που ακολουθεί μια καμπύλη (τόξο) αντί για ευθεία γραμμή</translation>
     </message>
@@ -6899,12 +6897,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompCreateBSpline</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1326"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1321"/>
       <source>B-Spline</source>
       <translation>Καμπύλη B-Spline</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1327"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1322"/>
       <source>Creates a B-spline curve defined by control points</source>
       <translation>Η B-spline είναι μια καμπύλη που μπορεί να πάρει πολύ περίπλοκα και ομαλά σχήματα. Τα σημεία ελέγχου λειτουργούν σαν μαγνήτες: η γραμμή δεν περνάει απαραίτητα μέσα από αυτά, αλλά «τεντώνεται» προς το μέρος τους, επιτρέποντάς σας να διαμορφώσετε το σχήμα της με μεγάλη ακρίβεια και φυσικότητα.</translation>
     </message>
@@ -6912,12 +6910,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateBSpline</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1435"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1430"/>
       <source>B-Spline</source>
       <translation>Καμπύλη B-Spline</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1436"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1431"/>
       <source>Creates a B-spline curve defined by control points</source>
       <translation>Η B-spline είναι μια καμπύλη που μπορεί να πάρει πολύ περίπλοκα και ομαλά σχήματα. Τα σημεία ελέγχου λειτουργούν σαν μαγνήτες: η γραμμή δεν περνάει απαραίτητα μέσα από αυτά, αλλά «τεντώνεται» προς το μέρος τους, επιτρέποντάς σας να διαμορφώσετε το σχήμα της με μεγάλη ακρίβεια και φυσικότητα.</translation>
     </message>
@@ -6925,12 +6923,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreatePeriodicBSpline</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1475"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1470"/>
       <source>Periodic B-Spline</source>
       <translation>Περιοδική Καμπύλη B-Spline</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1476"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1471"/>
       <source>Creates a periodic B-spline curve defined by control points</source>
       <translation>Αυτή η λειτουργία δημιουργεί μια κλειστή και ομαλή καμπύλη (σαν ένας ελαστικός δακτύλιος) που δεν έχει εμφανή αρχή και τέλος. Τα σημεία ελέγχου λειτουργούν ως οδηγοί που τραβούν την καμπύλη προς το μέρος τους, επιτρέποντάς σας να φτιάξετε σύνθετα, κυκλικά σχήματα με απόλυτα ομαλές ενώσεις</translation>
     </message>
@@ -6938,12 +6936,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateBSplineByInterpolation</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1514"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1509"/>
       <source>B-Spline From Knots</source>
       <translation>B-Spline Από Κόμβους</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1515"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1510"/>
       <source>Creates a B-spline from knots, i.e. from interpolation</source>
       <translation>Δημιουργεί μια ομαλή καμπύλη που περνάει ακριβώς μέσα από τα σημεία (κόμβους) που επιλέγετε. Σε αντίθεση με τα σημεία ελέγχου που λειτουργούν σαν «μαγνήτες» από μακριά, εδώ η γραμμή «ακουμπά» υποχρεωτικά πάνω σε κάθε κλικ που κάνετε, δίνοντάς σας άμεσο έλεγχο της διαδρομής της</translation>
     </message>
@@ -6951,12 +6949,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreatePeriodicBSplineByInterpolation</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1551"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1546"/>
       <source>Periodic B-Spline From Knots</source>
       <translation>Περιοδική B-Spline Από Κόμβους</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1552"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1547"/>
       <source>Creates a periodic B-spline defined by knots using interpolation</source>
       <translation>Δημιουργεί μια κλειστή και ομαλή καμπύλη (χωρίς αρχή και τέλος) που περνάει ακριβώς μέσα από τα σημεία (κόμβους) που επιλέγετε. Το πρόγραμμα υπολογίζει αυτόματα την ιδανική διαδρομή ώστε η γραμμή να ενωθεί στο τέλος με την αρχή της, δημιουργώντας ένα ενιαίο, ομαλό σχήμα χωρίς γωνίες</translation>
     </message>
@@ -6964,12 +6962,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompCreateFillets</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1594"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1589"/>
       <source>Fillet/Chamfer</source>
       <translation>Στρογγύλεμα / Λοξοτόμηση</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1595"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1590"/>
       <source>Creates a fillet or chamfer between 2 lines</source>
       <translation>Στρογγύλεμα (Fillet): Μετατρέπει μια μυτερή γωνία σε μια ομαλή καμπύλη (τόξο). Λοξοτόμηση: Κόβει τη γωνία με μια ευθεία γραμμή</translation>
     </message>
@@ -6977,12 +6975,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateFillet</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1628"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1623"/>
       <source>Fillet</source>
       <translation>Στρογγύλεμα</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1629"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1624"/>
       <source>Creates a fillet between 2 selected lines or at coincident points</source>
       <translation>Αυτό το εργαλείο «στρογγυλεύει» τις γωνίες του σχεδίου σας. Μπορείτε να το χρησιμοποιήσετε επιλέγοντας 2 γραμμές που συναντιούνται ή απευθείας τη γωνία (το κοινό σημείο) όπου ενώνονται</translation>
     </message>
@@ -6990,12 +6988,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCreateChamfer</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1660"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1655"/>
       <source>Chamfer</source>
       <translation>Λοξότμηση</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1661"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1656"/>
       <source>Creates a chamfer between 2 selected lines or at coincident points</source>
       <translation>Αυτό το εργαλείο «κόβει» τις γωνίες του σχεδίου σας. Αντί για μια αιχμηρή γωνία, δημιουργεί μια πλάγια ευθεία γραμμή που ενώνει τις δύο πλευρές. Μπορείτε να το εφαρμόσετε είτε επιλέγοντας τις 2 γραμμές που ενώνονται, είτε κάνοντας κλικ απευθείας πάνω στη γωνία τους</translation>
     </message>
@@ -7003,12 +7001,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompCurveEdition</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1694"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1689"/>
       <source>Edit Edges</source>
       <translation>Επεξεργασία Ακμών</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1695"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1690"/>
       <source>Edge editing tools</source>
       <translation>Εργαλεία Επεξεργασία Ακμών</translation>
     </message>
@@ -7016,12 +7014,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherTrimming</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1728"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1723"/>
       <source>Trim Edge</source>
       <translation>Περικοπή Ακμής</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1729"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1724"/>
       <source>Trims an edge with respect to the selected position</source>
       <translation>Αυτό το εργαλείο λειτουργεί σαν «ψαλίδι». Όταν κάνετε κλικ σε ένα τμήμα μιας γραμμής που περισσεύει, το πρόγραμμα το αφαιρεί αυτόματα μέχρι το σημείο που αυτή συναντά μια άλλη γραμμή. Σας βοηθά να καθαρίσετε το σχέδιό σας από περιττά τμήματα γρήγορα και με ακρίβεια</translation>
     </message>
@@ -7029,12 +7027,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherExtend</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1758"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1753"/>
       <source>Extend Edge</source>
       <translation>Επέκταση Ακμής</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1759"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1754"/>
       <source>Extends an edge with respect to the selected position</source>
       <translation>Αυτό το εργαλείο μεγαλώνει αυτόματα μια γραμμή. Αντί να τραβάτε τη γραμμή με το χέρι, απλώς κάνετε κλικ πάνω της και το FreeCAD την προεκτείνει με ακρίβεια μέχρι να συναντήσει το πλησιέστερο στοιχείο του σχεδίου σας</translation>
     </message>
@@ -7042,12 +7040,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherSplit</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1788"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1783"/>
       <source>Split Edge</source>
       <translation>Διαχωρισμός Ακμής</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1789"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1784"/>
       <source>Splits an edge into 2 segments while preserving constraints</source>
       <translation>Διασπά μια ακμή σε 2 τμήματα διατηρώντας τους περιορισμούς</translation>
     </message>
@@ -7055,12 +7053,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCompExternal</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1819"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1814"/>
       <source>External Geometry</source>
       <translation>Εξωτερική Γεωμετρία</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1820"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1815"/>
       <source>Creates sketch elements linked to geometry defined outside the sketch</source>
       <translation>Αυτό το εργαλείο σάς επιτρέπει να «φέρνετε» στο τωρινό σας σχέδιο γραμμές ή γωνίες από άλλα τρισδιάστατα αντικείμενα που έχετε ήδη φτιάξει. Με αυτόν τον τρόπο, μπορείτε να ευθυγραμμίσετε το νέο σας σχήμα με απόλυτη ακρίβεια πάνω στα υπάρχοντα κομμάτια, εξασφαλίζοντας ότι όλα τα μέρη της κατασκευής σας θα ταιριάζουν τέλεια μεταξύ τους</translation>
     </message>
@@ -7068,12 +7066,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherProjection</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1877"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1872"/>
       <source>External Projection</source>
       <translation>Εξωτερική Προβολή</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1878"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1873"/>
       <source>Creates the projection of external geometry in the sketch plane</source>
       <translation>Αυτό το εργαλείο σάς επιτρέπει να «δανειστείτε» σχήματα από άλλα αντικείμενα και να τα εμφανίσετε στο τωρινό σας σχέδιο. Λειτουργεί σαν να ρίχνετε το φως ενός προβολέα πάνω σε μια ακμή ή μια επιφάνεια: η «σκιά» τους αποτυπώνεται πάνω στο επίπεδο που σχεδιάζετε, επιτρέποντάς σας να τη χρησιμοποιήσετε ως οδηγό για να ευθυγραμμίσετε τα νέα σας σχήματα με απόλυτη ακρίβεια</translation>
     </message>
@@ -7081,12 +7079,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherIntersection</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1914"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1909"/>
       <source>External Intersection</source>
       <translation>Εξωτερική Τομή</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1915"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1910"/>
       <source>Creates the intersection of external geometry with the sketch plane</source>
       <translation>Βρίσκει και σχεδιάζει τα σημεία ή τις γραμμές όπου ένα άλλο τρισδιάστατο αντικείμενο «τρυπάει» ή συναντά το επίπεδο του σχεδίου σας. Φανταστείτε ότι το επίπεδο του σχεδίου σας είναι ένα χαρτί που διαπερνά ένα αντικείμενο· η εξωτερική τομή σάς δείχνει το ακριβές «αποτύπωμα» που αφήνει το αντικείμενο πάνω στο χαρτί, επιτρέποντάς σας να σχεδιάσετε γύρω από αυτό με απόλυτη ακρίβεια</translation>
     </message>
@@ -7094,12 +7092,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>CmdSketcherCarbonCopy</name>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1952"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1947"/>
       <source>Carbon Copy</source>
       <translation>Πιστό Αντίγραφο</translation>
     </message>
     <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1953"/>
+      <location filename="../../CommandCreateGeo.cpp" line="1948"/>
       <source>Copies the geometry of another sketch</source>
       <translation>Αυτό το εργαλείο σάς επιτρέπει να «Αντιγράψετε» ολόκληρο το περιεχόμενο ενός άλλου σχεδίου (γραμμές, κύκλους και διαστάσεις) και να το τοποθετήσετε στο τωρινό σας σχέδιο. Το σημαντικό είναι ότι το αντίγραφο παραμένει συνδεδεμένο με το πρωτότυπο: αν αλλάξετε κάτι στο αρχικό σχέδιο, το αντίγραφο θα ενημερωθεί αυτόματα</translation>
     </message>
@@ -7581,42 +7579,42 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerArc</name>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="100"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="97"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="109"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="106"/>
       <source>%1 pick arc center</source>
       <translation>%1 επιλέξτε το κέντρο τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="115"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="112"/>
       <source>%1 pick arc start point</source>
       <translation>%1 επιλογή σημείου έναρξης τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="121"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="118"/>
       <source>%1 pick arc end point</source>
       <translation>%1 επιλογή σημείου τέλους Τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="129"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="126"/>
       <source>%1 pick first arc point</source>
       <translation>%1 επιλογή πρώτου σημείο τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="135"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="132"/>
       <source>%1 pick second arc point</source>
       <translation>%1 επιλογή δεύτερου σημείου τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="141"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="138"/>
       <source>%1 pick third arc point</source>
       <translation>%1 επιλογή τρίτο σημείο τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArc.h" line="439"/>
+      <location filename="../../DrawSketchHandlerArc.h" line="435"/>
       <source>Arc Parameters</source>
       <translation>Παράμετροι Τόξου</translation>
     </message>
@@ -7624,22 +7622,22 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerArcOfEllipse</name>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="452"/>
-      <source>%1 pick ellipse center</source>
-      <translation>%1 επιλέξτε το κέντρο της έλλειψης</translation>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="101"/>
+      <source>%1 pick ellipse center point</source>
+      <translation type="unfinished">%1 pick ellipse center point</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="457"/>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="106"/>
       <source>%1 pick axis point</source>
       <translation>%1 επιλογή σημείου Άξονα</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="462"/>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="111"/>
       <source>%1 pick arc start point</source>
       <translation>%1 επιλογή σημείου έναρξης τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="467"/>
+      <location filename="../../DrawSketchHandlerArcOfEllipse.h" line="116"/>
       <source>%1 pick arc end point</source>
       <translation>%1 επιλογή σημείου τέλους Τόξου</translation>
     </message>
@@ -7647,22 +7645,22 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerArcOfHyperbola</name>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="406"/>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="105"/>
       <source>%1 pick center point</source>
       <translation>%1 επιλέξτε το σημείο κέντρου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="411"/>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="110"/>
       <source>%1 pick axis point</source>
       <translation>%1 επιλογή σημείου Άξονα</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="416"/>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="115"/>
       <source>%1 pick arc start point</source>
       <translation>%1 επιλογή σημείου έναρξης τόξου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="421"/>
+      <location filename="../../DrawSketchHandlerArcOfHyperbola.h" line="120"/>
       <source>%1 pick arc end point</source>
       <translation>%1 επιλογή σημείου τέλους Τόξου</translation>
     </message>
@@ -7670,22 +7668,22 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerArcOfParabola</name>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="359"/>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="99"/>
       <source>%1 pick focus point</source>
       <translation>%1 επιλογή σημείου Εστίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="364"/>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="104"/>
       <source>%1 pick axis point</source>
       <translation>%1 επιλογή σημείου Άξονα</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="369"/>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="109"/>
       <source>%1 pick starting point</source>
       <translation>%1 επιλογή σημείου έναρξης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="374"/>
+      <location filename="../../DrawSketchHandlerArcOfParabola.h" line="114"/>
       <source>%1 pick end point</source>
       <translation>%1 επιλογή σημείου Λήξης</translation>
     </message>
@@ -7693,32 +7691,32 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerArcSlot</name>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="104"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="101"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="111"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="108"/>
       <source>%1 pick slot center</source>
       <translation>%1 επιλογή κέντρου Σχισμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="117"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="114"/>
       <source>%1 pick slot radius</source>
       <translation>%1 επιλογή ακτίνας σχισμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="123"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="120"/>
       <source>%1 pick slot angle</source>
       <translation>%1 επιλογή γωνία σχισμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="129"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="126"/>
       <source>%1 pick slot width</source>
       <translation>%1 επιλογή πλάτους σχισμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerArcSlot.h" line="307"/>
+      <location filename="../../DrawSketchHandlerArcSlot.h" line="304"/>
       <source>Arc Slot Parameters</source>
       <translation>Παράμετροι Τοξωτής Σχισμής</translation>
     </message>
@@ -7726,56 +7724,54 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerBSpline</name>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="429"/>
-      <source>%1 switch mode</source>
-      <translation>%1 εναλλαγή λειτουργίας</translation>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="428"/>
+      <source>%1 switch to knots</source>
+      <translation type="unfinished">%1 switch to knots</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="438"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="429"/>
+      <source>%1 switch to control points</source>
+      <translation type="unfinished">%1 switch to control points</translation>
+    </message>
+    <message>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="433"/>
+      <source>%1 undo last point</source>
+      <translation type="unfinished">%1 undo last point</translation>
+    </message>
+    <message>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="434"/>
+      <source>%1/%2 increase/decrease degree</source>
+      <translation type="unfinished">%1/%2 increase/decrease degree</translation>
+    </message>
+    <message>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="443"/>
       <source>%1 pick first control point</source>
       <translation>%1 επιλογή πρώτου σημείο ελέγχου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="440"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="449"/>
-      <source>%1 + degree</source>
-      <translation>%1 + βαθμός</translation>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="451"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="470"/>
+      <source>%1 pick next point</source>
+      <translation>%1 επιλέξτε το επόμενο σημείο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="441"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="450"/>
-      <source>%1 - degree</source>
-      <translation>%1 - βαθμός</translation>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="452"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="471"/>
+      <source>%1 finish</source>
+      <translation>%1 ολοκλήρωση</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="446"/>
-      <source>%1 pick next control point</source>
-      <translation>%1 επιλογή επόμενου σημείου ελέγχου</translation>
-    </message>
-    <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="447"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="465"/>
-      <source>%1 finish B-spline</source>
-      <translation>%1 Τερματισμός Καμπύλης B-spline</translation>
-    </message>
-    <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="457"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="463"/>
       <source>%1 pick first knot</source>
       <translation>%1 επιλογή πρώτου κόμβου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="459"/>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="467"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="432"/>
       <source>%1 toggle periodic</source>
       <translation>%1 Ανοιχτές/Κλειστές καμπύλες B-splines</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="464"/>
-      <source>%1 pick next knot</source>
-      <translation>%1 επιλογή επόμενου κόμβου</translation>
-    </message>
-    <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="514"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="521"/>
       <source>B-Spline Parameters</source>
       <translation>Παράμετροι Καμπύλης B-Spline</translation>
     </message>
@@ -7783,7 +7779,7 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerCarbonCopy</name>
     <message>
-      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="244"/>
+      <location filename="../../DrawSketchHandlerCarbonCopy.h" line="241"/>
       <source>%1 pick sketch to copy</source>
       <comment>Sketcher CarbonCopy: hint</comment>
       <translation>%1 επιλέξτε σκίτσο για αντιγραφή</translation>
@@ -7792,37 +7788,37 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerCircle</name>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="90"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="87"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="99"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="96"/>
       <source>%1 pick circle center</source>
       <translation>%1 επιλογή κέντρου κύκλου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="105"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="102"/>
       <source>%1 pick rim point</source>
       <translation>%1 επιλογή σημείου περιφέρειας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="113"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="110"/>
       <source>%1 pick first rim point</source>
       <translation>%1 επιλογή πρώτου σημείο περιφέρειας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="119"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="116"/>
       <source>%1 pick second rim point</source>
       <translation>%1 επιλογή δεύτερου σημείου περιφέρειας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="125"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="122"/>
       <source>%1 pick third rim point</source>
       <translation>%1 επιλογή τρίτου σημείου περιφέρειας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerCircle.h" line="329"/>
+      <location filename="../../DrawSketchHandlerCircle.h" line="326"/>
       <source>Circle Parameters</source>
       <translation>Παράμετροι Κύκλου</translation>
     </message>
@@ -7830,42 +7826,42 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerEllipse</name>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="96"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="93"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="105"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="102"/>
       <source>%1 pick ellipse center</source>
       <translation>%1 επιλέξτε το κέντρο της έλλειψης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="111"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="108"/>
       <source>%1 pick axis endpoint</source>
       <translation>%1 επιλέξτε σημείο άξονα</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="117"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="114"/>
       <source>%1 pick minor axis endpoint</source>
       <translation>%1 επιλογή τελικού σημείου δευτερεύοντος άξονα</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="125"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="122"/>
       <source>%1 pick first rim point</source>
       <translation>%1 ορίστε το πρώτο σημείο περιφέρειας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="131"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="128"/>
       <source>%1 pick second rim point</source>
       <translation>%1 επιλέξτε το δεύτερου σημείο περιφέρειας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="137"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="134"/>
       <source>%1 pick third rim point</source>
       <translation>%1 επιλέξτε το τρίτο σημείο περιφέρειας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerEllipse.h" line="343"/>
+      <location filename="../../DrawSketchHandlerEllipse.h" line="340"/>
       <source>Ellipse Parameters</source>
       <translation>Παράμετροι Έλλειψης</translation>
     </message>
@@ -7873,13 +7869,13 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerExtend</name>
     <message>
-      <location filename="../../DrawSketchHandlerExtend.h" line="394"/>
+      <location filename="../../DrawSketchHandlerExtend.h" line="391"/>
       <source>%1 pick edge to extend</source>
       <comment>Sketcher Extend: hint</comment>
       <translation>%1 επιλέξτε ακμή για επέκταση</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerExtend.h" line="399"/>
+      <location filename="../../DrawSketchHandlerExtend.h" line="396"/>
       <source>%1 set extension length</source>
       <comment>Sketcher Extend: hint</comment>
       <translation>%1 ορίστε το μήκος επέκτασης</translation>
@@ -7888,7 +7884,7 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerExternal</name>
     <message>
-      <location filename="../../DrawSketchHandlerExternal.h" line="262"/>
+      <location filename="../../DrawSketchHandlerExternal.h" line="259"/>
       <source>%1 pick external geometry</source>
       <comment>Sketcher External: hint</comment>
       <translation>%1 επιλέξτε εξωτερική γεωμετρία</translation>
@@ -7897,42 +7893,42 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerFillet</name>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="291"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="288"/>
       <source>CAD Kernel Error</source>
       <translation>Σφάλμα Πυρήνα CAD</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="299"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="296"/>
       <source>Value Error</source>
       <translation>Σφάλμα Τιμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="360"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="357"/>
       <source>Fillet/Chamfer Parameters</source>
       <translation>Παράμετροι Στρογγυλοποίησης/Λοξότμησης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="430"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="427"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="432"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="429"/>
       <source>%1 toggle preserve corner</source>
       <translation>%1 εναλλαγή διατήρησης βοηθητικής γωνίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="441"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="438"/>
       <source>%1 pick first edge or point</source>
       <translation>%1 επιλέξτε την πρώτη ακμή ή σημείο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="446"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="443"/>
       <source>%1 pick second edge</source>
       <translation>%1 επιλέξτε τη δεύτερη γωνία</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerFillet.h" line="448"/>
+      <location filename="../../DrawSketchHandlerFillet.h" line="445"/>
       <source>%1 create fillet</source>
       <translation>%1 δημιουργία στρογγυλοποίησης</translation>
     </message>
@@ -7940,26 +7936,26 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerLine</name>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="225"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="226"/>
       <source>Line Parameters</source>
       <translation>Παράμετροι Γραμμής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="283"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="284"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="292"/>
-      <location filename="../../DrawSketchHandlerLine.h" line="306"/>
-      <location filename="../../DrawSketchHandlerLine.h" line="320"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="293"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="307"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="321"/>
       <source>%1 pick first point</source>
       <translation>%1 επιλέξτε το πρώτο σημείο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLine.h" line="298"/>
-      <location filename="../../DrawSketchHandlerLine.h" line="312"/>
-      <location filename="../../DrawSketchHandlerLine.h" line="326"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="299"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="313"/>
+      <location filename="../../DrawSketchHandlerLine.h" line="327"/>
       <source>%1 pick second point</source>
       <translation>%1 επιλέξτε το δεύτερο σημείο</translation>
     </message>
@@ -7967,22 +7963,22 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerLineSet</name>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="808"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="805"/>
       <source>%1 pick first point</source>
       <translation>%1 επιλέξτε το πρώτο σημείο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="813"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="810"/>
       <source>%1 pick next point</source>
       <translation>%1 επιλέξτε το επόμενο σημείο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="814"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="811"/>
       <source>%1 finish</source>
       <translation>%1 ολοκλήρωση</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="815"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="812"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
@@ -7990,12 +7986,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerOffset</name>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="192"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="189"/>
       <source>Offset Parameters</source>
       <translation>Παράμετροι Μετατόπισης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerOffset.h" line="210"/>
+      <location filename="../../DrawSketchHandlerOffset.h" line="207"/>
       <source>%1 set offset direction and distance</source>
       <comment>Sketcher Offset: hint</comment>
       <translation>%1 ορίστε κατεύθυνση και απόσταση μετατόπισης</translation>
@@ -8004,7 +8000,7 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerPoint</name>
     <message>
-      <location filename="../../DrawSketchHandlerPoint.h" line="74"/>
+      <location filename="../../DrawSketchHandlerPoint.h" line="71"/>
       <source>%1 place a point</source>
       <comment>Sketcher Point: hint</comment>
       <translation>%1 τοποθετήστε ένα σημείο</translation>
@@ -8013,28 +8009,28 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerPolygon</name>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="206"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="203"/>
       <source>Polygon Parameters</source>
       <translation>Παράμετροι Πολυγώνου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="277"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="274"/>
       <source>%1 pick polygon center</source>
       <translation>%1 επιλέξτε το κέντρο του πολυγώνου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="278"/>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="285"/>
-      <source>%1/%2 increase / decrease number of sides</source>
-      <translation>%1/%2 αύξηση / μείωση αριθμού πλευρών</translation>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="275"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="282"/>
+      <source>%1/%2 increase/decrease number of sides</source>
+      <translation type="unfinished">%1/%2 increase/decrease number of sides</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="283"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="280"/>
       <source>%1 pick rotation and size</source>
       <translation>%1 ορίστε περιστροφή και μέγεθος</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerPolygon.h" line="284"/>
+      <location filename="../../DrawSketchHandlerPolygon.h" line="281"/>
       <source>%1 confirm</source>
       <translation>%1 επιβεβαίωση</translation>
     </message>
@@ -8042,70 +8038,70 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerRectangle</name>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="125"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="122"/>
       <source>%1 switch mode</source>
       <translation>%1 εναλλαγή λειτουργίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="127"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="124"/>
       <source>%1 toggle rounded corners</source>
       <translation>%1 εναλλαγή στρογγυλοποίησης γωνιών</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="130"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="127"/>
       <source>%1 toggle frame</source>
       <translation>%1 Εμφάνιση/Απόκρυψη πλαισίου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="139"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="207"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="249"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="136"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="204"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="246"/>
       <source>%1 pick first corner</source>
       <translation>%1 επιλογή πρώτης γωνία</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="147"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="144"/>
       <source>%1 pick opposite corner</source>
       <translation>%1 επιλογή αντίθετης γωνίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="155"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="189"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="231"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="265"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="152"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="186"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="228"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="262"/>
       <source>%1 set corner radius or frame thickness</source>
       <translation>%1 ορίστε την ακτίνα γωνίας ή το πάχος του πλαισίου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="163"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="197"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="160"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="194"/>
       <source>%1 set frame thickness</source>
       <translation>%1 ορίστε πάχος πλαισίου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="173"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="241"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="170"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="238"/>
       <source>%1 pick center</source>
       <translation>%1 επιλογή κέντρου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="181"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="178"/>
       <source>%1 pick corner</source>
       <translation>%1 επιλογή γωνίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="215"/>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="257"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="212"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="254"/>
       <source>%1 pick second corner</source>
       <translation>%1 επιλογή δεύτερης γωνίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="223"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="220"/>
       <source>%1 pick third corner</source>
       <translation>%1 επιλογή τρίτης γωνίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRectangle.h" line="796"/>
+      <location filename="../../DrawSketchHandlerRectangle.h" line="793"/>
       <source>Rectangle Parameters</source>
       <translation>Παράμετροι Ορθογωνίου</translation>
     </message>
@@ -8113,25 +8109,25 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerRotate</name>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="101"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="100"/>
       <source>%1 pick center point</source>
       <comment>Sketcher Rotate: hint</comment>
       <translation>%1 επιλέξτε το σημείο κέντρου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="106"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="105"/>
       <source>%1 set start angle</source>
       <comment>Sketcher Rotate: hint</comment>
       <translation>%1 ορίστε τη γωνία έναρξης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="111"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="110"/>
       <source>%1 set rotation angle</source>
       <comment>Sketcher Rotate: hint</comment>
       <translation>%1 ορίστε τη γωνία περιστροφής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerRotate.h" line="223"/>
+      <location filename="../../DrawSketchHandlerRotate.h" line="222"/>
       <source>Rotate Parameters</source>
       <translation>Παράμετροι Περιστροφής</translation>
     </message>
@@ -8139,17 +8135,17 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerScale</name>
     <message>
-      <location filename="../../DrawSketchHandlerScale.h" line="182"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="179"/>
       <source>%1 pick reference point</source>
       <translation>%1 σημείο αναφοράς επιλογής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerScale.h" line="187"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="184"/>
       <source>%1 set scale factor</source>
       <translation>%1 ορίστε συντελεστή κλίμακας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerScale.h" line="250"/>
+      <location filename="../../DrawSketchHandlerScale.h" line="247"/>
       <source>Scale Parameters</source>
       <translation>Παράμετροι Κλίμακας</translation>
     </message>
@@ -8157,17 +8153,17 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerSlot</name>
     <message>
-      <location filename="../../DrawSketchHandlerSlot.h" line="97"/>
+      <location filename="../../DrawSketchHandlerSlot.h" line="93"/>
       <source>%1 pick slot start point</source>
       <translation>%1 επιλέξτε σημείο αρχής της εσοχής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSlot.h" line="102"/>
+      <location filename="../../DrawSketchHandlerSlot.h" line="98"/>
       <source>%1 pick slot end point</source>
       <translation>%1 επιλέξτε σημείο τέλους της εσοχής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSlot.h" line="107"/>
+      <location filename="../../DrawSketchHandlerSlot.h" line="103"/>
       <source>%1 pick slot width</source>
       <translation>%1 ορίστε το πλάτος της εσοχής</translation>
     </message>
@@ -8175,7 +8171,7 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerSplitting</name>
     <message>
-      <location filename="../../DrawSketchHandlerSplitting.h" line="213"/>
+      <location filename="../../DrawSketchHandlerSplitting.h" line="209"/>
       <source>%1 pick location on edge to split</source>
       <comment>Sketcher Splitting: hint</comment>
       <translation>%1 επιλέξτε σημείο πάνω στην ακμή για διαχωρισμό</translation>
@@ -8184,12 +8180,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerSymmetry</name>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="205"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="202"/>
       <source>Symmetry Parameters</source>
       <translation>Παράμετροι Συμμετρίας</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="235"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="232"/>
       <source>%1 pick axis, edge, or point</source>
       <comment>Sketcher Symmetry: hint</comment>
       <translation>%1 επιλέξτε άξονα, ακμή ή σημείο</translation>
@@ -8198,24 +8194,24 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerTranslate</name>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="196"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="195"/>
       <source>Translate Parameters</source>
       <translation>Παράμετροι Μετατόπισης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="464"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="463"/>
       <source>%1 pick reference point</source>
       <comment>Sketcher Translate: hint</comment>
       <translation>%1 σημείο αναφοράς επιλογής</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="466"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="465"/>
       <source>%1 set translation vector</source>
       <comment>Sketcher Translate: hint</comment>
       <translation>%1 ορίστε διάνυσμα μετατόπισης</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerTranslate.h" line="469"/>
+      <location filename="../../DrawSketchHandlerTranslate.h" line="468"/>
       <source>%1 set second translation vector</source>
       <comment>Sketcher Translate: hint</comment>
       <translation>%1 ορίστε το δεύτερο διάνυσμα μετατόπισης</translation>
@@ -8224,7 +8220,7 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>SketcherGui::DrawSketchHandlerTrimming</name>
     <message>
-      <location filename="../../DrawSketchHandlerTrimming.h" line="226"/>
+      <location filename="../../DrawSketchHandlerTrimming.h" line="223"/>
       <source>%1 pick edge to trim</source>
       <comment>Sketcher Trimming: hint</comment>
       <translation>%1 επιλέξτε ακμή προς περικοπή</translation>
@@ -8241,12 +8237,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>Sketcher_CreateBSpline</name>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="942"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="944"/>
       <source>From control points</source>
       <translation>Από σημεία ελέγχου</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerBSpline.h" line="943"/>
+      <location filename="../../DrawSketchHandlerBSpline.h" line="945"/>
       <source>From knots</source>
       <translation>Από Κόμβους</translation>
     </message>
@@ -8254,12 +8250,12 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
   <context>
     <name>TaskSketcherTool_c2_symmetry</name>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="295"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="292"/>
       <source>Create symmetry constraints (J)</source>
       <translation>Κανόνας που «αναγκάζει» το σχέδιό σας να παραμένει απόλυτα ζυγισμένο και ίσο και από τις δύο πλευρές. (J)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerSymmetry.h" line="299"/>
+      <location filename="../../DrawSketchHandlerSymmetry.h" line="296"/>
       <source>Create symmetry constraints between the original and mirrored geometries</source>
       <translation type="unfinished">Create symmetry constraints between the original and mirrored geometries</translation>
     </message>
@@ -8301,74 +8297,14 @@ Points must be set closer than a fifth of the grid spacing to a grid line to sna
     </message>
   </context>
   <context>
-    <name>CmdSketcherConstrainGroup</name>
-    <message>
-      <location filename="../../CommandConstraints.cpp" line="10810"/>
-      <source>Group Constraint</source>
-      <translation type="unfinished">Group Constraint</translation>
-    </message>
-    <message>
-      <location filename="../../CommandConstraints.cpp" line="10811"/>
-      <source>Constrains the selected geometries together as a single entity.The position and size of the grouped geometries can be defined by constraining the construction line that is generated.Constraints applied to grouped edges are ignored as long as the Group constraint is here.</source>
-      <translation type="unfinished">Constrains the selected geometries together as a single entity.The position and size of the grouped geometries can be defined by constraining the construction line that is generated.Constraints applied to grouped edges are ignored as long as the Group constraint is here.</translation>
-    </message>
-  </context>
-  <context>
-    <name>CmdSketcherCreatePolylineLegacy</name>
-    <message>
-      <location filename="../../CommandCreateGeo.cpp" line="232"/>
-      <source>Polyline</source>
-      <translation>Πολλαπλές Γραμμές</translation>
-    </message>
-    <message>
-      <location filename="../../CommandCreateGeo.cpp" line="233"/>
-      <source>Creates a continuous polyline. Press the 'M' key to switch segment modes</source>
-      <translation>Αυτό το εργαλείο σάς επιτρέπει να σχεδιάζετε πολλές γραμμές τη μία μετά την άλλη χωρίς διακοπή. Το ιδιαίτερο χαρακτηριστικό του είναι ότι πατώντας το πλήκτρο 'M' καθώς σχεδιάζετε, μπορείτε να αλλάξετε τη γραμμή σε τόξο (καμπύλη) ή σε διαφορετικές γωνίες, επιτρέποντάς σας να φτιάξετε πολύπλοκα σχήματα με μία μόνο κίνηση</translation>
-    </message>
-  </context>
-  <context>
-    <name>CmdSketcherCreateText</name>
-    <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1398"/>
-      <source>Text</source>
-      <translation>Κείμενο</translation>
-    </message>
-    <message>
-      <location filename="../../CommandCreateGeo.cpp" line="1399"/>
-      <source>Creates text geometries controlled by a Text constraint.
-To Edit: Double-click the Text constraint to change the text content and font.
-To Position/Size: Apply constraints to the group's construction line.
-Note: While the Text constraint is active, any constraints applied directly to the text geometries will be ignored.
-</source>
-      <translation type="unfinished">Creates text geometries controlled by a Text constraint.
-To Edit: Double-click the Text constraint to change the text content and font.
-To Position/Size: Apply constraints to the group's construction line.
-Note: While the Text constraint is active, any constraints applied directly to the text geometries will be ignored.
-</translation>
-    </message>
-  </context>
-  <context>
-    <name>SketcherGui::EditTextDialog</name>
-    <message>
-      <location filename="../../EditTextDialog.cpp" line="72"/>
-      <source>Font not found</source>
-      <translation type="unfinished">Font not found</translation>
-    </message>
-    <message>
-      <location filename="../../EditTextDialog.cpp" line="73"/>
-      <source>The original font '%1' is not found on your system. A default font has been selected.</source>
-      <translation type="unfinished">The original font '%1' is not found on your system. A default font has been selected.</translation>
-    </message>
-  </context>
-  <context>
     <name>TaskSketcherTool_c1_text</name>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="362"/>
+      <location filename="../../DrawSketchHandlerText.h" line="361"/>
       <source>Width</source>
       <translation>Πλάτος</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="363"/>
+      <location filename="../../DrawSketchHandlerText.h" line="362"/>
       <source>Height</source>
       <translation>Ύψος</translation>
     </message>
@@ -8376,12 +8312,12 @@ Note: While the Text constraint is active, any constraints applied directly to t
   <context>
     <name>TaskSketcherTool_Text</name>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="369"/>
+      <location filename="../../DrawSketchHandlerText.h" line="368"/>
       <source>Text</source>
       <translation>Κείμενο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerText.h" line="375"/>
+      <location filename="../../DrawSketchHandlerText.h" line="374"/>
       <source>Font</source>
       <translation type="unfinished">Font</translation>
     </message>
@@ -8413,39 +8349,86 @@ Note: While the Text constraint is active, any constraints applied directly to t
     </message>
   </context>
   <context>
+    <name>CmdSketcherCreatePolylineLegacy</name>
+    <message>
+      <location filename="../../CommandCreateGeo.cpp" line="227"/>
+      <source>Polyline</source>
+      <translation>Πολλαπλές Γραμμές</translation>
+    </message>
+    <message>
+      <location filename="../../CommandCreateGeo.cpp" line="228"/>
+      <source>Creates a continuous polyline. Press the 'M' key to switch segment modes</source>
+      <translation>Αυτό το εργαλείο σάς επιτρέπει να σχεδιάζετε πολλές γραμμές τη μία μετά την άλλη χωρίς διακοπή. Το ιδιαίτερο χαρακτηριστικό του είναι ότι πατώντας το πλήκτρο 'M' καθώς σχεδιάζετε, μπορείτε να αλλάξετε τη γραμμή σε τόξο (καμπύλη) ή σε διαφορετικές γωνίες, επιτρέποντάς σας να φτιάξετε πολύπλοκα σχήματα με μία μόνο κίνηση</translation>
+    </message>
+  </context>
+  <context>
+    <name>CmdSketcherCreateText</name>
+    <message>
+      <location filename="../../CommandCreateGeo.cpp" line="1393"/>
+      <source>Text</source>
+      <translation>Κείμενο</translation>
+    </message>
+    <message>
+      <location filename="../../CommandCreateGeo.cpp" line="1394"/>
+      <source>Creates text geometries controlled by a Text constraint.
+To Edit: Double-click the Text constraint to change the text content and font.
+To Position/Size: Apply constraints to the group's construction line.
+Note: While the Text constraint is active, any constraints applied directly to the text geometries will be ignored.
+</source>
+      <translation type="unfinished">Creates text geometries controlled by a Text constraint.
+To Edit: Double-click the Text constraint to change the text content and font.
+To Position/Size: Apply constraints to the group's construction line.
+Note: While the Text constraint is active, any constraints applied directly to the text geometries will be ignored.
+</translation>
+    </message>
+  </context>
+  <context>
+    <name>SketcherGui::EditTextDialog</name>
+    <message>
+      <location filename="../../EditTextDialog.cpp" line="72"/>
+      <source>Font not found</source>
+      <translation type="unfinished">Font not found</translation>
+    </message>
+    <message>
+      <location filename="../../EditTextDialog.cpp" line="73"/>
+      <source>The original font '%1' is not found on your system. A default font has been selected.</source>
+      <translation type="unfinished">The original font '%1' is not found on your system. A default font has been selected.</translation>
+    </message>
+  </context>
+  <context>
     <name>SketcherGui::DrawSketchHandlerPolyLine</name>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1015"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1012"/>
       <source>%1 switch to arc</source>
       <translation type="unfinished">%1 switch to arc</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1016"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1013"/>
       <source>%1 switch to line</source>
       <translation type="unfinished">%1 switch to line</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1019"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1016"/>
       <source>%1 toggle fillet</source>
       <translation type="unfinished">%1 toggle fillet</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1020"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1017"/>
       <source>%1 undo last point</source>
       <translation type="unfinished">%1 undo last point</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1028"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1025"/>
       <source>%1 pick first point</source>
       <translation>%1 επιλέξτε το πρώτο σημείο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1033"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1030"/>
       <source>%1 pick next point</source>
       <translation>%1 επιλέξτε το επόμενο σημείο</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1034"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1031"/>
       <source>%1 finish</source>
       <translation>%1 ολοκλήρωση</translation>
     </message>
@@ -8453,12 +8436,12 @@ Note: While the Text constraint is active, any constraints applied directly to t
   <context>
     <name>Sketcher_CreatePolyline</name>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1699"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1717"/>
       <source>Line</source>
       <translation>Γραμμή</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1700"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1718"/>
       <source>Arc</source>
       <translation>Τόξο</translation>
     </message>
@@ -8466,14 +8449,125 @@ Note: While the Text constraint is active, any constraints applied directly to t
   <context>
     <name>TaskSketcherTool_c1_PolyLine</name>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1706"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1724"/>
       <source>Fillet (F)</source>
       <translation type="unfinished">Fillet (F)</translation>
     </message>
     <message>
-      <location filename="../../DrawSketchHandlerLineSet.h" line="1710"/>
+      <location filename="../../DrawSketchHandlerLineSet.h" line="1728"/>
       <source>Adds a fillet between the current and previous line</source>
       <translation type="unfinished">Adds a fillet between the current and previous line</translation>
+    </message>
+  </context>
+  <context>
+    <name>SketcherGui::DrawSketchHandlerDimension</name>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2326"/>
+      <location filename="../../CommandConstraints.cpp" line="2331"/>
+      <location filename="../../CommandConstraints.cpp" line="2337"/>
+      <location filename="../../CommandConstraints.cpp" line="2352"/>
+      <location filename="../../CommandConstraints.cpp" line="2375"/>
+      <location filename="../../CommandConstraints.cpp" line="2394"/>
+      <source>%1 switch to distance</source>
+      <translation type="unfinished">%1 switch to distance</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2327"/>
+      <source>%1 switch to lock</source>
+      <translation type="unfinished">%1 switch to lock</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2332"/>
+      <location filename="../../CommandConstraints.cpp" line="2342"/>
+      <location filename="../../CommandConstraints.cpp" line="2359"/>
+      <location filename="../../CommandConstraints.cpp" line="2458"/>
+      <source>%1 switch to horizontal</source>
+      <translation type="unfinished">%1 switch to horizontal</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2333"/>
+      <location filename="../../CommandConstraints.cpp" line="2343"/>
+      <location filename="../../CommandConstraints.cpp" line="2360"/>
+      <location filename="../../CommandConstraints.cpp" line="2459"/>
+      <source>%1 switch to vertical</source>
+      <translation type="unfinished">%1 switch to vertical</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2338"/>
+      <location filename="../../CommandConstraints.cpp" line="2344"/>
+      <location filename="../../CommandConstraints.cpp" line="2351"/>
+      <source>%1 switch to symmetry</source>
+      <translation type="unfinished">%1 switch to symmetry</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2358"/>
+      <source>%1 switch to length</source>
+      <translation type="unfinished">%1 switch to length</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2361"/>
+      <source>%1 switch to block</source>
+      <translation type="unfinished">%1 switch to block</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2366"/>
+      <source>%1 switch to equal length</source>
+      <translation type="unfinished">%1 switch to equal length</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2376"/>
+      <source>%1 switch to concentric distance</source>
+      <translation type="unfinished">%1 switch to concentric distance</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2377"/>
+      <source>%1 switch to equal radius</source>
+      <translation type="unfinished">%1 switch to equal radius</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2397"/>
+      <source>%1 switch to angle</source>
+      <translation type="unfinished">%1 switch to angle</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2409"/>
+      <location filename="../../CommandConstraints.cpp" line="2419"/>
+      <source>%1 switch to arc angle</source>
+      <translation type="unfinished">%1 switch to arc angle</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2410"/>
+      <location filename="../../CommandConstraints.cpp" line="2420"/>
+      <source>%1 switch to arc length</source>
+      <translation type="unfinished">%1 switch to arc length</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2437"/>
+      <source>%1 switch to weight</source>
+      <translation type="unfinished">%1 switch to weight</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2450"/>
+      <source>%1 switch to radius</source>
+      <translation type="unfinished">%1 switch to radius</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="2453"/>
+      <source>%1 switch to diameter</source>
+      <translation type="unfinished">%1 switch to diameter</translation>
+    </message>
+  </context>
+  <context>
+    <name>CmdSketcherConstrainGroup</name>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="10977"/>
+      <source>Group Constraint</source>
+      <translation type="unfinished">Group Constraint</translation>
+    </message>
+    <message>
+      <location filename="../../CommandConstraints.cpp" line="10978"/>
+      <source>Constrains the selected geometries together as a single entity.The position and size of the grouped geometries can be defined by constraining the construction line that is generated.Constraints applied to grouped edges are ignored as long as the Group constraint is here.</source>
+      <translation type="unfinished">Constrains the selected geometries together as a single entity.The position and size of the grouped geometries can be defined by constraining the construction line that is generated.Constraints applied to grouped edges are ignored as long as the Group constraint is here.</translation>
     </message>
   </context>
 </TS>

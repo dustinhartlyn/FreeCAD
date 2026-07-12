@@ -325,17 +325,17 @@
   <context>
     <name>CmdFemPostApllyChanges</name>
     <message>
-      <location filename="../../Command.cpp" line="2883"/>
+      <location filename="../../Command.cpp" line="2886"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2884"/>
+      <location filename="../../Command.cpp" line="2887"/>
       <source>Apply Changes to Pipeline</source>
       <translation>பைப்லைனில் மாற்றங்களைப் பயன்படுத்தவும்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2885"/>
+      <location filename="../../Command.cpp" line="2888"/>
       <source>Applies changes to parameters directly and not on recompute only</source>
       <translation>அளவுருக்களுக்கு மாற்றங்களை நேரடியாகப் பயன்படுத்துகிறது மற்றும் மறுகணிப்பில் மட்டும் அல்ல</translation>
     </message>
@@ -343,27 +343,27 @@
   <context>
     <name>CmdFemPostClipFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2247"/>
+      <location filename="../../Command.cpp" line="2250"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2248"/>
+      <location filename="../../Command.cpp" line="2251"/>
       <source>Region Clip Filter</source>
       <translation>பிராந்திய கிளிப் வடிகட்டி</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2249"/>
+      <location filename="../../Command.cpp" line="2252"/>
       <source>Defines a clip filter which uses functions to define the clipped region</source>
       <translation>கிளிப் செய்யப்பட்ட பகுதியை வரையறுக்கச் செயல்பாடுகளைப் பயன்படுத்தும் கிளிப் வடிப்பானை வரையறுக்கிறது</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2773"/>
+      <location filename="../../Command.cpp" line="2776"/>
       <source>Select a pipeline.</source>
       <translation>பைப்லைனைத் தேர்ந்தெடுக்கவும்.</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2772"/>
+      <location filename="../../Command.cpp" line="2775"/>
       <source>Wrong selection</source>
       <translation>தவறான தேர்வு</translation>
     </message>
@@ -371,17 +371,17 @@
   <context>
     <name>CmdFemPostCutFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2286"/>
+      <location filename="../../Command.cpp" line="2289"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2287"/>
+      <location filename="../../Command.cpp" line="2290"/>
       <source>Function Cut Filter</source>
       <translation>செயல்பாடு வெட்டு வடிகட்டி</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2288"/>
+      <location filename="../../Command.cpp" line="2291"/>
       <source>Cuts the data along an implicit function</source>
       <translation>ஒரு மறைமுகமான செயல்பாட்டின் மூலம் தரவை வெட்டுகிறது</translation>
     </message>
@@ -389,17 +389,17 @@
   <context>
     <name>CmdFemPostDataAlongLineFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2323"/>
+      <location filename="../../Command.cpp" line="2326"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2324"/>
+      <location filename="../../Command.cpp" line="2327"/>
       <source>Line Clip Filter</source>
       <translation>வரி கிளிப் வடிகட்டி</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2325"/>
+      <location filename="../../Command.cpp" line="2328"/>
       <source>Defines a clip filter which clips a field along a line</source>
       <translation>ஒரு வரியில் ஒரு புலத்தைக் கிளிப் செய்யும் கிளிப் வடிப்பானை வரையறுக்கிறது</translation>
     </message>
@@ -407,17 +407,17 @@
   <context>
     <name>CmdFemPostDataAtPointFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2360"/>
+      <location filename="../../Command.cpp" line="2363"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2361"/>
+      <location filename="../../Command.cpp" line="2364"/>
       <source>Data at Point Clip Filter</source>
       <translation>புள்ளி கிளிப் வடிகட்டியில் தரவு</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2362"/>
+      <location filename="../../Command.cpp" line="2365"/>
       <source>Defines a clip filter which clips a field data at point</source>
       <translation>புள்ளியில் ஒரு புலத் தரவைக் கிளிப் செய்யும் கிளிப் வடிப்பானை வரையறுக்கிறது</translation>
     </message>
@@ -425,37 +425,37 @@
   <context>
     <name>CmdFemPostFunctions</name>
     <message>
-      <location filename="../../Command.cpp" line="2625"/>
+      <location filename="../../Command.cpp" line="2628"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2626"/>
+      <location filename="../../Command.cpp" line="2629"/>
       <source>Filter Functions</source>
       <translation>வடிகட்டிச் செயல்பாடுகள்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2627"/>
+      <location filename="../../Command.cpp" line="2630"/>
       <source>Functions for use in postprocessing filter</source>
       <translation>பிந்தைய செயலாக்க வடிகட்டியில் பயன்படுத்துவதற்கான செயல்பாடுகள்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2825"/>
+      <location filename="../../Command.cpp" line="2828"/>
       <source>Plane</source>
       <translation>தளம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2835"/>
+      <location filename="../../Command.cpp" line="2838"/>
       <source>Sphere</source>
       <translation>கோளம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2845"/>
+      <location filename="../../Command.cpp" line="2848"/>
       <source>Cylinder</source>
       <translation>கலன்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2855"/>
+      <location filename="../../Command.cpp" line="2858"/>
       <source>Box</source>
       <translation>பெட்டி</translation>
     </message>
@@ -463,65 +463,65 @@
   <context>
     <name>CmdFemPostLinearizedStressesFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2134"/>
+      <location filename="../../Command.cpp" line="2137"/>
       <source>Thickness [mm]</source>
       <comment>Plot X-Axis Label</comment>
       <translation>தடிமன் [மிமீ]</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2140"/>
+      <location filename="../../Command.cpp" line="2143"/>
       <source>Stress [MPa]</source>
       <comment>Plot Y-Axis Label</comment>
       <translation>மன அழுத்தம் [MPa]</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2146"/>
+      <location filename="../../Command.cpp" line="2149"/>
       <source>Linearized Stresses</source>
       <comment>Plot title</comment>
       <translation>நேர்கோட்டு அழுத்தங்கள்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2152"/>
+      <location filename="../../Command.cpp" line="2155"/>
       <source>Membrane</source>
       <comment>Plot legend item label</comment>
       <translation>சவ்வு</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2158"/>
+      <location filename="../../Command.cpp" line="2161"/>
       <source>Membrane and Bending</source>
       <comment>Plot legend item label</comment>
       <translation>மென்தோல் மற்றும் வளைவு</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2164"/>
+      <location filename="../../Command.cpp" line="2167"/>
       <source>Total</source>
       <comment>Plot legend item label</comment>
       <translation>மொத்தம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2398"/>
+      <location filename="../../Command.cpp" line="2401"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2399"/>
+      <location filename="../../Command.cpp" line="2402"/>
       <source>Stress Linearization Plot</source>
       <translation>ச்ட்ரெச் லீனியரைசேசன் ப்ளாட்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2400"/>
+      <location filename="../../Command.cpp" line="2403"/>
       <source>Defines a stress linearization plot</source>
       <translation>ச்ட்ரெச் லீனியரைசேசன் ப்ளாட்டை வரையறுக்கிறது</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2439"/>
-      <location filename="../../Command.cpp" line="2450"/>
+      <location filename="../../Command.cpp" line="2442"/>
+      <location filename="../../Command.cpp" line="2453"/>
       <source>Select a clip filter which clips a stress field along a line</source>
       <translation>ஒரு வரியில் அழுத்தப் புலத்தைக் கிளிப் செய்யும் கிளிப் வடிப்பானைத் தேர்ந்தெடுக்கவும்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2438"/>
-      <location filename="../../Command.cpp" line="2449"/>
+      <location filename="../../Command.cpp" line="2441"/>
+      <location filename="../../Command.cpp" line="2452"/>
       <source>Wrong selection</source>
       <translation>தவறான தேர்வு</translation>
     </message>
@@ -529,27 +529,27 @@
   <context>
     <name>CmdFemPostPipelineFromResult</name>
     <message>
-      <location filename="../../Command.cpp" line="2924"/>
+      <location filename="../../Command.cpp" line="2927"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2925"/>
+      <location filename="../../Command.cpp" line="2928"/>
       <source>Post Pipeline From Result</source>
       <translation>முடிவு இருந்து பைப்லைன் போச்ட்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2926"/>
+      <location filename="../../Command.cpp" line="2929"/>
       <source>Creates a post processing pipeline from a result object</source>
       <translation>முடிவுப் பொருளிலிருந்து பிந்தைய செயலாக்க பைப்லைனை உருவாக்குகிறது</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="3010"/>
+      <location filename="../../Command.cpp" line="3013"/>
       <source>Wrong selection type</source>
       <translation>தவறான தேர்வு வகை</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="3011"/>
+      <location filename="../../Command.cpp" line="3014"/>
       <source>Select a result object.</source>
       <translation>முடிவுப் பொருளைத் தேர்ந்தெடுக்கவும்.</translation>
     </message>
@@ -557,17 +557,17 @@
   <context>
     <name>CmdFemPostScalarClipFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2478"/>
+      <location filename="../../Command.cpp" line="2481"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2479"/>
+      <location filename="../../Command.cpp" line="2482"/>
       <source>Scalar Clip Filter</source>
       <translation>ச்கேலர் கிளிப் வடிகட்டி</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2480"/>
+      <location filename="../../Command.cpp" line="2483"/>
       <source>Defines a clip filter which clips a field with a scalar value</source>
       <translation>ச்கேலர் மதிப்புடன் ஒரு புலத்தைக் கிளிப் செய்யும் கிளிப் வடிப்பானை வரையறுக்கிறது</translation>
     </message>
@@ -575,17 +575,17 @@
   <context>
     <name>CmdFemPostWarpVectorFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2515"/>
+      <location filename="../../Command.cpp" line="2518"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2516"/>
+      <location filename="../../Command.cpp" line="2519"/>
       <source>Warp Filter</source>
       <translation>வார்ப் வடிகட்டி</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2517"/>
+      <location filename="../../Command.cpp" line="2520"/>
       <source>Warps the geometry along a vector field by a certain factor</source>
       <translation>ஒரு குறிப்பிட்ட காரணிமூலம் ஒரு திசையன் புலத்துடன் வடிவவியலை வார்ப் செய்கிறது</translation>
     </message>
@@ -704,12 +704,12 @@
       <translation>வடிகட்டியை உருவாக்கவும்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2659"/>
+      <location filename="../../Command.cpp" line="2662"/>
       <source>Create function</source>
       <translation>செயல்பாட்டை உருவாக்கவும்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2979"/>
+      <location filename="../../Command.cpp" line="2982"/>
       <source>Create pipeline from result</source>
       <translation>விளைவாக இருந்து குழாய் உருவாக்கவும்</translation>
     </message>
@@ -794,22 +794,22 @@
   <context>
     <name>FEM_PostCreateFunctions</name>
     <message>
-      <location filename="../../Command.cpp" line="2827"/>
+      <location filename="../../Command.cpp" line="2830"/>
       <source>Create a plane function, defined by its origin and normal</source>
       <translation>ஒரு விமான செயல்பாட்டை உருவாக்கவும், அதன் தோற்றம் மற்றும் இயல்பானது மூலம் வரையறுக்கப்படுகிறது</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2837"/>
+      <location filename="../../Command.cpp" line="2840"/>
       <source>Create a sphere function, defined by its center and radius</source>
       <translation>ஒரு கோள செயல்பாட்டை உருவாக்கவும், அதன் நடுவண் மற்றும் ஆரம் மூலம் வரையறுக்கப்படுகிறது</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2847"/>
+      <location filename="../../Command.cpp" line="2850"/>
       <source>Create a cylinder function, defined by its center, axis and radius</source>
       <translation>ஒரு சிலிண்டர் செயல்பாட்டை உருவாக்கவும், அதன் நடுவண், அச்சு மற்றும் ஆரம் ஆகியவற்றால் வரையறுக்கப்படுகிறது</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2857"/>
+      <location filename="../../Command.cpp" line="2860"/>
       <source>Create a box function, defined by its center, length, width and height</source>
       <translation>ஒரு பெட்டி செயல்பாட்டை உருவாக்கவும், அதன் நடுவண், நீளம், அகலம் மற்றும் உயரம் ஆகியவற்றால் வரையறுக்கப்படுகிறது</translation>
     </message>
@@ -1072,7 +1072,7 @@ Only takes effect if 'Pipeline only' is enabled</source>
     <name>FemGui::DlgSettingsFemElmerImp</name>
     <message>
       <location filename="../../DlgSettingsFemElmer.ui" line="14"/>
-      <location filename="../../DlgSettingsFemElmerImp.cpp" line="98"/>
+      <location filename="../../DlgSettingsFemElmerImp.cpp" line="106"/>
       <source>Elmer</source>
       <translation>எல்மர்</translation>
     </message>
@@ -1092,57 +1092,57 @@ Only takes effect if 'Pipeline only' is enabled</source>
       <translation>ElmerGrid பாதை</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="149"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="199"/>
       <source>Log verbosity</source>
       <translation>பதிவு சொல்லாடல்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="159"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="209"/>
       <source>Maximum output level</source>
       <translation type="unfinished">Maximum output level</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="181"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="231"/>
       <source>Number of tasks</source>
       <translation>பணிகளின் எண்ணிக்கை</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="191"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="241"/>
       <source>Number of parallel tasks. Set to `1` if Elmer does not use MPI.&lt;br&gt;It is recommended to use an even number of cores to benefit from mesh symmetries&lt;br&gt;(Using 8 cores can be faster than 9 cores).&lt;br&gt;In extreme cases ElmerSolver might not converge if the core number is too high.</source>
       <translation>இணையான பணிகளின் எண்ணிக்கை. எல்மர் மபி ஐப் பயன்படுத்தவில்லை எனில் `1` ஆக அமைக்கவும்.&lt;br&gt;மெச் சமச்சீர்நிலையிலிருந்து பயனடைய, சம எண்ணிக்கையிலான கோர்களைப் பயன்படுத்த பரிந்துரைக்கப்படுகிறது&lt;br&gt;(8 கோர்களைப் பயன்படுத்துவது 9 கோர்களை விட வேகமாக இருக்கும்).&lt;br&gt;அதிகமான சந்தர்ப்பங்களில், கோர் எண் அதிகமாக இருந்தால் ElmerSolver ஒன்றுபடாமல் போகலாம்.</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="207"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="257"/>
       <source>Threads per task</source>
       <translation>ஒரு பணிக்கான நூல்கள்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="217"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="267"/>
       <source>Number of threads per task. Take effect if Elmer uses OpenMP.</source>
       <translation>எண் of threads per task. Take விளைவு if Elmer uses OpenMP.</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="238"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="288"/>
       <source>Results</source>
       <translation>முடிவுகள்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="244"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="294"/>
       <source>Save result in binary format</source>
       <translation>முடிவை பைனரி வடிவத்தில் சேமிக்கவும்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="247"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="297"/>
       <source>Use binary format</source>
       <translation>பைனரி வடிவத்தைப் பயன்படுத்தவும்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="263"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="313"/>
       <source>Save the index of geometric entities</source>
       <translation>வடிவியல் உறுப்புகளின் குறியீட்டைச் சேமிக்கவும்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="266"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="316"/>
       <source>Save geometry IDs</source>
       <translation>வடிவியல் ஐடிகளைச் சேமிக்கவும்</translation>
     </message>
@@ -1157,12 +1157,22 @@ Only takes effect if 'Pipeline only' is enabled</source>
       <translation>எல்மர் பைனரிச்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmer.ui" line="141"/>
+      <location filename="../../DlgSettingsFemElmer.ui" line="144"/>
+      <source>MPI path</source>
+      <translation type="unfinished">MPI path</translation>
+    </message>
+    <message>
+      <location filename="../../DlgSettingsFemElmer.ui" line="175"/>
+      <source>Leave blank to use default MPI binary file</source>
+      <translation type="unfinished">Leave blank to use default MPI binary file</translation>
+    </message>
+    <message>
+      <location filename="../../DlgSettingsFemElmer.ui" line="191"/>
       <source>Options</source>
       <translation>விருப்பங்கள்</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemElmerImp.cpp" line="98"/>
+      <location filename="../../DlgSettingsFemElmerImp.cpp" line="106"/>
       <source>Executable '%1' not found</source>
       <translation>இயங்கக்கூடிய '% 1' கிடைக்கவில்லை</translation>
     </message>
@@ -2470,82 +2480,82 @@ Cholesky தீர்வு மற்றும் பிழை செய்த�
   <context>
     <name>FemGui::TaskFemConstraintTransform</name>
     <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="211"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="164"/>
+      <source>Edge, Face</source>
+      <translation>விளிம்பு, முகம்</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="212"/>
       <source>Analysis feature update error</source>
       <translation>பகுப்பாய்வு அம்ச புதுப்பிப்பு பிழை</translation>
     </message>
     <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="309"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="458"/>
-      <source>Nothing selected!</source>
-      <translation>எதுவும் தேர்ந்தெடுக்கப்படவில்லை!</translation>
-    </message>
-    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="310"/>
       <location filename="../../TaskFemConstraintTransform.cpp" line="317"/>
       <location filename="../../TaskFemConstraintTransform.cpp" line="327"/>
-      <source>Only one face for rectangular local coordinate system!</source>
-      <translation>செவ்வக உள்ளக ஒருங்கிணைப்பு அமைப்புக்கு ஒரே ஒரு முகம்!</translation>
-    </message>
-    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="342"/>
       <location filename="../../TaskFemConstraintTransform.cpp" line="350"/>
-      <source>External object selection is not supported</source>
-      <translation>வெளிப்புற பொருள் தேர்வு ஆதரிக்கப்படவில்லை</translation>
-    </message>
-    <message>
       <location filename="../../TaskFemConstraintTransform.cpp" line="360"/>
-      <source>Only one face for local coordinate system!</source>
-      <translation>உள்ளக ஒருங்கிணைப்பு அமைப்புக்கு ஒரே ஒரு முகம்!</translation>
-    </message>
-    <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="424"/>
-      <source>Only transformable faces can be selected! Apply a displacement boundary condition or a force load to a face first then apply local coordinate system to the face.</source>
-      <translation>மாற்றக்கூடிய முகங்களை மட்டுமே தேர்ந்தெடுக்க முடியும்! முதலில் ஒரு முகத்தில் இடப்பெயர்ச்சி எல்லை நிலை அல்லது ஒரு விசைச் சுமையைப் பயன்படுத்தவும், பின்னர் முகத்தில் உள்ளக ஒருங்கிணைப்பு அமைப்பைப் பயன்படுத்தவும்.</translation>
-    </message>
-    <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="341"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="467"/>
-      <source>Selected object is not a part!</source>
-      <translation>தேர்ந்தெடுக்கப்பட்ட பொருள் ஒரு பகுதி அல்ல!</translation>
-    </message>
-    <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="163"/>
-      <source>Select single geometry of type: </source>
-      <translation>வகையின் ஒற்றை வடிவவியலைத் தேர்ந்தெடுக்கவும்:</translation>
-    </message>
-    <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="163"/>
-      <source>Face</source>
-      <translation>முகம்</translation>
-    </message>
-    <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="212"/>
-      <source>The transformable faces have changed. Add only the transformable faces and remove non-transformable faces!</source>
-      <translation>மாறக்கூடிய முகங்கள் மாறிவிட்டன. மாற்றக்கூடிய முகங்களை மட்டும் சேர்த்து, மாற்ற முடியாத முகங்களை அகற்றவும்!</translation>
-    </message>
-    <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="309"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="316"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="326"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="341"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="349"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="359"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="368"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="379"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="423"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="458"/>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="467"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="374"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="392"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="436"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="470"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="479"/>
       <source>Selection Error</source>
       <translation type="unfinished">Selection Error</translation>
     </message>
     <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="368"/>
-      <source>Only faces can be picked</source>
-      <translation>முகங்களை மட்டுமே எடுக்க முடியும்</translation>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="318"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="328"/>
+      <source>Only one face (edge in 2D model) for rectangular local coordinate system!</source>
+      <translation type="unfinished">Only one face (edge in 2D model) for rectangular local coordinate system!</translation>
     </message>
     <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="380"/>
-      <source>Only cylindrical faces can be picked</source>
-      <translation>உருளை வடிவ முகங்களை மட்டுமே எடுக்க முடியும்</translation>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="361"/>
+      <source>Only one face (edge in 2D model) for local coordinate system!</source>
+      <translation type="unfinished">Only one face (edge in 2D model) for local coordinate system!</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="375"/>
+      <source>Only faces (edges in 2D model) can be picked</source>
+      <translation type="unfinished">Only faces (edges in 2D model) can be picked</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="393"/>
+      <source>Only cylindrical faces (edges in 2D model) can be picked</source>
+      <translation type="unfinished">Only cylindrical faces (edges in 2D model) can be picked</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="437"/>
+      <source>Only transformable faces (edges in 2D model) can be selected! Apply a displacement boundary condition or a force load to a boundary first then apply the local coordinate system.</source>
+      <translation type="unfinished">Only transformable faces (edges in 2D model) can be selected! Apply a displacement boundary condition or a force load to a boundary first then apply the local coordinate system.</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="310"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="470"/>
+      <source>Nothing selected!</source>
+      <translation>எதுவும் தேர்ந்தெடுக்கப்படவில்லை!</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="351"/>
+      <source>External object selection is not supported</source>
+      <translation>வெளிப்புற பொருள் தேர்வு ஆதரிக்கப்படவில்லை</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="342"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="479"/>
+      <source>Selected object is not a part!</source>
+      <translation>தேர்ந்தெடுக்கப்பட்ட பொருள் ஒரு பகுதி அல்ல!</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="164"/>
+      <source>Select single geometry of type: </source>
+      <translation>வகையின் ஒற்றை வடிவவியலைத் தேர்ந்தெடுக்கவும்:</translation>
+    </message>
+    <message>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="213"/>
+      <source>The transformable faces have changed. Add only the transformable faces and remove non-transformable faces!</source>
+      <translation>மாறக்கூடிய முகங்கள் மாறிவிட்டன. மாற்றக்கூடிய முகங்களை மட்டும் சேர்த்து, மாற்ற முடியாத முகங்களை அகற்றவும்!</translation>
     </message>
   </context>
   <context>
@@ -2753,9 +2763,9 @@ Cholesky தீர்வு மற்றும் பிழை செய்த�
       <translation>நுழைவாயில் அழுத்தம்</translation>
     </message>
     <message>
-      <location filename="../ui/InitialPressure.ui" line="20"/>
       <location filename="../ui/ElementFluid1D.ui" line="235"/>
       <location filename="../ui/ElementFluid1D.ui" line="308"/>
+      <location filename="../ui/InitialPressure.ui" line="20"/>
       <source>Pressure</source>
       <translation>அழுத்தம்</translation>
     </message>
@@ -2885,12 +2895,12 @@ Cholesky தீர்வு மற்றும் பிழை செய்த�
       <translation>நொடிக்கு புரட்சிகள்</translation>
     </message>
     <message>
-      <location filename="../ui/MeshRegion.ui" line="26"/>
       <location filename="../ui/ElementGeometry2D.ui" line="26"/>
-      <location filename="../ui/MeshBoundaryLayer.ui" line="26"/>
-      <location filename="../ui/ConstraintSectionPrint.ui" line="26"/>
       <location filename="../ui/ConstraintCentrif.ui" line="26"/>
+      <location filename="../ui/ConstraintSectionPrint.ui" line="26"/>
+      <location filename="../ui/MeshBoundaryLayer.ui" line="26"/>
       <location filename="../ui/ConstraintTie.ui" line="26"/>
+      <location filename="../ui/MeshRegion.ui" line="26"/>
       <source>Parameter</source>
       <translation>கூறளவு</translation>
     </message>
@@ -3200,14 +3210,14 @@ Note: has no effect if a solid was selected</source>
       <translation>அகலம்</translation>
     </message>
     <message>
+      <location filename="../ui/ElementGeometry2D.ui" line="44"/>
       <location filename="../ui/ElementGeometry1D.ui" line="48"/>
       <location filename="../ui/ElementGeometry1D.ui" line="74"/>
       <location filename="../ui/ElementGeometry1D.ui" line="111"/>
       <location filename="../ui/ElementGeometry1D.ui" line="148"/>
       <location filename="../ui/ElementGeometry1D.ui" line="174"/>
-      <location filename="../ui/MeshRegion.ui" line="44"/>
-      <location filename="../ui/ElementGeometry2D.ui" line="44"/>
       <location filename="../ui/MeshBoundaryLayer.ui" line="58"/>
+      <location filename="../ui/MeshRegion.ui" line="44"/>
       <source>mm</source>
       <translation>மிமீ</translation>
     </message>
@@ -3228,8 +3238,8 @@ Note: has no effect if a solid was selected</source>
       <translation>வெளிப்புற விட்டம்</translation>
     </message>
     <message>
-      <location filename="../ui/ElementGeometry1D.ui" line="167"/>
       <location filename="../ui/ElementGeometry2D.ui" line="37"/>
+      <location filename="../ui/ElementGeometry1D.ui" line="167"/>
       <location filename="../ui/MeshShape.ui" line="109"/>
       <source>Thickness</source>
       <translation>தடிமன்</translation>
@@ -3309,10 +3319,10 @@ Note: has no effect if a solid was selected</source>
     </message>
     <message>
       <location filename="../ui/Electromagnetic.ui" line="14"/>
-      <location filename="../ui/BodyHeatSource.ui" line="14"/>
       <location filename="../ui/InitialFlowVelocity.ui" line="14"/>
-      <location filename="../ui/CurrentDensity.ui" line="14"/>
       <location filename="../ui/InitialPressure.ui" line="14"/>
+      <location filename="../ui/CurrentDensity.ui" line="14"/>
+      <location filename="../ui/BodyHeatSource.ui" line="14"/>
       <location filename="../ui/Magnetization.ui" line="14"/>
       <location filename="../ui/FlowVelocity.ui" line="14"/>
       <location filename="../ui/ElectricChargeDensity.ui" line="14"/>
@@ -3325,8 +3335,8 @@ Note: has no effect if a solid was selected</source>
       <translation>வெப்ப சான்று</translation>
     </message>
     <message>
-      <location filename="../ui/BodyHeatSource.ui" line="35"/>
       <location filename="../ui/CurrentDensity.ui" line="29"/>
+      <location filename="../ui/BodyHeatSource.ui" line="35"/>
       <location filename="../ui/ElectricChargeDensity.ui" line="25"/>
       <source>Mode</source>
       <translation>பயன்முறை</translation>
@@ -3418,9 +3428,9 @@ with harmonic/oscillating driving current</source>
     <message>
       <location filename="../ui/Electromagnetic.ui" line="181"/>
       <location filename="../ui/Electromagnetic.ui" line="449"/>
-      <location filename="../ui/MeshManipulate.ui" line="594"/>
       <location filename="../ui/CurrentDensity.ui" line="78"/>
       <location filename="../ui/Magnetization.ui" line="56"/>
+      <location filename="../ui/MeshManipulate.ui" line="594"/>
       <source>X</source>
       <translation>ஓ</translation>
     </message>
@@ -3437,9 +3447,9 @@ with harmonic/oscillating driving current</source>
     <message>
       <location filename="../ui/Electromagnetic.ui" line="234"/>
       <location filename="../ui/Electromagnetic.ui" line="500"/>
-      <location filename="../ui/MeshManipulate.ui" line="599"/>
       <location filename="../ui/CurrentDensity.ui" line="129"/>
       <location filename="../ui/Magnetization.ui" line="107"/>
+      <location filename="../ui/MeshManipulate.ui" line="599"/>
       <source>Y</source>
       <translation>ஔ</translation>
     </message>
@@ -3456,9 +3466,9 @@ with harmonic/oscillating driving current</source>
     <message>
       <location filename="../ui/Electromagnetic.ui" line="287"/>
       <location filename="../ui/Electromagnetic.ui" line="551"/>
-      <location filename="../ui/MeshManipulate.ui" line="604"/>
       <location filename="../ui/CurrentDensity.ui" line="180"/>
       <location filename="../ui/Magnetization.ui" line="158"/>
+      <location filename="../ui/MeshManipulate.ui" line="604"/>
       <source>Z</source>
       <translation>ஃ</translation>
     </message>
@@ -3498,204 +3508,145 @@ with harmonic/oscillating driving current</source>
       <translation>அதிகபட்ச உறுப்பு அளவு</translation>
     </message>
     <message>
-      <location filename="../ui/MeshManipulate.ui" line="14"/>
-      <location filename="../ui/MeshShape.ui" line="14"/>
-      <location filename="../ui/MeshTransfiniteCurve.ui" line="14"/>
       <location filename="../ui/MeshTransfiniteVolume.ui" line="14"/>
-      <location filename="../ui/MeshPreview.ui" line="14"/>
       <location filename="../ui/MeshPreviewSettings.ui" line="14"/>
+      <location filename="../ui/MeshTransfiniteCurve.ui" line="14"/>
       <location filename="../ui/MeshAdvanced.ui" line="14"/>
-      <location filename="../ui/PostLineplotFieldAppEdit.ui" line="14"/>
-      <location filename="../ui/MeshDistance.ui" line="14"/>
       <location filename="../ui/PostLineplotIndexAppEdit.ui" line="14"/>
+      <location filename="../ui/MeshPreview.ui" line="14"/>
       <location filename="../ui/PostHistogramIndexAppEdit.ui" line="14"/>
       <location filename="../ui/MeshTransfiniteSurface.ui" line="14"/>
+      <location filename="../ui/PostLineplotFieldAppEdit.ui" line="14"/>
       <location filename="../ui/PostHistogramFieldAppEdit.ui" line="14"/>
+      <location filename="../ui/MeshDistance.ui" line="14"/>
+      <location filename="../ui/MeshManipulate.ui" line="14"/>
+      <location filename="../ui/MeshShape.ui" line="14"/>
       <source>Form</source>
       <translation>படிவம்</translation>
     </message>
     <message>
-      <location filename="../ui/MeshManipulate.ui" line="43"/>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="38"/>
+      <source>Creates a structured mesh in a volume guided by its transfinite surfaces.</source>
+      <translation type="unfinished">Creates a structured mesh in a volume guided by its transfinite surfaces.</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="91"/>
+      <location filename="../ui/MeshTransfiniteCurve.ui" line="185"/>
+      <location filename="../ui/MeshAdvanced.ui" line="257"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="59"/>
+      <location filename="../ui/MeshDistance.ui" line="266"/>
+      <location filename="../ui/MeshManipulate.ui" line="434"/>
+      <source>Diagram</source>
+      <translation type="unfinished">Diagram</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="116"/>
+      <source>Select any number of 5- or 6-sided volumes</source>
+      <translation type="unfinished">Select any number of 5- or 6-sided volumes</translation>
+    </message>
+    <message>
       <location filename="../ui/MeshTransfiniteVolume.ui" line="150"/>
       <location filename="../ui/MeshAdvanced.ui" line="121"/>
       <location filename="../ui/MeshAdvanced.ui" line="526"/>
       <location filename="../ui/MeshAdvanced.ui" line="646"/>
       <location filename="../ui/MeshAdvanced.ui" line="682"/>
       <location filename="../ui/MeshTransfiniteSurface.ui" line="147"/>
+      <location filename="../ui/MeshManipulate.ui" line="43"/>
       <source>Icon</source>
       <translation>படவுரு</translation>
     </message>
     <message>
-      <location filename="../ui/MeshManipulate.ui" line="56"/>
-      <source>Drag the refinement that should be altered into the Manipulate object in the document tree</source>
-      <translation type="unfinished">Drag the refinement that should be altered into the Manipulate object in the document tree</translation>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="163"/>
+      <source>All volume surfaces must be transfinite. If the surfaces have different mesh types (quads vs. triangles) the volume must also be meshed with mixed elements enabled.</source>
+      <translation type="unfinished">All volume surfaces must be transfinite. If the surfaces have different mesh types (quads vs. triangles) the volume must also be meshed with mixed elements enabled.</translation>
     </message>
     <message>
-      <location filename="../ui/MeshManipulate.ui" line="70"/>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="183"/>
+      <source>Mixed mesh elements</source>
+      <translation type="unfinished">Mixed mesh elements</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="205"/>
+      <source>If activated, all edges and surfaces belonging to the selected volumes that do not have a transfinite definition already become transfinite automatically.
+Use strategically placed transfinite curve and surface definitions to guide the automatic algorithm.
+
+Notes:
+1. User-defined curves propagate to the opposite edges of faces, over all selected faces.
+2. Works with any number of volumes, either connected or unconnected </source>
+      <translation type="unfinished">If activated, all edges and surfaces belonging to the selected volumes that do not have a transfinite definition already become transfinite automatically.
+Use strategically placed transfinite curve and surface definitions to guide the automatic algorithm.
+
+Notes:
+1. User-defined curves propagate to the opposite edges of faces, over all selected faces.
+2. Works with any number of volumes, either connected or unconnected </translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="213"/>
+      <source>Auto apply transfinite surfaces and curves</source>
+      <translation type="unfinished">Auto apply transfinite surfaces and curves</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="222"/>
+      <location filename="../ui/MeshTransfiniteCurve.ui" line="137"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="245"/>
+      <source>Nodes</source>
+      <translation>முனைகள்</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="229"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="252"/>
+      <source>Distribution</source>
+      <translation type="unfinished">Distribution</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="245"/>
+      <location filename="../ui/MeshTransfiniteCurve.ui" line="163"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="268"/>
+      <source>Constant</source>
+      <translation>மாறா, மாறிலி</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="250"/>
+      <location filename="../ui/MeshTransfiniteCurve.ui" line="150"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="273"/>
+      <source>Bump</source>
+      <translation type="unfinished">Bump</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="255"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="278"/>
+      <source>Bump Inverted</source>
+      <translation type="unfinished">Bump Inverted</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="260"/>
+      <location filename="../ui/MeshTransfiniteCurve.ui" line="111"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="283"/>
+      <source>Progression</source>
+      <translation type="unfinished">Progression</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="265"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="288"/>
+      <source>Progression Inverted</source>
+      <translation type="unfinished">Progression Inverted</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="304"/>
+      <source>Surface</source>
+      <translation>மேற்பரப்பு</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshTransfiniteVolume.ui" line="323"/>
+      <location filename="../ui/MeshTransfiniteSurface.ui" line="181"/>
+      <source>Recombine</source>
+      <translation type="unfinished">Recombine</translation>
+    </message>
+    <message>
       <location filename="../ui/MeshAdvanced.ui" line="34"/>
+      <location filename="../ui/MeshManipulate.ui" line="70"/>
       <source>Type</source>
       <translation>வகை</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="84"/>
-      <source>Restrict</source>
-      <translation type="unfinished">Restrict</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="89"/>
-      <source>Threshold</source>
-      <translation type="unfinished">Threshold</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="94"/>
-      <location filename="../ui/MeshManipulate.ui" line="609"/>
-      <source>Mean</source>
-      <translation type="unfinished">Mean</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="99"/>
-      <source>Gradient</source>
-      <translation type="unfinished">Gradient</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="104"/>
-      <source>Curvature</source>
-      <translation>வளைமை</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="109"/>
-      <source>Laplacian</source>
-      <translation type="unfinished">Laplacian</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="138"/>
-      <source>Restrict the application of the child refinement to the selected reference elements.</source>
-      <translation type="unfinished">Restrict the application of the child refinement to the selected reference elements.</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="160"/>
-      <location filename="../ui/MeshManipulate.ui" line="173"/>
-      <source>Include the boundary of the selected reference elements</source>
-      <translation type="unfinished">Include the boundary of the selected reference elements</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="163"/>
-      <source>Include boundary</source>
-      <translation type="unfinished">Include boundary</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="209"/>
-      <source>Apply a threshold to the child refinements value</source>
-      <translation type="unfinished">Apply a threshold to the child refinements value</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="236"/>
-      <location filename="../ui/MeshAdvanced.ui" line="210"/>
-      <location filename="../ui/MeshAdvanced.ui" line="399"/>
-      <location filename="../ui/MeshDistance.ui" line="68"/>
-      <source>Mesh size when distance = DistanceMaximum</source>
-      <translation type="unfinished">Mesh size when distance = DistanceMaximum</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="283"/>
-      <location filename="../ui/MeshAdvanced.ui" line="179"/>
-      <location filename="../ui/MeshDistance.ui" line="115"/>
-      <source>Distance at which the mesh size will be SizeMaximum</source>
-      <translation type="unfinished">Distance at which the mesh size will be SizeMaximum</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="308"/>
-      <source>Output size</source>
-      <translation type="unfinished">Output size</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="346"/>
-      <location filename="../ui/MeshAdvanced.ui" line="337"/>
-      <location filename="../ui/MeshAdvanced.ui" line="430"/>
-      <location filename="../ui/MeshDistance.ui" line="178"/>
-      <source>Mesh size when distance &lt; DistanceMinimum</source>
-      <translation type="unfinished">Mesh size when distance &lt; DistanceMinimum</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="365"/>
-      <source>Input value</source>
-      <translation type="unfinished">Input value</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="387"/>
-      <location filename="../ui/MeshAdvanced.ui" line="368"/>
-      <location filename="../ui/MeshDistance.ui" line="219"/>
-      <source>Distance up to which the mesh size will be SizeMinimum</source>
-      <translation type="unfinished">Distance up to which the mesh size will be SizeMinimum</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="434"/>
-      <location filename="../ui/MeshTransfiniteCurve.ui" line="185"/>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="91"/>
-      <location filename="../ui/MeshAdvanced.ui" line="257"/>
-      <location filename="../ui/MeshDistance.ui" line="266"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="59"/>
-      <source>Diagram</source>
-      <translation type="unfinished">Diagram</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="452"/>
-      <source>Linear interpolation</source>
-      <translation type="unfinished">Linear interpolation</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="462"/>
-      <location filename="../ui/MeshDistance.ui" line="326"/>
-      <source>Defines if interpolation of mesh size between SizeMinimum and SizeMaximum should be a linear or a sigmoid function</source>
-      <translation type="unfinished">Defines if interpolation of mesh size between SizeMinimum and SizeMaximum should be a linear or a sigmoid function</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="472"/>
-      <source>Stop at max input</source>
-      <translation type="unfinished">Stop at max input</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="493"/>
-      <source>Calculates the mean value of child refinement G:
-
-F = (G(x + delta, y, z) + G(x - delta, y, z) + G(x, y + delta, z) + G(x, y - delta, z) + G(x, y, z + delta) + G(x, y, z - delta) + G(x, y, z)) / 7
-</source>
-      <translation type="unfinished">Calculates the mean value of child refinement G:
-
-F = (G(x + delta, y, z) + G(x - delta, y, z) + G(x, y + delta, z) + G(x, y - delta, z) + G(x, y, z + delta) + G(x, y, z - delta) + G(x, y, z)) / 7
-</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="508"/>
-      <location filename="../ui/MeshManipulate.ui" line="617"/>
-      <location filename="../ui/MeshManipulate.ui" line="689"/>
-      <location filename="../ui/MeshManipulate.ui" line="761"/>
-      <source>Delta</source>
-      <translation type="unfinished">Delta</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="527"/>
-      <location filename="../ui/MeshManipulate.ui" line="636"/>
-      <location filename="../ui/MeshManipulate.ui" line="708"/>
-      <location filename="../ui/MeshManipulate.ui" line="780"/>
-      <source>Delta in the aforementioned equation</source>
-      <translation type="unfinished">Delta in the aforementioned equation</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="565"/>
-      <source>Compute the finite difference gradient of child refinement G:
-
-F = (G(Kind + Delta/2) - G(Kind - Delta/2)) / Delta
-</source>
-      <translation type="unfinished">Compute the finite difference gradient of child refinement G:
-
-F = (G(Kind + Delta/2) - G(Kind - Delta/2)) / Delta
-</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshManipulate.ui" line="580"/>
-      <source>Kind</source>
-      <translation type="unfinished">Kind</translation>
     </message>
     <message>
       <location filename="../ui/MeshAdvanced.ui" line="48"/>
@@ -3737,9 +3688,39 @@ F = (G(Kind + Delta/2) - G(Kind - Delta/2)) / Delta
       <translation type="unfinished">Anisotropic mesh refinements work only with the BAMG (2D) and MMG3D (3D) algorithms</translation>
     </message>
     <message>
+      <location filename="../ui/MeshAdvanced.ui" line="179"/>
+      <location filename="../ui/MeshDistance.ui" line="115"/>
+      <location filename="../ui/MeshManipulate.ui" line="283"/>
+      <source>Distance at which the mesh size will be SizeMaximum</source>
+      <translation type="unfinished">Distance at which the mesh size will be SizeMaximum</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshAdvanced.ui" line="210"/>
+      <location filename="../ui/MeshAdvanced.ui" line="399"/>
+      <location filename="../ui/MeshDistance.ui" line="68"/>
+      <location filename="../ui/MeshManipulate.ui" line="236"/>
+      <source>Mesh size when distance = DistanceMaximum</source>
+      <translation type="unfinished">Mesh size when distance = DistanceMaximum</translation>
+    </message>
+    <message>
       <location filename="../ui/MeshAdvanced.ui" line="315"/>
       <source>Size Tangent</source>
       <translation type="unfinished">Size Tangent</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshAdvanced.ui" line="337"/>
+      <location filename="../ui/MeshAdvanced.ui" line="430"/>
+      <location filename="../ui/MeshDistance.ui" line="178"/>
+      <location filename="../ui/MeshManipulate.ui" line="346"/>
+      <source>Mesh size when distance &lt; DistanceMinimum</source>
+      <translation type="unfinished">Mesh size when distance &lt; DistanceMinimum</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshAdvanced.ui" line="368"/>
+      <location filename="../ui/MeshDistance.ui" line="219"/>
+      <location filename="../ui/MeshManipulate.ui" line="387"/>
+      <source>Distance up to which the mesh size will be SizeMinimum</source>
+      <translation type="unfinished">Distance up to which the mesh size will be SizeMinimum</translation>
     </message>
     <message>
       <location filename="../ui/MeshAdvanced.ui" line="449"/>
@@ -3886,8 +3867,8 @@ Example: "F2 + Sin(z)"</translation>
       <translation>ஃச் புலம்</translation>
     </message>
     <message>
-      <location filename="../ui/PostLineplotFieldAppEdit.ui" line="59"/>
       <location filename="../ui/PostLineplotIndexAppEdit.ui" line="32"/>
+      <location filename="../ui/PostLineplotFieldAppEdit.ui" line="59"/>
       <source>Y field</source>
       <translation>ஒய் புலம்</translation>
     </message>
@@ -3897,52 +3878,30 @@ Example: "F2 + Sin(z)"</translation>
       <translation>ஒவ்வொரு சட்டத்திற்கும் ஒரு ஒய் புலம்</translation>
     </message>
     <message>
-      <location filename="../ui/MeshShape.ui" line="38"/>
-      <source>Define mesh size inside and outside of the shape, with possible transition layer thickness</source>
-      <translation type="unfinished">Define mesh size inside and outside of the shape, with possible transition layer thickness</translation>
+      <location filename="../ui/MeshPreviewSettings.ui" line="26"/>
+      <source>Global refinement preview settings</source>
+      <translation type="unfinished">Global refinement preview settings</translation>
     </message>
     <message>
-      <location filename="../ui/MeshShape.ui" line="54"/>
-      <location filename="../ui/MeshShape.ui" line="70"/>
-      <source>Mesh size within the shape</source>
-      <translation type="unfinished">Mesh size within the shape</translation>
+      <location filename="../ui/MeshPreviewSettings.ui" line="35"/>
+      <location filename="../ui/MeshPreviewSettings.ui" line="51"/>
+      <source>Automatically enables the visualization of the refinement mesh size when opening a refinement task dialog.</source>
+      <translation type="unfinished">Automatically enables the visualization of the refinement mesh size when opening a refinement task dialog.</translation>
     </message>
     <message>
-      <location filename="../ui/MeshShape.ui" line="57"/>
-      <source>Size inside</source>
-      <translation type="unfinished">Size inside</translation>
+      <location filename="../ui/MeshPreviewSettings.ui" line="54"/>
+      <source>Auto enable on open</source>
+      <translation type="unfinished">Auto enable on open</translation>
     </message>
     <message>
-      <location filename="../ui/MeshShape.ui" line="80"/>
-      <location filename="../ui/MeshShape.ui" line="96"/>
-      <source>Mesh size outside of the shape</source>
-      <translation type="unfinished">Mesh size outside of the shape</translation>
+      <location filename="../ui/MeshPreviewSettings.ui" line="80"/>
+      <source>Determines how fine the preview mesh is. Larger number means finer mesh (smaller mesh elements)</source>
+      <translation type="unfinished">Determines how fine the preview mesh is. Larger number means finer mesh (smaller mesh elements)</translation>
     </message>
     <message>
-      <location filename="../ui/MeshShape.ui" line="83"/>
-      <source>Size outside</source>
-      <translation type="unfinished">Size outside</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshShape.ui" line="106"/>
-      <location filename="../ui/MeshShape.ui" line="122"/>
-      <source>Thickness of transition layer between in/out mesh sizes (added outside of the shape)</source>
-      <translation type="unfinished">Thickness of transition layer between in/out mesh sizes (added outside of the shape)</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshShape.ui" line="145"/>
-      <source>Box</source>
-      <translation>பெட்டி</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshShape.ui" line="150"/>
-      <source>Sphere</source>
-      <translation>கோளம்</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshShape.ui" line="155"/>
-      <source>Cylinder</source>
-      <translation>கலன்</translation>
+      <location filename="../ui/MeshPreviewSettings.ui" line="83"/>
+      <source>Preview mesh fineness</source>
+      <translation type="unfinished">Preview mesh fineness</translation>
     </message>
     <message>
       <location filename="../ui/MeshTransfiniteCurve.ui" line="41"/>
@@ -3955,37 +3914,9 @@ Example: "F2 + Sin(z)"</translation>
       <translation type="unfinished">Number of nodes on the edge</translation>
     </message>
     <message>
-      <location filename="../ui/MeshTransfiniteCurve.ui" line="111"/>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="260"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="283"/>
-      <source>Progression</source>
-      <translation type="unfinished">Progression</translation>
-    </message>
-    <message>
       <location filename="../ui/MeshTransfiniteCurve.ui" line="124"/>
       <source>Invert</source>
       <translation>தலைகீழாக மாற்றவும்</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteCurve.ui" line="137"/>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="222"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="245"/>
-      <source>Nodes</source>
-      <translation>முனைகள்</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteCurve.ui" line="150"/>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="250"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="273"/>
-      <source>Bump</source>
-      <translation type="unfinished">Bump</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteCurve.ui" line="163"/>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="245"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="268"/>
-      <source>Constant</source>
-      <translation>மாறா, மாறிலி</translation>
     </message>
     <message>
       <location filename="../ui/MeshTransfiniteCurve.ui" line="195"/>
@@ -3996,75 +3927,6 @@ Example: "F2 + Sin(z)"</translation>
       <location filename="../ui/MeshTransfiniteCurve.ui" line="217"/>
       <source>Coefficient for bump/progression growth rate</source>
       <translation type="unfinished">Coefficient for bump/progression growth rate</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="38"/>
-      <source>Creates a structured mesh in a volume guided by its transfinite surfaces.</source>
-      <translation type="unfinished">Creates a structured mesh in a volume guided by its transfinite surfaces.</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="116"/>
-      <source>Select any number of 5- or 6-sided volumes</source>
-      <translation type="unfinished">Select any number of 5- or 6-sided volumes</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="163"/>
-      <source>All volume surfaces must be transfinite. If the surfaces have different mesh types (quads vs. triangles) the volume must also be meshed with mixed elements enabled.</source>
-      <translation type="unfinished">All volume surfaces must be transfinite. If the surfaces have different mesh types (quads vs. triangles) the volume must also be meshed with mixed elements enabled.</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="183"/>
-      <source>Mixed mesh elements</source>
-      <translation type="unfinished">Mixed mesh elements</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="205"/>
-      <source>If activated, all edges and surfaces belonging to the selected volumes that do not have a transfinite definition already become transfinite automatically.
-Use strategically placed transfinite curve and surface definitions to guide the automatic algorithm.
-
-Notes:
-1. User-defined curves propagate to the opposite edges of faces, over all selected faces.
-2. Works with any number of volumes, either connected or unconnected </source>
-      <translation type="unfinished">If activated, all edges and surfaces belonging to the selected volumes that do not have a transfinite definition already become transfinite automatically.
-Use strategically placed transfinite curve and surface definitions to guide the automatic algorithm.
-
-Notes:
-1. User-defined curves propagate to the opposite edges of faces, over all selected faces.
-2. Works with any number of volumes, either connected or unconnected </translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="213"/>
-      <source>Auto apply transfinite surfaces and curves</source>
-      <translation type="unfinished">Auto apply transfinite surfaces and curves</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="229"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="252"/>
-      <source>Distribution</source>
-      <translation type="unfinished">Distribution</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="255"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="278"/>
-      <source>Bump Inverted</source>
-      <translation type="unfinished">Bump Inverted</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="265"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="288"/>
-      <source>Progression Inverted</source>
-      <translation type="unfinished">Progression Inverted</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="304"/>
-      <source>Surface</source>
-      <translation>மேற்பரப்பு</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshTransfiniteVolume.ui" line="323"/>
-      <location filename="../ui/MeshTransfiniteSurface.ui" line="181"/>
-      <source>Recombine</source>
-      <translation type="unfinished">Recombine</translation>
     </message>
     <message>
       <location filename="../ui/MeshPreview.ui" line="96"/>
@@ -4112,62 +3974,6 @@ Notes:
       <location filename="../ui/MeshPreview.ui" line="197"/>
       <source>…</source>
       <translation>…</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshPreviewSettings.ui" line="26"/>
-      <source>Global refinement preview settings</source>
-      <translation type="unfinished">Global refinement preview settings</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshPreviewSettings.ui" line="35"/>
-      <location filename="../ui/MeshPreviewSettings.ui" line="51"/>
-      <source>Automatically enables the visualization of the refinement mesh size when opening a refinement task dialog.</source>
-      <translation type="unfinished">Automatically enables the visualization of the refinement mesh size when opening a refinement task dialog.</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshPreviewSettings.ui" line="54"/>
-      <source>Auto enable on open</source>
-      <translation type="unfinished">Auto enable on open</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshPreviewSettings.ui" line="80"/>
-      <source>Determines how fine the preview mesh is. Larger number means finer mesh (smaller mesh elements)</source>
-      <translation type="unfinished">Determines how fine the preview mesh is. Larger number means finer mesh (smaller mesh elements)</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshPreviewSettings.ui" line="83"/>
-      <source>Preview mesh fineness</source>
-      <translation type="unfinished">Preview mesh fineness</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshDistance.ui" line="41"/>
-      <source>Define mesh element size based on the distance to the chosen reference geometries.</source>
-      <translation type="unfinished">Define mesh element size based on the distance to the chosen reference geometries.</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshDistance.ui" line="140"/>
-      <source>Size</source>
-      <translation>அளவு</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshDistance.ui" line="284"/>
-      <source>Interpolation</source>
-      <translation type="unfinished">Interpolation</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshDistance.ui" line="291"/>
-      <source>Sampling size</source>
-      <translation type="unfinished">Sampling size</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshDistance.ui" line="304"/>
-      <source>Number of sampling points used to discretize curves and surfaces. For surfaces, it is the sampling size per direction.</source>
-      <translation type="unfinished">Number of sampling points used to discretize curves and surfaces. For surfaces, it is the sampling size per direction.</translation>
-    </message>
-    <message>
-      <location filename="../ui/MeshDistance.ui" line="329"/>
-      <source>Linear</source>
-      <translation type="unfinished">Linear</translation>
     </message>
     <message>
       <location filename="../ui/MeshTransfiniteSurface.ui" line="95"/>
@@ -4227,6 +4033,210 @@ Notes:
       <location filename="../ui/MeshTransfiniteSurface.ui" line="236"/>
       <source>Auto apply transfinite curves</source>
       <translation type="unfinished">Auto apply transfinite curves</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshDistance.ui" line="41"/>
+      <source>Define mesh element size based on the distance to the chosen reference geometries.</source>
+      <translation type="unfinished">Define mesh element size based on the distance to the chosen reference geometries.</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshDistance.ui" line="140"/>
+      <source>Size</source>
+      <translation>அளவு</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshDistance.ui" line="284"/>
+      <source>Interpolation</source>
+      <translation type="unfinished">Interpolation</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshDistance.ui" line="291"/>
+      <source>Sampling size</source>
+      <translation type="unfinished">Sampling size</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshDistance.ui" line="304"/>
+      <source>Number of sampling points used to discretize curves and surfaces. For surfaces, it is the sampling size per direction.</source>
+      <translation type="unfinished">Number of sampling points used to discretize curves and surfaces. For surfaces, it is the sampling size per direction.</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshDistance.ui" line="326"/>
+      <location filename="../ui/MeshManipulate.ui" line="462"/>
+      <source>Defines if interpolation of mesh size between SizeMinimum and SizeMaximum should be a linear or a sigmoid function</source>
+      <translation type="unfinished">Defines if interpolation of mesh size between SizeMinimum and SizeMaximum should be a linear or a sigmoid function</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshDistance.ui" line="329"/>
+      <source>Linear</source>
+      <translation type="unfinished">Linear</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="56"/>
+      <source>Drag the refinement that should be altered into the Manipulate object in the document tree</source>
+      <translation type="unfinished">Drag the refinement that should be altered into the Manipulate object in the document tree</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="84"/>
+      <source>Restrict</source>
+      <translation type="unfinished">Restrict</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="89"/>
+      <source>Threshold</source>
+      <translation type="unfinished">Threshold</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="94"/>
+      <location filename="../ui/MeshManipulate.ui" line="609"/>
+      <source>Mean</source>
+      <translation type="unfinished">Mean</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="99"/>
+      <source>Gradient</source>
+      <translation type="unfinished">Gradient</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="104"/>
+      <source>Curvature</source>
+      <translation>வளைமை</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="109"/>
+      <source>Laplacian</source>
+      <translation type="unfinished">Laplacian</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="138"/>
+      <source>Restrict the application of the child refinement to the selected reference elements.</source>
+      <translation type="unfinished">Restrict the application of the child refinement to the selected reference elements.</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="160"/>
+      <location filename="../ui/MeshManipulate.ui" line="173"/>
+      <source>Include the boundary of the selected reference elements</source>
+      <translation type="unfinished">Include the boundary of the selected reference elements</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="163"/>
+      <source>Include boundary</source>
+      <translation type="unfinished">Include boundary</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="209"/>
+      <source>Apply a threshold to the child refinements value</source>
+      <translation type="unfinished">Apply a threshold to the child refinements value</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="308"/>
+      <source>Output size</source>
+      <translation type="unfinished">Output size</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="365"/>
+      <source>Input value</source>
+      <translation type="unfinished">Input value</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="452"/>
+      <source>Linear interpolation</source>
+      <translation type="unfinished">Linear interpolation</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="472"/>
+      <source>Stop at max input</source>
+      <translation type="unfinished">Stop at max input</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="493"/>
+      <source>Calculates the mean value of child refinement G:
+
+F = (G(x + delta, y, z) + G(x - delta, y, z) + G(x, y + delta, z) + G(x, y - delta, z) + G(x, y, z + delta) + G(x, y, z - delta) + G(x, y, z)) / 7
+</source>
+      <translation type="unfinished">Calculates the mean value of child refinement G:
+
+F = (G(x + delta, y, z) + G(x - delta, y, z) + G(x, y + delta, z) + G(x, y - delta, z) + G(x, y, z + delta) + G(x, y, z - delta) + G(x, y, z)) / 7
+</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="508"/>
+      <location filename="../ui/MeshManipulate.ui" line="617"/>
+      <location filename="../ui/MeshManipulate.ui" line="689"/>
+      <location filename="../ui/MeshManipulate.ui" line="761"/>
+      <source>Delta</source>
+      <translation type="unfinished">Delta</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="527"/>
+      <location filename="../ui/MeshManipulate.ui" line="636"/>
+      <location filename="../ui/MeshManipulate.ui" line="708"/>
+      <location filename="../ui/MeshManipulate.ui" line="780"/>
+      <source>Delta in the aforementioned equation</source>
+      <translation type="unfinished">Delta in the aforementioned equation</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="565"/>
+      <source>Compute the finite difference gradient of child refinement G:
+
+F = (G(Kind + Delta/2) - G(Kind - Delta/2)) / Delta
+</source>
+      <translation type="unfinished">Compute the finite difference gradient of child refinement G:
+
+F = (G(Kind + Delta/2) - G(Kind - Delta/2)) / Delta
+</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshManipulate.ui" line="580"/>
+      <source>Kind</source>
+      <translation type="unfinished">Kind</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="38"/>
+      <source>Define mesh size inside and outside of the shape, with possible transition layer thickness</source>
+      <translation type="unfinished">Define mesh size inside and outside of the shape, with possible transition layer thickness</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="54"/>
+      <location filename="../ui/MeshShape.ui" line="70"/>
+      <source>Mesh size within the shape</source>
+      <translation type="unfinished">Mesh size within the shape</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="57"/>
+      <source>Size inside</source>
+      <translation type="unfinished">Size inside</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="80"/>
+      <location filename="../ui/MeshShape.ui" line="96"/>
+      <source>Mesh size outside of the shape</source>
+      <translation type="unfinished">Mesh size outside of the shape</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="83"/>
+      <source>Size outside</source>
+      <translation type="unfinished">Size outside</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="106"/>
+      <location filename="../ui/MeshShape.ui" line="122"/>
+      <source>Thickness of transition layer between in/out mesh sizes (added outside of the shape)</source>
+      <translation type="unfinished">Thickness of transition layer between in/out mesh sizes (added outside of the shape)</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="145"/>
+      <source>Box</source>
+      <translation>பெட்டி</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="150"/>
+      <source>Sphere</source>
+      <translation>கோளம்</translation>
+    </message>
+    <message>
+      <location filename="../ui/MeshShape.ui" line="155"/>
+      <source>Cylinder</source>
+      <translation>கலன்</translation>
     </message>
   </context>
   <context>
@@ -4347,14 +4357,14 @@ Notes:
       <translation>நீங்கள் ஒரு பகுப்பாய்வை உருவாக்க வேண்டும் அல்லது செயல்படுத்த வேண்டும்</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderFemPostObject.cpp" line="899"/>
       <location filename="../../ViewProviderFemPostFunction.cpp" line="155"/>
+      <location filename="../../ViewProviderFemPostObject.cpp" line="899"/>
       <source>A dialog is already open in the task panel</source>
       <translation>பணிப் பலகத்தில் ஏற்கனவே ஒரு உரையாடல் திறக்கப்பட்டுள்ளது</translation>
     </message>
     <message>
-      <location filename="../../ViewProviderFemPostObject.cpp" line="900"/>
       <location filename="../../ViewProviderFemPostFunction.cpp" line="156"/>
+      <location filename="../../ViewProviderFemPostObject.cpp" line="900"/>
       <source>Do you want to close this dialog?</source>
       <translation>இந்த உரையாடலை மூட விரும்புகிறீர்களா?</translation>
     </message>
@@ -6685,8 +6695,8 @@ No matching module was found in the current Python path.</source>
       <translation>ஒய் அச்சுக்கு ஒய் புல திசையன் எந்தப் பகுதியைப் பயன்படுத்த வேண்டும்</translation>
     </message>
     <message>
-      <location filename="../../../femobjects/post_extract2D.py" line="64"/>
       <location filename="../../../femobjects/post_extract1D.py" line="64"/>
+      <location filename="../../../femobjects/post_extract2D.py" line="64"/>
       <source>Specify if the field shall be extracted for every available frame</source>
       <translation>கிடைக்கக்கூடிய ஒவ்வொரு சட்டத்திற்கும் புலம் பிரித்தெடுக்கப்பட வேண்டுமா என்பதைக் குறிப்பிடவும்</translation>
     </message>
@@ -6706,14 +6716,14 @@ No matching module was found in the current Python path.</source>
       <translation>திருத்து {}</translation>
     </message>
     <message>
-      <location filename="../../../femtaskpanels/task_post_lineplot.py" line="56"/>
       <location filename="../../../femtaskpanels/task_post_histogram.py" line="56"/>
+      <location filename="../../../femtaskpanels/task_post_lineplot.py" line="56"/>
       <source>Show Plot</source>
       <translation>சதித்திட்டத்தைக் காட்டு</translation>
     </message>
     <message>
-      <location filename="../../../femtaskpanels/task_post_lineplot.py" line="59"/>
       <location filename="../../../femtaskpanels/task_post_histogram.py" line="59"/>
+      <location filename="../../../femtaskpanels/task_post_lineplot.py" line="59"/>
       <source>Show Data</source>
       <translation>தரவைக் காட்டு</translation>
     </message>
@@ -6748,8 +6758,8 @@ No matching module was found in the current Python path.</source>
       <translation>அட்டவணை தரவு</translation>
     </message>
     <message>
-      <location filename="../../../femviewprovider/view_post_lineplot.py" line="283"/>
       <location filename="../../../femviewprovider/view_post_histogram.py" line="267"/>
+      <location filename="../../../femviewprovider/view_post_lineplot.py" line="283"/>
       <source>The name used in the plots legend</source>
       <translation>சூழ்ச்சி புராணத்தில் பயன்படுத்தப்படும் பெயர்</translation>
     </message>
@@ -6776,8 +6786,8 @@ No matching module was found in the current Python path.</source>
       <translation>பட்டியின் அகலம், 0 மற்றும் 1 இடையே (1 இடைவெளி இல்லாமல் இருப்பது)</translation>
     </message>
     <message>
-      <location filename="../../../femviewprovider/view_post_lineplot.py" line="297"/>
       <location filename="../../../femviewprovider/view_post_histogram.py" line="311"/>
+      <location filename="../../../femviewprovider/view_post_lineplot.py" line="297"/>
       <source>The style the line is drawn in</source>
       <translation>கோடு வரையப்பட்ட பாணி</translation>
     </message>
@@ -6802,28 +6812,28 @@ No matching module was found in the current Python path.</source>
       <translation>தரவு பிரிக்கப்பட்ட தொட்டிகளின் எண்ணிக்கை</translation>
     </message>
     <message>
-      <location filename="../../../femviewprovider/view_post_lineplot.py" line="421"/>
       <location filename="../../../femviewprovider/view_post_histogram.py" line="437"/>
+      <location filename="../../../femviewprovider/view_post_lineplot.py" line="421"/>
       <source>The histogram plot title</source>
       <translation>இச்டோகிராம் சூழ்ச்சி தலைப்பு</translation>
     </message>
     <message>
-      <location filename="../../../femviewprovider/view_post_lineplot.py" line="428"/>
       <location filename="../../../femviewprovider/view_post_histogram.py" line="444"/>
+      <location filename="../../../femviewprovider/view_post_lineplot.py" line="428"/>
       <source>The label shown for the histogram X axis</source>
       <translation>இச்டோகிராம் ஃச் அச்சுக்குக் காட்டப்பட்ட சிட்டை</translation>
     </message>
     <message>
-      <location filename="../../../femviewprovider/view_post_lineplot.py" line="435"/>
       <location filename="../../../femviewprovider/view_post_histogram.py" line="451"/>
+      <location filename="../../../femviewprovider/view_post_lineplot.py" line="435"/>
       <source>The label shown for the histogram Y axis</source>
       <translation>இச்டோகிராம் ஒய் அச்சுக்குக் காட்டப்பட்ட சிட்டை</translation>
     </message>
     <message>
-      <location filename="../../../femviewprovider/view_post_lineplot.py" line="442"/>
-      <location filename="../../../femviewprovider/view_post_lineplot.py" line="449"/>
       <location filename="../../../femviewprovider/view_post_histogram.py" line="458"/>
       <location filename="../../../femviewprovider/view_post_histogram.py" line="465"/>
+      <location filename="../../../femviewprovider/view_post_lineplot.py" line="442"/>
+      <location filename="../../../femviewprovider/view_post_lineplot.py" line="449"/>
       <source>Determines if the legend is plotted</source>
       <translation>புராணக்கதை திட்டமிடப்பட்டதா என்பதை தீர்மானிக்கிறது</translation>
     </message>
@@ -6945,17 +6955,17 @@ No matching module was found in the current Python path.</source>
   <context>
     <name>CmdFemPostContoursFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2552"/>
+      <location filename="../../Command.cpp" line="2555"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2553"/>
+      <location filename="../../Command.cpp" line="2556"/>
       <source>Contours Filter</source>
       <translation>வரையறைகளை வடிகட்டி</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2554"/>
+      <location filename="../../Command.cpp" line="2557"/>
       <source>Defines a contours filter that displays iso contours</source>
       <translation type="unfinished">Defines a contours filter that displays iso contours</translation>
     </message>
@@ -7387,11 +7397,11 @@ No matching module was found in the current Python path.</source>
       <translation>கூறுகளை அழிக்கவும்</translation>
     </message>
     <message>
+      <location filename="../../Command.cpp" line="1479"/>
       <location filename="../../TaskCreateElementSet.cpp" line="244"/>
       <location filename="../../TaskCreateElementSet.cpp" line="255"/>
       <location filename="../../TaskCreateElementSet.cpp" line="515"/>
       <location filename="../../TaskCreateElementSet.cpp" line="612"/>
-      <location filename="../../Command.cpp" line="1479"/>
       <source>Wrong selection</source>
       <translation>தவறான தேர்வு</translation>
     </message>
@@ -7800,9 +7810,9 @@ Leave blank to use default Python executable</source>
   <context>
     <name>TaskPostGlyph</name>
     <message>
+      <location filename="../ui/TaskPostHistogram.ui" line="37"/>
       <location filename="../ui/TaskPostGlyph.ui" line="22"/>
       <location filename="../ui/TaskPostGlyph.ui" line="38"/>
-      <location filename="../ui/TaskPostHistogram.ui" line="37"/>
       <location filename="../ui/TaskPostLineplot.ui" line="37"/>
       <source>The form of the glyph</source>
       <translation>கிளிஃப் வடிவம்</translation>
@@ -7843,10 +7853,10 @@ Leave blank to use default Python executable</source>
       <translation>கோளம்</translation>
     </message>
     <message>
-      <location filename="../ui/TaskPostGlyph.ui" line="75"/>
-      <location filename="../ui/TaskPostGlyph.ui" line="91"/>
       <location filename="../ui/TaskPostHistogram.ui" line="66"/>
       <location filename="../ui/TaskPostHistogram.ui" line="82"/>
+      <location filename="../ui/TaskPostGlyph.ui" line="75"/>
+      <location filename="../ui/TaskPostGlyph.ui" line="91"/>
       <location filename="../ui/TaskPostLineplot.ui" line="81"/>
       <location filename="../ui/TaskPostLineplot.ui" line="97"/>
       <source>Which vector field is used to orient the glyphs</source>
@@ -7858,9 +7868,9 @@ Leave blank to use default Python executable</source>
       <translation>நோக்குநிலை</translation>
     </message>
     <message>
+      <location filename="../ui/TaskPostHistogram.ui" line="86"/>
       <location filename="../ui/TaskPostGlyph.ui" line="95"/>
       <location filename="../ui/TaskPostGlyph.ui" line="148"/>
-      <location filename="../ui/TaskPostHistogram.ui" line="86"/>
       <location filename="../ui/TaskPostLineplot.ui" line="101"/>
       <source>None</source>
       <translation>எதுவுமில்லை</translation>
@@ -7882,9 +7892,9 @@ Leave blank to use default Python executable</source>
       <translation>தகவல்கள்</translation>
     </message>
     <message>
+      <location filename="../ui/TaskPostHistogram.ui" line="176"/>
       <location filename="../ui/TaskPostGlyph.ui" line="158"/>
       <location filename="../ui/TaskPostGlyph.ui" line="176"/>
-      <location filename="../ui/TaskPostHistogram.ui" line="176"/>
       <location filename="../ui/TaskPostLineplot.ui" line="155"/>
       <source>A constant multiplier the glyphs are scaled with</source>
       <translation>ஒரு நிலையான பெருக்கி கிளிஃப்கள் அளவிடப்படுகின்றன</translation>
@@ -7900,8 +7910,8 @@ Leave blank to use default Python executable</source>
       <translation>செட் அளவுகோல் பேக்டரில் +/- 50% அளவு காரணியை மாற்றுகிறது</translation>
     </message>
     <message>
-      <location filename="../ui/TaskPostGlyph.ui" line="226"/>
       <location filename="../ui/TaskPostHistogram.ui" line="166"/>
+      <location filename="../ui/TaskPostGlyph.ui" line="226"/>
       <location filename="../ui/TaskPostLineplot.ui" line="145"/>
       <source>If the scale data is a vector this property decides if the glyph is scaled by vector magnitude or by the individual components</source>
       <translation>அளவிலான தரவு ஒரு திசையன் என்றால், கிளிஃப் திசையன் அளவு அல்லது தனிப்பட்ட கூறுகளால் அளவிடப்படுகிறதா என்பதை இந்த பண்பு தீர்மானிக்கிறது.</translation>
@@ -8063,17 +8073,17 @@ Leave blank to use default Python executable</source>
   <context>
     <name>CmdFemPostCalculatorFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="2589"/>
+      <location filename="../../Command.cpp" line="2592"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2590"/>
+      <location filename="../../Command.cpp" line="2593"/>
       <source>Calculator Filter</source>
       <translation>கால்குலேட்டர் வடிகட்டி</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="2591"/>
+      <location filename="../../Command.cpp" line="2594"/>
       <source>Creates a new field from current data</source>
       <translation>தற்போதைய தரவிலிருந்து புதிய புலத்தை உருவாக்குகிறது</translation>
     </message>
@@ -8081,17 +8091,17 @@ Leave blank to use default Python executable</source>
   <context>
     <name>CmdFemPostBranchFilter</name>
     <message>
-      <location filename="../../Command.cpp" line="3031"/>
+      <location filename="../../Command.cpp" line="3034"/>
       <source>Fem</source>
       <translation>ஃபெம்</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="3032"/>
+      <location filename="../../Command.cpp" line="3035"/>
       <source>Pipeline Branch</source>
       <translation>குழாய் கிளை</translation>
     </message>
     <message>
-      <location filename="../../Command.cpp" line="3033"/>
+      <location filename="../../Command.cpp" line="3036"/>
       <source>Branches the pipeline into a new path</source>
       <translation>பைப்லைனை ஒரு புதிய பாதையில் கிளைக்கிறது</translation>
     </message>
@@ -8709,54 +8719,6 @@ Leave blank to use default Python executable</source>
     </message>
   </context>
   <context>
-    <name>SolverZ88</name>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="14"/>
-      <source>Solver Z88 Control</source>
-      <translation type="unfinished">Solver Z88 Control</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="20"/>
-      <source>Working directory</source>
-      <translation>வேலை அடைவு</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="35"/>
-      <source>Write</source>
-      <translation>எழுது</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="45"/>
-      <source>Edit</source>
-      <translation>திருத்து</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="56"/>
-      <source>Path to working directory. Leave blank to use user preferences</source>
-      <translation type="unfinished">Path to working directory. Leave blank to use user preferences</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="74"/>
-      <source>Solver Parameters</source>
-      <translation>தீர்வு அளவுருக்கள்</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="82"/>
-      <source>Solver type</source>
-      <translation type="unfinished">Solver type</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="122"/>
-      <source>Time</source>
-      <translation>நேரம்</translation>
-    </message>
-    <message>
-      <location filename="../ui/SolverZ88.ui" line="129"/>
-      <source>Solver Version</source>
-      <translation>தீர்வு பதிப்பு</translation>
-    </message>
-  </context>
-  <context>
     <name>SolverElmer</name>
     <message>
       <location filename="../ui/SolverElmer.ui" line="14"/>
@@ -8805,26 +8767,51 @@ Leave blank to use default Python executable</source>
     </message>
   </context>
   <context>
-    <name>FemToolsCcx</name>
+    <name>SolverZ88</name>
     <message>
-      <location filename="../../../femtools/ccxtools.py" line="421"/>
-      <source>No or wrong CalculiX binary ccx</source>
-      <translation>இல்லை அல்லது தவறான CalculiX பைனரி ccx</translation>
+      <location filename="../ui/SolverZ88.ui" line="14"/>
+      <source>Solver Z88 Control</source>
+      <translation type="unfinished">Solver Z88 Control</translation>
     </message>
     <message>
-      <location filename="../../../femtools/ccxtools.py" line="455"/>
-      <source>FEM: wrong ccx binary</source>
-      <translation>FEM: wrong ccx இருமம்</translation>
+      <location filename="../ui/SolverZ88.ui" line="20"/>
+      <source>Working directory</source>
+      <translation>வேலை அடைவு</translation>
     </message>
     <message>
-      <location filename="../../../femtools/ccxtools.py" line="468"/>
-      <source>FEM: CalculiX binary ccx '{}' not found. Please set the CalculiX binary ccx path in FEM preferences tab CalculiX.</source>
-      <translation>FEM: CalculiX பைனரி ccx '{}' கிடைக்கவில்லை. FEM விருப்பத்தேர்வுகள் தாவலில் CalculiX பைனரி ccx பாதையை அமைக்கவும்.</translation>
+      <location filename="../ui/SolverZ88.ui" line="35"/>
+      <source>Write</source>
+      <translation>எழுது</translation>
     </message>
     <message>
-      <location filename="../../../femtools/ccxtools.py" line="480"/>
-      <source>FEM: CalculiX ccx '{}' output '{}' doesn't contain expected phrase '{}'. There are some problems when running the ccx binary. Check if ccx runs standalone without FreeCAD.</source>
-      <translation>FEM: CalculiX ccx '{}' வெளியீடு '{}' இல் எதிர்பார்க்கப்படும் சொற்றொடர் '{}' இல்லை. ccx பைனரியை இயக்கும்போது சில சிக்கல்கள் உள்ளன. FreeCAD இல்லாமல் ccx தனியாக இயங்குகிறதா எனச் சரிபார்க்கவும்.</translation>
+      <location filename="../ui/SolverZ88.ui" line="45"/>
+      <source>Edit</source>
+      <translation>திருத்து</translation>
+    </message>
+    <message>
+      <location filename="../ui/SolverZ88.ui" line="56"/>
+      <source>Path to working directory. Leave blank to use user preferences</source>
+      <translation type="unfinished">Path to working directory. Leave blank to use user preferences</translation>
+    </message>
+    <message>
+      <location filename="../ui/SolverZ88.ui" line="74"/>
+      <source>Solver Parameters</source>
+      <translation>தீர்வு அளவுருக்கள்</translation>
+    </message>
+    <message>
+      <location filename="../ui/SolverZ88.ui" line="82"/>
+      <source>Solver type</source>
+      <translation type="unfinished">Solver type</translation>
+    </message>
+    <message>
+      <location filename="../ui/SolverZ88.ui" line="122"/>
+      <source>Time</source>
+      <translation>நேரம்</translation>
+    </message>
+    <message>
+      <location filename="../ui/SolverZ88.ui" line="129"/>
+      <source>Solver Version</source>
+      <translation>தீர்வு பதிப்பு</translation>
     </message>
   </context>
   <context>
@@ -8974,46 +8961,32 @@ Leave blank to use default Python executable</source>
     </message>
   </context>
   <context>
-    <name>FemGui::TaskDlgFemConstraintSpring</name>
+    <name>FemToolsCcx</name>
     <message>
-      <location filename="../../TaskFemConstraintSpring.cpp" line="334"/>
-      <source>Input Error</source>
-      <translation>உள்ளீடு பிழை</translation>
-    </message>
-  </context>
-  <context>
-    <name>FemGui::DlgSettingsFemInOutVtkImp</name>
-    <message>
-      <location filename="../../DlgSettingsFemInOutVtkImp.cpp" line="78"/>
-      <source>All</source>
-      <translation>அனைத்தும்</translation>
+      <location filename="../../../femtools/ccxtools.py" line="421"/>
+      <source>No or wrong CalculiX binary ccx</source>
+      <translation>இல்லை அல்லது தவறான CalculiX பைனரி ccx</translation>
     </message>
     <message>
-      <location filename="../../DlgSettingsFemInOutVtkImp.cpp" line="78"/>
-      <source>Highest</source>
-      <translation>மிக உயர்ந்தது</translation>
+      <location filename="../../../femtools/ccxtools.py" line="455"/>
+      <source>FEM: wrong ccx binary</source>
+      <translation>FEM: wrong ccx இருமம்</translation>
     </message>
-  </context>
-  <context>
-    <name>FemGui::TaskDlgFemConstraintHeatflux</name>
     <message>
-      <location filename="../../TaskFemConstraintHeatflux.cpp" line="556"/>
-      <source>Input Error</source>
-      <translation>உள்ளீடு பிழை</translation>
+      <location filename="../../../femtools/ccxtools.py" line="468"/>
+      <source>FEM: CalculiX binary ccx '{}' not found. Please set the CalculiX binary ccx path in FEM preferences tab CalculiX.</source>
+      <translation>FEM: CalculiX பைனரி ccx '{}' கிடைக்கவில்லை. FEM விருப்பத்தேர்வுகள் தாவலில் CalculiX பைனரி ccx பாதையை அமைக்கவும்.</translation>
+    </message>
+    <message>
+      <location filename="../../../femtools/ccxtools.py" line="480"/>
+      <source>FEM: CalculiX ccx '{}' output '{}' doesn't contain expected phrase '{}'. There are some problems when running the ccx binary. Check if ccx runs standalone without FreeCAD.</source>
+      <translation>FEM: CalculiX ccx '{}' வெளியீடு '{}' இல் எதிர்பார்க்கப்படும் சொற்றொடர் '{}' இல்லை. ccx பைனரியை இயக்கும்போது சில சிக்கல்கள் உள்ளன. FreeCAD இல்லாமல் ccx தனியாக இயங்குகிறதா எனச் சரிபார்க்கவும்.</translation>
     </message>
   </context>
   <context>
     <name>FemGui::TaskDlgFemConstraintTransform</name>
     <message>
-      <location filename="../../TaskFemConstraintTransform.cpp" line="637"/>
-      <source>Input Error</source>
-      <translation>உள்ளீடு பிழை</translation>
-    </message>
-  </context>
-  <context>
-    <name>FemGui::TaskDlgFemConstraintForce</name>
-    <message>
-      <location filename="../../TaskFemConstraintForce.cpp" line="469"/>
+      <location filename="../../TaskFemConstraintTransform.cpp" line="649"/>
       <source>Input Error</source>
       <translation>உள்ளீடு பிழை</translation>
     </message>
@@ -9027,25 +9000,17 @@ Leave blank to use default Python executable</source>
     </message>
   </context>
   <context>
-    <name>FemGui::TaskDlgFemConstraintBearing</name>
+    <name>FemGui::TaskDlgFemConstraintForce</name>
     <message>
-      <location filename="../../TaskFemConstraintBearing.cpp" line="392"/>
+      <location filename="../../TaskFemConstraintForce.cpp" line="469"/>
       <source>Input Error</source>
       <translation>உள்ளீடு பிழை</translation>
     </message>
   </context>
   <context>
-    <name>FemGui::TaskDlgFemConstraintFluidBoundary</name>
+    <name>FemGui::TaskDlgFemConstraintContact</name>
     <message>
-      <location filename="../../TaskFemConstraintFluidBoundary.cpp" line="1159"/>
-      <source>Input Error</source>
-      <translation>உள்ளீடு பிழை</translation>
-    </message>
-  </context>
-  <context>
-    <name>FemGui::TaskDlgFemConstraintPressure</name>
-    <message>
-      <location filename="../../TaskFemConstraintPressure.cpp" line="321"/>
+      <location filename="../../TaskFemConstraintContact.cpp" line="599"/>
       <source>Input Error</source>
       <translation>உள்ளீடு பிழை</translation>
     </message>
@@ -9059,9 +9024,9 @@ Leave blank to use default Python executable</source>
     </message>
   </context>
   <context>
-    <name>FemGui::TaskDlgFemConstraintTemperature</name>
+    <name>FemGui::TaskDlgFemConstraintRigidBody</name>
     <message>
-      <location filename="../../TaskFemConstraintTemperature.cpp" line="406"/>
+      <location filename="../../TaskFemConstraintRigidBody.cpp" line="809"/>
       <source>Input Error</source>
       <translation>உள்ளீடு பிழை</translation>
     </message>
@@ -9083,25 +9048,70 @@ Leave blank to use default Python executable</source>
     </message>
   </context>
   <context>
-    <name>FemGui::TaskDlgFemConstraintContact</name>
+    <name>FemGui::TaskDlgFemConstraintPressure</name>
     <message>
-      <location filename="../../TaskFemConstraintContact.cpp" line="599"/>
+      <location filename="../../TaskFemConstraintPressure.cpp" line="321"/>
       <source>Input Error</source>
       <translation>உள்ளீடு பிழை</translation>
     </message>
   </context>
   <context>
-    <name>FemGui::TaskDlgFemConstraintRigidBody</name>
+    <name>FemGui::TaskDlgFemConstraintFluidBoundary</name>
     <message>
-      <location filename="../../TaskFemConstraintRigidBody.cpp" line="809"/>
+      <location filename="../../TaskFemConstraintFluidBoundary.cpp" line="1159"/>
       <source>Input Error</source>
       <translation>உள்ளீடு பிழை</translation>
+    </message>
+  </context>
+  <context>
+    <name>FemGui::TaskDlgFemConstraintBearing</name>
+    <message>
+      <location filename="../../TaskFemConstraintBearing.cpp" line="392"/>
+      <source>Input Error</source>
+      <translation>உள்ளீடு பிழை</translation>
+    </message>
+  </context>
+  <context>
+    <name>FemGui::TaskDlgFemConstraintTemperature</name>
+    <message>
+      <location filename="../../TaskFemConstraintTemperature.cpp" line="406"/>
+      <source>Input Error</source>
+      <translation>உள்ளீடு பிழை</translation>
+    </message>
+  </context>
+  <context>
+    <name>FemGui::DlgSettingsFemInOutVtkImp</name>
+    <message>
+      <location filename="../../DlgSettingsFemInOutVtkImp.cpp" line="78"/>
+      <source>All</source>
+      <translation>அனைத்தும்</translation>
+    </message>
+    <message>
+      <location filename="../../DlgSettingsFemInOutVtkImp.cpp" line="78"/>
+      <source>Highest</source>
+      <translation>மிக உயர்ந்தது</translation>
     </message>
   </context>
   <context>
     <name>FemGui::TaskDlgPost</name>
     <message>
       <location filename="../../TaskPostBoxes.cpp" line="403"/>
+      <source>Input Error</source>
+      <translation>உள்ளீடு பிழை</translation>
+    </message>
+  </context>
+  <context>
+    <name>FemGui::TaskDlgFemConstraintSpring</name>
+    <message>
+      <location filename="../../TaskFemConstraintSpring.cpp" line="334"/>
+      <source>Input Error</source>
+      <translation>உள்ளீடு பிழை</translation>
+    </message>
+  </context>
+  <context>
+    <name>FemGui::TaskDlgFemConstraintHeatflux</name>
+    <message>
+      <location filename="../../TaskFemConstraintHeatflux.cpp" line="556"/>
       <source>Input Error</source>
       <translation>உள்ளீடு பிழை</translation>
     </message>
