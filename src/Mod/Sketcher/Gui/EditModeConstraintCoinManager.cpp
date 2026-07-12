@@ -2239,6 +2239,12 @@ SoSeparator* EditModeConstraintCoinManager::createConstraintNode(
     auto* sep = new SoSeparator();
     sep->ref();
     // no caching for frequently-changing data structures
+    // NOTE: switching to AUTO was tried (2026-07-12) once the placement/icon/
+    // color skips made these fields change-stable: no measurable render win —
+    // SoZoomTranslation makes the subtrees view-dependent, so Coin declines to
+    // cache them — and the first delete after enabling it spiked. Cutting the
+    // ~156 ms uncached traversal at dense sketches needs restructuring the
+    // nodes so view-dependent parts sit outside cacheable subtrees.
     sep->renderCaching = SoSeparator::OFF;
 
     // every constrained visual node gets its own material for preselection and selection
