@@ -199,6 +199,16 @@ private:
     // helper data structures for the constraint rendering
     std::vector<Sketcher::ConstraintType> vConstrType;
 
+    // Per-constraint hash of every input the placement update reads
+    // (constraint fields + referenced geometry + global view factors).
+    // A matching hash means the coin nodes already hold the right values and
+    // the update-switch can be skipped. 0 = unknown, never skip.
+    std::vector<std::size_t> vConstrPlacementHash;
+
+    // Hash of the last rendered icon queue (positions, labels, colors, node
+    // targets); a match skips re-rendering all constraint icons. 0 = unknown.
+    std::size_t lastIconQueueHash = 0;
+
     // For each of the combined constraint icons drawn, also create a vector
     // of bounding boxes and associated constraint IDs, to go from the icon's
     // pixel coordinates to the relevant constraint IDs.

@@ -28,6 +28,7 @@
 #include <QRegularExpression>
 #include <Bnd_Box.hxx>
 #include <algorithm>
+#include <cstdlib>
 #include <limits>
 #include <map>
 #include <ranges>
@@ -76,6 +77,79 @@
 using namespace Gui;
 using namespace SketcherGui;
 using namespace Sketcher;
+
+namespace
+{
+
+// FNV-1a accumulation used to fingerprint the inputs of a constraint's
+// placement update so unchanged constraints can be skipped.
+inline void hashCombine(std::size_t& seed, const void* data, std::size_t len)
+{
+    const auto* bytes = static_cast<const unsigned char*>(data);
+    for (std::size_t k = 0; k < len; ++k) {
+        seed ^= bytes[k];
+        seed *= 1099511628211ULL;
+    }
+}
+
+inline void hashDouble(std::size_t& seed, double v)
+{
+    hashCombine(seed, &v, sizeof(v));
+}
+
+inline void hashInt(std::size_t& seed, long long v)
+{
+    hashCombine(seed, &v, sizeof(v));
+}
+
+inline void hashVector(std::size_t& seed, const Base::Vector3d& v)
+{
+    hashDouble(seed, v.x);
+    hashDouble(seed, v.y);
+    hashDouble(seed, v.z);
+}
+
+// Fingerprint of a geometry's defining data as the placement code sees it.
+// Lines hash their endpoints directly; other curves hash five points sampled
+// along the parameter range (deterministic, so identical geometry always
+// yields an identical hash; different same-type geometry through five common
+// points does not occur in practice).
+std::size_t hashGeometry(const Part::Geometry* geo)
+{
+    std::size_t seed = 14695981039346656037ULL;
+    if (!geo) {
+        return 0;
+    }
+    hashInt(seed, static_cast<long long>(geo->getTypeId().getKey()));
+
+    if (const auto* line = dynamic_cast<const Part::GeomLineSegment*>(geo)) {
+        hashVector(seed, line->getStartPoint());
+        hashVector(seed, line->getEndPoint());
+        return seed;
+    }
+    if (const auto* point = dynamic_cast<const Part::GeomPoint*>(geo)) {
+        hashVector(seed, point->getPoint());
+        return seed;
+    }
+    if (const auto* curve = dynamic_cast<const Part::GeomCurve*>(geo)) {
+        try {
+            const double u0 = curve->getFirstParameter();
+            const double u1 = curve->getLastParameter();
+            hashDouble(seed, u0);
+            hashDouble(seed, u1);
+            for (int k = 0; k <= 4; ++k) {
+                hashVector(seed, curve->pointAtParameter(u0 + (u1 - u0) * k / 4.0));
+            }
+            return seed;
+        }
+        catch (const Base::Exception&) {
+            return 0;  // never skip on evaluation failure
+        }
+    }
+    return 0;
+}
+
+}  // namespace
 
 //**************************** EditModeConstraintCoinManager class ******************************
 
@@ -177,6 +251,28 @@ Restart:
             return normal;
         };
 
+    // Skip-unchanged support: fingerprint every input the update-switch below
+    // reads; a matching fingerprint means the coin nodes already hold the
+    // right values. SKETCH_NO_CONSTRSKIP=1 disables (kill switch).
+    static const bool skipDisabled = (std::getenv("SKETCH_NO_CONSTRSKIP") != nullptr);
+    if (vConstrPlacementHash.size() != constrlist.size()) {
+        vConstrPlacementHash.assign(constrlist.size(), 0);
+    }
+    std::size_t globalSeed = 14695981039346656037ULL;
+    hashDouble(globalSeed, zConstrH);
+    hashInt(globalSeed, static_cast<long long>(Base::UnitsApi::getDecimals()));
+    hashInt(globalSeed, static_cast<long long>(Base::UnitsApi::getDefSchemaNum()));
+    std::map<int, std::size_t> geoStampCache;
+    auto geoStamp = [&](int geoId) -> std::size_t {
+        auto found = geoStampCache.find(geoId);
+        if (found != geoStampCache.end()) {
+            return found->second;
+        }
+        std::size_t h = hashGeometry(geolistfacade.getGeometryFromGeoId(geoId));
+        geoStampCache.emplace(geoId, h);
+        return h;
+    };
+
     // go through the constraints and update the position
     int i = 0;
     for (auto it = constrlist.begin(); it != constrlist.end(); ++it, i++) {
@@ -201,6 +297,45 @@ Restart:
                 // Constraint can refer to non-existent geometry during undo/redo
                 continue;
             }
+
+            std::size_t placementSig = globalSeed;
+            hashInt(placementSig, static_cast<long long>(Constr->Type));
+            hashInt(placementSig, Constr->First);
+            hashInt(placementSig, static_cast<long long>(Constr->FirstPos));
+            hashInt(placementSig, Constr->Second);
+            hashInt(placementSig, static_cast<long long>(Constr->SecondPos));
+            hashInt(placementSig, Constr->Third);
+            hashInt(placementSig, static_cast<long long>(Constr->ThirdPos));
+            hashDouble(placementSig, Constr->getValue());
+            hashInt(placementSig,
+                    (Constr->isDriving ? 1 : 0) | (Constr->isActive ? 2 : 0)
+                        | (Constr->isInVirtualSpace ? 4 : 0));
+            hashDouble(placementSig, Constr->LabelDistance);
+            hashDouble(placementSig, Constr->LabelPosition);
+            hashCombine(placementSig, Constr->Name.data(), Constr->Name.size());
+            std::size_t g1 = geoStamp(Constr->First);
+            hashCombine(placementSig, &g1, sizeof(g1));
+            bool geoHashValid = (g1 != 0);
+            if (Constr->Second != GeoEnum::GeoUndef) {
+                std::size_t g2 = geoStamp(Constr->Second);
+                hashCombine(placementSig, &g2, sizeof(g2));
+                geoHashValid = geoHashValid && (g2 != 0);
+            }
+            if (Constr->Third != GeoEnum::GeoUndef) {
+                std::size_t g3 = geoStamp(Constr->Third);
+                hashCombine(placementSig, &g3, sizeof(g3));
+                geoHashValid = geoHashValid && (g3 != 0);
+            }
+            if (placementSig == 0 || !geoHashValid) {
+                placementSig = 0;  // unknown input -> always update
+            }
+
+            if (!skipDisabled && placementSig != 0
+                && vConstrPlacementHash[i] == placementSig) {
+                continue;  // inputs identical to the last update
+            }
+            // invalidate until the update below completes without throwing
+            vConstrPlacementHash[i] = 0;
 
             // distinguish different constraint types to build up
             switch (Constr->Type) {
@@ -1629,6 +1764,8 @@ Restart:
                 case NumConstraintTypes:
                     break;
             }
+
+            vConstrPlacementHash[i] = placementSig;  // update succeeded
         }
         catch (Base::Exception& e) {
             Base::Console().developerError(
@@ -1916,6 +2053,9 @@ void EditModeConstraintCoinManager::rebuildConstraintNodes(
     SbVec3f norm
 )
 {
+    // freshly built nodes hold no placement or icon data yet
+    vConstrPlacementHash.assign(constrlist.size(), 0);
+    lastIconQueueHash = 0;
 
     for (auto it : constrlist) {
         // root separator for one constraint
@@ -2559,6 +2699,36 @@ void EditModeConstraintCoinManager::drawConstraintIcons(const GeoListFacade& geo
 
         iconQueue.push_back(thisIcon);
     }
+
+    // Skip the (expensive) icon rendering when nothing an icon depends on has
+    // changed since the last pass: positions, labels, visibility, rotation,
+    // node targets and the resolved color (which encodes selection /
+    // preselection / active / driving state). SKETCH_NO_CONSTRSKIP=1 disables.
+    static const bool skipDisabled = (std::getenv("SKETCH_NO_CONSTRSKIP") != nullptr);
+    std::size_t queueHash = 14695981039346656037ULL;
+    hashDouble(queueHash, ViewProviderSketchCoinAttorney::getScaleFactor(viewProvider));
+    for (const auto& icon : iconQueue) {
+        const QByteArray type = icon.type.toUtf8();
+        hashCombine(queueHash, type.constData(), type.size());
+        hashInt(queueHash, icon.constraintId);
+        hashDouble(queueHash, icon.position[0]);
+        hashDouble(queueHash, icon.position[1]);
+        hashDouble(queueHash, icon.position[2]);
+        const SoImage* dest = icon.destination;
+        hashCombine(queueHash, &dest, sizeof(dest));
+        hashInt(queueHash, icon.visible ? 1 : 0);
+        hashDouble(queueHash, icon.iconRotation);
+        const QByteArray label = icon.label.toUtf8();
+        hashCombine(queueHash, label.constData(), label.size());
+        hashInt(queueHash, static_cast<long long>(constrColor(icon.constraintId).rgba()));
+    }
+    if (queueHash == 0) {
+        queueHash = 1;
+    }
+    if (!skipDisabled && queueHash == lastIconQueueHash) {
+        return;
+    }
+    lastIconQueueHash = queueHash;
 
     combineConstraintIcons(iconQueue);
 }
