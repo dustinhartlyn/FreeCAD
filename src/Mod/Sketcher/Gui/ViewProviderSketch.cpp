@@ -50,7 +50,10 @@
 #include <QWindow>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <cstdlib>
+#include <iostream>
 #include <limits>
 #include <numbers>
 
@@ -3708,10 +3711,20 @@ void ViewProviderSketch::draw(bool temp /*=false*/, bool rebuildinformationoverl
 {
     assert(isInEditMode());
 
+    // SKETCH_DRAWPROF=1 — phase breakdown of an edit-mode redraw, printed per call.
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    using ProfClock = std::chrono::steady_clock;
+    auto profMs = [](ProfClock::time_point a, ProfClock::time_point b) {
+        return std::chrono::duration<double, std::milli>(b - a).count();
+    };
+    auto t0 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     // ============== Retrieve geometry to be represented =================================
 
     auto geolistfacade = temp ? getSolvedSketch().extractGeoListFacade() :// with memory allocation
         getSketchObject()->getGeoListFacade();// without memory allocation
+
+    auto t1 = drawProf ? ProfClock::now() : ProfClock::time_point {};
 
     assert(int(geolistfacade.geomlist.size()) >= 2);
 
@@ -3733,11 +3746,15 @@ void ViewProviderSketch::draw(bool temp /*=false*/, bool rebuildinformationoverl
 
     scaleBSplinePoleCirclesAndUpdateSolverAndSketchObjectGeometry(geolistfacade, temp);
 
+    auto t2 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     // ============== Render geometry, constraints and geometry information overlays
     // ==================================
 
     editCoinManager->processGeometryConstraintsInformationOverlay(geolistfacade,
                                                                   rebuildinformationoverlay);
+
+    auto t3 = drawProf ? ProfClock::now() : ProfClock::time_point {};
 
     // Avoids unneeded calls to pixmapFromSvg
     if (Mode == STATUS_NONE || Mode == STATUS_SKETCH_UseHandler) {
@@ -3745,9 +3762,20 @@ void ViewProviderSketch::draw(bool temp /*=false*/, bool rebuildinformationoverl
         editCoinManager->updateColor(geolistfacade);
     }
 
+    auto t4 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     Gui::MDIView* mdi = this->getActiveView();
     if (mdi && mdi->isDerivedFrom<Gui::View3DInventor>()) {
         static_cast<Gui::View3DInventor*>(mdi)->getViewer()->redraw();
+    }
+
+    if (drawProf) {
+        auto t5 = ProfClock::now();
+        std::cerr << "[DRAWPROF] temp=" << temp << " geos=" << geolistfacade.geomlist.size()
+                  << " facade=" << profMs(t0, t1) << " scale=" << profMs(t1, t2)
+                  << " coin=" << profMs(t2, t3) << " icons=" << profMs(t3, t4)
+                  << " redraw=" << profMs(t4, t5) << " total=" << profMs(t0, t5) << " ms"
+                  << std::endl;
     }
 }
 

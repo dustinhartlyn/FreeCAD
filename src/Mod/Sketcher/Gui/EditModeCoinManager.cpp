@@ -23,8 +23,11 @@
  ***************************************************************************/
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <cstdlib>
 #include <functional>
+#include <iostream>
 #include <limits>
 #include <memory>
 
@@ -1455,13 +1458,32 @@ void EditModeCoinManager::processGeometryConstraintsInformationOverlay(
 {
     overlayParameters.rebuildInformationLayer = rebuildinformationlayer;
 
+    // SKETCH_DRAWPROF=1 — split the "coin" phase of [DRAWPROF] into its stages.
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    using ProfClock = std::chrono::steady_clock;
+    auto profMs = [](ProfClock::time_point a, ProfClock::time_point b) {
+        return std::chrono::duration<double, std::milli>(b - a).count();
+    };
+    auto t0 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     pEditModeGeometryCoinManager->processGeometry(geolistfacade);
+
+    auto t1 = drawProf ? ProfClock::now() : ProfClock::time_point {};
 
     updateOverlayParameters();
 
     processGeometryInformationOverlay(geolistfacade);
 
+    auto t2 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     pEditModeConstraintCoinManager->processConstraints(geolistfacade);
+
+    if (drawProf) {
+        auto t3 = ProfClock::now();
+        std::cerr << "[DRAWPROF-CM] geometry=" << profMs(t0, t1)
+                  << " overlay=" << profMs(t1, t2) << " constraints=" << profMs(t2, t3)
+                  << " ms" << std::endl;
+    }
 }
 
 void EditModeCoinManager::updateOverlayParameters()
