@@ -825,6 +825,15 @@ bool Application::isAsyncRecomputeEnabled()
     return enableAsyncRecompute;
 }
 
+bool Application::isFineGrainedRecomputeEnabled()
+{
+    static const ParameterGrp::handle hGrp = GetParameterGroupByPath(
+        "User parameter:BaseApp/Preferences/General"
+    );
+    bool enableFineGrainedRecompute = hGrp->GetBool("FineGrainedRecompute");
+    return enableFineGrainedRecompute;
+}
+
 bool Application::canRecomputeRequestOnWorker(const RecomputeRequest& req) const
 {
     if (DocumentObject* documentObject = req.resolveDocumentObject()) {
@@ -2953,6 +2962,10 @@ void Application::initConfig(int argc, char ** argv)
     mConfig["BOOST_VERSION"] = BOOST_LIB_VERSION;
     mConfig["PYTHON_VERSION"] = PY_VERSION;
     mConfig["QT_VERSION"] = QT_VERSION_STR;
+    mConfig["COIN3D_VERSION"] = fcCoin3dVersion;
+    mConfig["COIN3D_SOURCE"] = fcCoin3dSource;
+    mConfig["PIVY_VERSION"] = fcPivyVersion;
+    mConfig["PIVY_SOURCE"] = fcPivySource;
     mConfig["EIGEN_VERSION"] = fcEigen3Version;
     mConfig["PYSIDE_VERSION"] = fcPysideVersion;
 #ifdef SMESH_VERSION_STR
