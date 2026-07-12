@@ -1836,22 +1836,51 @@ void EditModeConstraintCoinManager::updateConstraintColor(
     // Because coincident constraints are selected using the point color, we need to edit the point
     // materials.
 
+    static const bool skipDisabled = (std::getenv("SKETCH_NO_CONSTRSKIP") != nullptr);
+
     std::vector<int> PtNum;
     std::vector<SbColor*> pcolor;  // point color
     std::vector<std::vector<int>> CurvNum;
     std::vector<std::vector<SbColor*>> color;  // curve color
 
-    for (int l = 0; l < geometryLayerParameters.getCoinLayerCount(); l++) {
-        PtNum.push_back(editModeScenegraphNodes.PointsMaterials[l]->diffuseColor.getNum());
-        pcolor.push_back(editModeScenegraphNodes.PointsMaterials[l]->diffuseColor.startEditing());
-        CurvNum.emplace_back();
-        color.emplace_back();
-        for (int t = 0; t < geometryLayerParameters.getSubLayerCount(); t++) {
-            CurvNum[l].push_back(editModeScenegraphNodes.CurvesMaterials[l][t]->diffuseColor.getNum());
-            color[l].push_back(
-                editModeScenegraphNodes.CurvesMaterials[l][t]->diffuseColor.startEditing()
-            );
+    // The point/curve material arrays are only written for selected
+    // coincident / internal-alignment constraints; open them lazily so the
+    // common no-selection pass never touches (and never notifies) them.
+    bool arraysOpen = false;
+    auto openArrays = [&]() {
+        if (arraysOpen) {
+            return;
         }
+        arraysOpen = true;
+        for (int l = 0; l < geometryLayerParameters.getCoinLayerCount(); l++) {
+            PtNum.push_back(editModeScenegraphNodes.PointsMaterials[l]->diffuseColor.getNum());
+            pcolor.push_back(editModeScenegraphNodes.PointsMaterials[l]->diffuseColor.startEditing());
+            CurvNum.emplace_back();
+            color.emplace_back();
+            for (int t = 0; t < geometryLayerParameters.getSubLayerCount(); t++) {
+                CurvNum[l].push_back(
+                    editModeScenegraphNodes.CurvesMaterials[l][t]->diffuseColor.getNum());
+                color[l].push_back(
+                    editModeScenegraphNodes.CurvesMaterials[l][t]->diffuseColor.startEditing()
+                );
+            }
+        }
+    };
+
+    // If any color preference changed, every cached state is stale.
+    std::size_t paletteHash = 14695981039346656037ULL;
+    for (const SbColor& c : {SketcherGui::DrawingParameters::ConstrDimColor,
+                             SketcherGui::DrawingParameters::NonDrivingConstrDimColor,
+                             SketcherGui::DrawingParameters::DeactivatedConstrDimColor,
+                             drawingParameters.ExprBasedConstrDimColor,
+                             SketcherGui::DrawingParameters::SelectColor,
+                             SketcherGui::DrawingParameters::PreselectColor}) {
+        float rgb[3] = {c[0], c[1], c[2]};
+        hashCombine(paletteHash, rgb, sizeof(rgb));
+    }
+    if (vConstrColorState.size() != constraints.size() || paletteHash != lastColorPaletteHash) {
+        vConstrColorState.assign(constraints.size(), staleColorState);
+        lastColorPaletteHash = paletteHash;
     }
 
     int maxNumberOfConstraints = std::min(
@@ -1891,7 +1920,32 @@ void EditModeConstraintCoinManager::updateConstraintColor(
             }
         }
 
-        auto selectpoint = [this, pcolor, PtNum](int geoid, Sketcher::PointPos pos) {
+        // Skip constraints whose resolved color state is unchanged since the
+        // last pass — writing an identical value to a coin field still
+        // notifies and invalidates render caches. Selected coincident /
+        // internal-alignment constraints write into the shared point/curve
+        // arrays (which updateGeometryColor has just reset), so they must
+        // always be re-applied.
+        {
+            bool selected = ViewProviderSketchCoinAttorney::isConstraintSelected(viewProvider, i);
+            bool preselected =
+                ViewProviderSketchCoinAttorney::isConstraintPreselected(viewProvider, i);
+            bool isActive =
+                ViewProviderSketchCoinAttorney::isConstraintActiveInSketch(viewProvider, constraint);
+            bool hasExpression = hasDatumLabel && !selected && !preselected
+                && ViewProviderSketchCoinAttorney::constraintHasExpression(viewProvider, i);
+            unsigned char state = (selected ? 1 : 0) | (preselected ? 2 : 0) | (isActive ? 4 : 0)
+                | (constraint->isDriving ? 8 : 0) | (hasExpression ? 16 : 0);
+            bool writesSharedArrays = selected
+                && (type == Sketcher::Coincident || type == Sketcher::InternalAlignment);
+            if (!skipDisabled && !writesSharedArrays && vConstrColorState[i] == state) {
+                continue;
+            }
+            vConstrColorState[i] = state;
+        }
+
+        auto selectpoint = [this, &openArrays, &pcolor, &PtNum](int geoid, Sketcher::PointPos pos) {
+            openArrays();
             if (geoid >= 0) {
                 auto multifieldIndex = coinMapping.getIndexLayer(geoid, pos);
 
@@ -1905,7 +1959,8 @@ void EditModeConstraintCoinManager::updateConstraintColor(
             }
         };
 
-        auto selectline = [this, color, CurvNum](int geoid) {
+        auto selectline = [this, &openArrays, &color, &CurvNum](int geoid) {
+            openArrays();
             if (geoid >= 0) {
                 auto multifieldIndex = coinMapping.getIndexLayer(geoid, Sketcher::PointPos::none);
 
@@ -1998,10 +2053,12 @@ void EditModeConstraintCoinManager::updateConstraintColor(
         }
     }
 
-    for (int l = 0; l < geometryLayerParameters.getCoinLayerCount(); l++) {
-        editModeScenegraphNodes.PointsMaterials[l]->diffuseColor.finishEditing();
-        for (int t = 0; t < geometryLayerParameters.getSubLayerCount(); t++) {
-            editModeScenegraphNodes.CurvesMaterials[l][t]->diffuseColor.finishEditing();
+    if (arraysOpen) {
+        for (int l = 0; l < geometryLayerParameters.getCoinLayerCount(); l++) {
+            editModeScenegraphNodes.PointsMaterials[l]->diffuseColor.finishEditing();
+            for (int t = 0; t < geometryLayerParameters.getSubLayerCount(); t++) {
+                editModeScenegraphNodes.CurvesMaterials[l][t]->diffuseColor.finishEditing();
+            }
         }
     }
 }
@@ -2053,9 +2110,10 @@ void EditModeConstraintCoinManager::rebuildConstraintNodes(
     SbVec3f norm
 )
 {
-    // freshly built nodes hold no placement or icon data yet
+    // freshly built nodes hold no placement, icon or color data yet
     vConstrPlacementHash.assign(constrlist.size(), 0);
     lastIconQueueHash = 0;
+    vConstrColorState.assign(constrlist.size(), staleColorState);
 
     for (auto it : constrlist) {
         // root separator for one constraint

@@ -209,6 +209,13 @@ private:
     // targets); a match skips re-rendering all constraint icons. 0 = unknown.
     std::size_t lastIconQueueHash = 0;
 
+    // Per-constraint resolved color state (selected/preselected/active/
+    // driving/expression bits) from the last updateConstraintColor pass; a
+    // match skips rewriting that constraint's colors.
+    static constexpr unsigned char staleColorState = 0xFF;
+    std::vector<unsigned char> vConstrColorState;
+    std::size_t lastColorPaletteHash = 0;
+
     // For each of the combined constraint icons drawn, also create a vector
     // of bounding boxes and associated constraint IDs, to go from the icon's
     // pixel coordinates to the relevant constraint IDs.
