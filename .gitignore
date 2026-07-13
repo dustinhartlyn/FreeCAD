@@ -73,15 +73,3 @@ tsupdate_stdout.log
 # pixi environments
 *.egg-info
 .pixi
-
-# planeGCS optimization project — local tracking files (not for upstream)
-# All agent-internal scratch/planning/status files live under Agent_Notes/.
-# One rule here catches everything in it, present and future, regardless of
-# filename — do not add individual filenames to this list again.
-/Agent_Notes/
-.roomodes
-3DxWare/
-tests/lib/
-
-# .roo/ is local agent tooling/config and should never be pushed to the
-# shared repo; the blanket ".*" rule above already covers it.
