@@ -23,8 +23,11 @@
  ***************************************************************************/
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <cstdlib>
 #include <functional>
+#include <iostream>
 #include <limits>
 #include <memory>
 
@@ -1455,13 +1458,32 @@ void EditModeCoinManager::processGeometryConstraintsInformationOverlay(
 {
     overlayParameters.rebuildInformationLayer = rebuildinformationlayer;
 
+    // SKETCH_DRAWPROF=1 — split the "coin" phase of [DRAWPROF] into its stages.
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    using ProfClock = std::chrono::steady_clock;
+    auto profMs = [](ProfClock::time_point a, ProfClock::time_point b) {
+        return std::chrono::duration<double, std::milli>(b - a).count();
+    };
+    auto t0 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     pEditModeGeometryCoinManager->processGeometry(geolistfacade);
+
+    auto t1 = drawProf ? ProfClock::now() : ProfClock::time_point {};
 
     updateOverlayParameters();
 
     processGeometryInformationOverlay(geolistfacade);
 
+    auto t2 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     pEditModeConstraintCoinManager->processConstraints(geolistfacade);
+
+    if (drawProf) {
+        auto t3 = ProfClock::now();
+        std::cerr << "[DRAWPROF-CM] geometry=" << profMs(t0, t1)
+                  << " overlay=" << profMs(t1, t2) << " constraints=" << profMs(t2, t3)
+                  << " ms" << std::endl;
+    }
 }
 
 void EditModeCoinManager::updateOverlayParameters()
@@ -1540,19 +1562,40 @@ void EditModeCoinManager::updateColor()
 
 void EditModeCoinManager::updateColor(const GeoListFacade& geolistfacade)
 {
+    // SKETCH_NO_UPDATECOLOR=1 — diagnostic ceiling: skip color updates
+    // entirely (colors go stale; measurement only).
+    static const bool colorDisabled = (std::getenv("SKETCH_NO_UPDATECOLOR") != nullptr);
+    if (colorDisabled) {
+        return;
+    }
+
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    using ProfClock = std::chrono::steady_clock;
+    auto profMs = [](ProfClock::time_point a, ProfClock::time_point b) {
+        return std::chrono::duration<double, std::milli>(b - a).count();
+    };
+    auto t0 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     bool sketchinvalid = ViewProviderSketchCoinAttorney::isSketchInvalid(viewProvider);
 
     pEditModeGeometryCoinManager->updateGeometryColor(geolistfacade, sketchinvalid);
+
+    auto t1 = drawProf ? ProfClock::now() : ProfClock::time_point {};
 
     // update constraint color
 
     auto constraints = ViewProviderSketchCoinAttorney::getConstraints(viewProvider);
 
-    if (ViewProviderSketchCoinAttorney::haveConstraintsInvalidGeometry(viewProvider)) {
-        return;
+    bool invalidGeometry = ViewProviderSketchCoinAttorney::haveConstraintsInvalidGeometry(viewProvider);
+    if (!invalidGeometry) {
+        pEditModeConstraintCoinManager->updateConstraintColor(constraints);
     }
 
-    pEditModeConstraintCoinManager->updateConstraintColor(constraints);
+    if (drawProf) {
+        auto t2 = ProfClock::now();
+        std::cerr << "[DRAWPROF-UC] geoColor=" << profMs(t0, t1)
+                  << " constrColor=" << profMs(t1, t2) << " ms" << std::endl;
+    }
 }
 
 void EditModeCoinManager::setConstraintSelectability(bool enabled /* = true */)

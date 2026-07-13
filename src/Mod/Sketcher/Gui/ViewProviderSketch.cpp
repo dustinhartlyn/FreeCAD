@@ -50,7 +50,10 @@
 #include <QWindow>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <cstdlib>
+#include <iostream>
 #include <limits>
 #include <numbers>
 
@@ -3708,10 +3711,20 @@ void ViewProviderSketch::draw(bool temp /*=false*/, bool rebuildinformationoverl
 {
     assert(isInEditMode());
 
+    // SKETCH_DRAWPROF=1 — phase breakdown of an edit-mode redraw, printed per call.
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    using ProfClock = std::chrono::steady_clock;
+    auto profMs = [](ProfClock::time_point a, ProfClock::time_point b) {
+        return std::chrono::duration<double, std::milli>(b - a).count();
+    };
+    auto t0 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     // ============== Retrieve geometry to be represented =================================
 
     auto geolistfacade = temp ? getSolvedSketch().extractGeoListFacade() :// with memory allocation
         getSketchObject()->getGeoListFacade();// without memory allocation
+
+    auto t1 = drawProf ? ProfClock::now() : ProfClock::time_point {};
 
     assert(int(geolistfacade.geomlist.size()) >= 2);
 
@@ -3733,21 +3746,38 @@ void ViewProviderSketch::draw(bool temp /*=false*/, bool rebuildinformationoverl
 
     scaleBSplinePoleCirclesAndUpdateSolverAndSketchObjectGeometry(geolistfacade, temp);
 
+    auto t2 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     // ============== Render geometry, constraints and geometry information overlays
     // ==================================
 
     editCoinManager->processGeometryConstraintsInformationOverlay(geolistfacade,
                                                                   rebuildinformationoverlay);
 
+    auto t3 = drawProf ? ProfClock::now() : ProfClock::time_point {};
+
     // Avoids unneeded calls to pixmapFromSvg
+    auto t3i = t3;
     if (Mode == STATUS_NONE || Mode == STATUS_SKETCH_UseHandler) {
         editCoinManager->drawConstraintIcons(geolistfacade);
+        t3i = drawProf ? ProfClock::now() : ProfClock::time_point {};
         editCoinManager->updateColor(geolistfacade);
     }
+
+    auto t4 = drawProf ? ProfClock::now() : ProfClock::time_point {};
 
     Gui::MDIView* mdi = this->getActiveView();
     if (mdi && mdi->isDerivedFrom<Gui::View3DInventor>()) {
         static_cast<Gui::View3DInventor*>(mdi)->getViewer()->redraw();
+    }
+
+    if (drawProf) {
+        auto t5 = ProfClock::now();
+        std::cerr << "[DRAWPROF] temp=" << temp << " geos=" << geolistfacade.geomlist.size()
+                  << " facade=" << profMs(t0, t1) << " scale=" << profMs(t1, t2)
+                  << " coin=" << profMs(t2, t3) << " icons=" << profMs(t3, t3i)
+                  << " color=" << profMs(t3i, t4) << " redraw=" << profMs(t4, t5)
+                  << " total=" << profMs(t0, t5) << " ms" << std::endl;
     }
 }
 
@@ -3824,17 +3854,43 @@ void ViewProviderSketch::drawEditMarkers(const std::vector<Base::Vector2d>& Edit
 }
 
 void ViewProviderSketch::updateData(const App::Property* prop) {
+    // SKETCH_DRAWPROF=1 — per-property attribution of the base-class update
+    // (PartGui re-tessellates the whole Shape for the non-edit scene there).
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+
     if (std::string(prop->getName()) != "ShapeMaterial") {
+        auto profT0 = drawProf ? std::chrono::steady_clock::now()
+                               : std::chrono::steady_clock::time_point {};
+
         // We don't want material to override the colors of sketches.
         ViewProvider2DObject::updateData(prop);
+
+        if (drawProf) {
+            std::cerr << "[DRAWPROF-UD] baseUpdate(" << prop->getName() << ")="
+                      << std::chrono::duration<double, std::milli>(
+                             std::chrono::steady_clock::now() - profT0)
+                             .count()
+                      << " ms" << std::endl;
+        }
     }
 
     if (prop == &getSketchObject()->InternalShape) {
+        auto profT0 = drawProf ? std::chrono::steady_clock::now()
+                               : std::chrono::steady_clock::time_point {};
+
         const auto& shape = getSketchObject()->InternalShape.getValue();
         setupCoinGeometry(shape,
                 pcSketchFaces,
                 Deviation.getValue(),
                 AngularDeflection.getValue());
+
+        if (drawProf) {
+            std::cerr << "[DRAWPROF-UD] internalShapeCoin="
+                      << std::chrono::duration<double, std::milli>(
+                             std::chrono::steady_clock::now() - profT0)
+                             .count()
+                      << " ms" << std::endl;
+        }
     }
 
     if (prop != &getSketchObject()->Constraints) {
@@ -3847,6 +3903,26 @@ void ViewProviderSketch::slotSolverUpdate()
     if (!isInEditMode()) {
         return;
     }
+
+    // SKETCH_DRAWPROF=1 — total minus the [DRAWPROF] draw() line attributes
+    // the solver-window update and constraint-signal fan-out.
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    auto profT0 = drawProf ? std::chrono::steady_clock::now()
+                           : std::chrono::steady_clock::time_point {};
+    struct ProfReport {
+        bool enabled;
+        std::chrono::steady_clock::time_point t0;
+        ~ProfReport()
+        {
+            if (enabled) {
+                std::cerr << "[DRAWPROF-SU] slotSolverUpdate="
+                          << std::chrono::duration<double, std::milli>(
+                                 std::chrono::steady_clock::now() - t0)
+                                 .count()
+                          << " ms" << std::endl;
+            }
+        }
+    } profReport {drawProf, profT0};
 
     // At this point, we do not need to solve the Sketch
     // If we are adding geometry an update can be triggered before the sketch is actually

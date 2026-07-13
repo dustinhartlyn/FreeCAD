@@ -47,7 +47,6 @@ using namespace Base;
 int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, const Base::Vector3d& toPoint, bool relative,
                             bool updateGeoBeforeMoving)
 {
-
     // no need to check input data validity as this is an sketchobject managed operation.
     Base::StateLocker lock(managedoperation, true);
 
@@ -59,7 +58,7 @@ int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, con
     // geometry to that of of SketchObject upon moving. => use updateGeometry parameter = true then
 
 
-    if (updateGeoBeforeMoving || solverNeedsUpdate) {
+    if (updateGeoBeforeMoving || (solverNeedsUpdate && !isDragActive)) {
         lastDoF = solvedSketch.setUpSketch(
             getCompleteGeometry(), Constraints.getValues(), getExternalGeometryCount());
 
@@ -87,7 +86,11 @@ int SketchObject::moveGeometries(const std::vector<GeoElementId>& geoEltIds, con
         }
     }
 
-    solvedSketch.resetInitMove();// reset solver point moving mechanism
+    // The drag is now complete — geometry has been moved and committed via
+    // Geometry.setValues(). Clear isDragActive so the next solve() takes the
+    // normal (non-drag) path and rebuilds from the committed Geometry property.
+    isDragActive = false;
+    solverNeedsUpdate = true;
 
     return lastSolverStatus;
 }

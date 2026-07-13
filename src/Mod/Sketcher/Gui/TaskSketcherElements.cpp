@@ -22,6 +22,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
+
 #include <QContextMenuEvent>
 #include <QImage>
 #include <QLineEdit>
@@ -1368,7 +1372,7 @@ TaskSketcherElements::TaskSketcherElements(ViewProviderSketch* sketchView)
     ui->filterBox->setChecked(hGrp->GetBool("ElementFilterEnabled", true));
     ui->filterButton->setEnabled(ui->filterBox->isChecked());
 
-    slotElementsChanged();
+    updateElementsList();
 }
 
 TaskSketcherElements::~TaskSketcherElements()
@@ -1443,7 +1447,7 @@ void TaskSketcherElements::onFilterBoxStateChanged(int val)
     hGrp->SetBool("ElementFilterEnabled", ui->filterBox->checkState() == Qt::Checked);
 
     ui->filterButton->setEnabled(ui->filterBox->checkState() == Qt::Checked);
-    slotElementsChanged();
+    updateElementsList();
 }
 
 void TaskSketcherElements::onListMultiFilterItemChanged(QListWidgetItem* item)
@@ -1987,7 +1991,27 @@ void TaskSketcherElements::leaveEvent(QEvent* event)
 
 void TaskSketcherElements::slotElementsChanged()
 {
+    // The signal fires several times per solve (once per changed property);
+    // one rebuild when the event loop spins covers the whole burst.
+    if (elementsUpdatePending) {
+        return;
+    }
+    elementsUpdatePending = true;
+    QTimer::singleShot(0, this, [this]() {
+        elementsUpdatePending = false;
+        updateElementsList();
+    });
+}
+
+void TaskSketcherElements::updateElementsList()
+{
     assert(sketchView);
+
+    // SKETCH_DRAWPROF=1 — time the element task-panel rebuild per solve.
+    static const bool drawProf = (std::getenv("SKETCH_DRAWPROF") != nullptr);
+    auto profT0 = drawProf ? std::chrono::steady_clock::now()
+                           : std::chrono::steady_clock::time_point {};
+
     // Build up ListView with the elements
     Sketcher::SketchObject* sketch = sketchView->getSketchObject();
 
@@ -2227,6 +2251,14 @@ void TaskSketcherElements::slotElementsChanged()
             setItemVisibility(itemN, groupedGeoIds);
         }
     }
+
+    if (drawProf) {
+        std::cerr << "[DRAWPROF-TP] elementsPanel="
+                  << std::chrono::duration<double, std::milli>(
+                         std::chrono::steady_clock::now() - profT0)
+                         .count()
+                  << " ms items=" << ui->listWidgetElements->count() << std::endl;
+    }
 }
 
 void TaskSketcherElements::clearWidget()
@@ -2284,7 +2316,7 @@ void TaskSketcherElements::onSettingsExtendedInformationChanged()
         "User parameter:BaseApp/Preferences/Mod/Sketcher/Elements");
     hGrp->SetBool("ExtendedNaming", isNamingBoxChecked);
 
-    slotElementsChanged();
+    updateElementsList();
 }
 
 #include "TaskSketcherElements.moc"// For Delegate as it is QOBJECT

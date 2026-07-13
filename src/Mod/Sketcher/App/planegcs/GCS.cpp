@@ -49,10 +49,16 @@
 #endif
 
 #include <algorithm>
+#define _USE_MATH_DEFINES
+#include <chrono>
+#include <cmath>
+#include <cstdlib>
 #include <future>
 #include <iostream>
 #include <limits>
-#include <numbers>
+#include <numeric>
+#include <stdexcept>
+#include <unordered_map>
 
 #include "GCS.h"
 #include "qp_eq.h"
@@ -488,7 +494,7 @@ System::System()
     , qrAlgorithm(EigenSparseQR)
     , autoChooseAlgorithm(true)
     , autoQRThreshold(1000)
-    , dogLegGaussStep(FullPivLU)
+    , dogLegGaussStep(SparseLDLT)
     , qrpivotThreshold(1E-13)
     , debugMode(Minimal)
     , LM_eps(1E-10)
@@ -548,6 +554,118 @@ void System::invalidatedDiagnosis()
     pDependentParametersGroups.clear();
 }
 
+DiagnosisCache System::saveDiagnosis() const
+{
+    DiagnosisCache cache;
+    cache.conflictingTags = conflictingTags;
+    cache.redundantTags = redundantTags;
+    cache.partiallyRedundantTags = partiallyRedundantTags;
+    cache.dofs = dofs;
+    cache.emptyDiagnoseMatrix = emptyDiagnoseMatrix;
+
+    for (auto* c : redundant) {
+        auto it = std::find(clist.begin(), clist.end(), c);
+        if (it != clist.end()) {
+            cache.redundantIndices.push_back(
+                static_cast<int>(std::distance(clist.begin(), it)));
+        }
+    }
+
+    for (auto* p : pDependentParameters) {
+        auto it = std::find(plist.begin(), plist.end(), p);
+        if (it != plist.end()) {
+            cache.dependentParamIndices.push_back(
+                static_cast<int>(std::distance(plist.begin(), it)));
+        }
+    }
+
+    cache.dependentParamGroupsIndices.resize(pDependentParametersGroups.size());
+    for (size_t g = 0; g < pDependentParametersGroups.size(); ++g) {
+        for (auto* p : pDependentParametersGroups[g]) {
+            auto it = std::find(plist.begin(), plist.end(), p);
+            if (it != plist.end()) {
+                cache.dependentParamGroupsIndices[g].push_back(
+                    static_cast<int>(std::distance(plist.begin(), it)));
+            }
+        }
+    }
+
+    return cache;
+}
+
+void System::restoreDiagnosis(const DiagnosisCache& cache)
+{
+    conflictingTags = cache.conflictingTags;
+    redundantTags = cache.redundantTags;
+    partiallyRedundantTags = cache.partiallyRedundantTags;
+    dofs = cache.dofs;
+    emptyDiagnoseMatrix = cache.emptyDiagnoseMatrix;
+
+    redundant.clear();
+    for (int idx : cache.redundantIndices) {
+        if (idx >= 0 && idx < static_cast<int>(clist.size())) {
+            GCS::Constraint* restored = clist[idx];
+            // Stage 2 v6 remediation (Concern 3): Guard the stable-ordering
+            // invariant. saveDiagnosis() derived idx via
+            // std::distance(clist.begin(), find(clist.begin(), clist.end(), c)).
+            // If clist ordering shifted between save and restore, idx now points
+            // at a different constraint. Re-derive and assert identity.
+            auto it = std::find(clist.begin(), clist.end(), restored);
+            if (it == clist.end()
+                || static_cast<int>(std::distance(clist.begin(), it)) != idx) {
+                // Ordering shifted — cache is stale. Abort restore.
+                hasDiagnosis = false;
+                redundant.clear();
+                pDependentParameters.clear();
+                pDependentParametersGroups.clear();
+                return;
+            }
+            redundant.insert(restored);
+        }
+    }
+
+    pDependentParameters.clear();
+    for (int idx : cache.dependentParamIndices) {
+        if (idx >= 0 && idx < static_cast<int>(plist.size())) {
+            double* restored = plist[idx];
+            auto it = std::find(plist.begin(), plist.end(), restored);
+            if (it == plist.end()
+                || static_cast<int>(std::distance(plist.begin(), it)) != idx) {
+                // Ordering shifted — cache is stale. Abort restore.
+                hasDiagnosis = false;
+                redundant.clear();
+                pDependentParameters.clear();
+                pDependentParametersGroups.clear();
+                return;
+            }
+            pDependentParameters.push_back(restored);
+        }
+    }
+
+    pDependentParametersGroups.clear();
+    pDependentParametersGroups.resize(cache.dependentParamGroupsIndices.size());
+    for (size_t g = 0; g < cache.dependentParamGroupsIndices.size(); ++g) {
+        for (int idx : cache.dependentParamGroupsIndices[g]) {
+            if (idx >= 0 && idx < static_cast<int>(plist.size())) {
+                double* restored = plist[idx];
+                auto it = std::find(plist.begin(), plist.end(), restored);
+                if (it == plist.end()
+                    || static_cast<int>(std::distance(plist.begin(), it)) != idx) {
+                    // Ordering shifted — cache is stale. Abort restore.
+                    hasDiagnosis = false;
+                    redundant.clear();
+                    pDependentParameters.clear();
+                    pDependentParametersGroups.clear();
+                    return;
+                }
+                pDependentParametersGroups[g].push_back(restored);
+            }
+        }
+    }
+
+    hasDiagnosis = true;
+}
+
 void System::clearByTag(int tagId)
 {
     std::vector<Constraint*> constrvec;
@@ -583,10 +701,12 @@ int System::addConstraint(Constraint* constr)
 
 void System::removeConstraint(Constraint* constr)
 {
-    if (std::erase(clist, constr) == 0) {
+    auto it = std::remove(clist.begin(), clist.end(), constr);
+    if (it == clist.end()) {
         return;
     }
-    std::erase(drivenConstraints, constr);
+    clist.erase(it, clist.end());
+    drivenConstraints.erase(std::remove(drivenConstraints.begin(), drivenConstraints.end(), constr), drivenConstraints.end());
 
     if (constr->getTag() >= 0) {
         hasDiagnosis = false;
@@ -594,7 +714,7 @@ void System::removeConstraint(Constraint* constr)
     clearSubSystems();
 
     for (const auto& param : c2p[constr]) {
-        p2c[param].erase(std::ranges::find(p2c[param], constr));
+        p2c[param].erase(std::find(p2c[param].begin(), p2c[param].end(), constr));
     }
     c2p.erase(constr);
 
@@ -1040,7 +1160,6 @@ int System::addConstraintPointOnArc(Point& p, Arc& a, int tagId, bool driving)
 
 int System::addConstraintPerpendicularLine2Arc(Point& p1, Point& p2, Arc& a, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PCoincident(p2, a.start, tagId, driving);
     double dx = *(p2.x) - *(p1.x);
@@ -1049,13 +1168,12 @@ int System::addConstraintPerpendicularLine2Arc(Point& p1, Point& p2, Arc& a, int
         return addConstraintP2PAngle(p1, p2, a.startAngle, 0, tagId, driving);
     }
     else {
-        return addConstraintP2PAngle(p1, p2, a.startAngle, pi, tagId, driving);
+        return addConstraintP2PAngle(p1, p2, a.startAngle, M_PI, tagId, driving);
     }
 }
 
 int System::addConstraintPerpendicularArc2Line(Arc& a, Point& p1, Point& p2, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PCoincident(p1, a.end, tagId, driving);
     double dx = *(p2.x) - *(p1.x);
@@ -1064,16 +1182,15 @@ int System::addConstraintPerpendicularArc2Line(Arc& a, Point& p1, Point& p2, int
         return addConstraintP2PAngle(p1, p2, a.endAngle, 0, tagId, driving);
     }
     else {
-        return addConstraintP2PAngle(p1, p2, a.endAngle, pi, tagId, driving);
+        return addConstraintP2PAngle(p1, p2, a.endAngle, M_PI, tagId, driving);
     }
 }
 
 int System::addConstraintPerpendicularCircle2Arc(Point& center, double* radius, Arc& a, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PDistance(a.start, center, radius, tagId, driving);
-    double incrAngle = *(a.startAngle) < *(a.endAngle) ? pi / 2 : -pi / 2;
+    double incrAngle = *(a.startAngle) < *(a.endAngle) ? M_PI / 2 : -M_PI / 2;
     double tangAngle = *a.startAngle + incrAngle;
     double dx = *(a.start.x) - *(center.x);
     double dy = *(a.start.y) - *(center.y);
@@ -1087,10 +1204,9 @@ int System::addConstraintPerpendicularCircle2Arc(Point& center, double* radius, 
 
 int System::addConstraintPerpendicularArc2Circle(Arc& a, Point& center, double* radius, int tagId, bool driving)
 {
-    using std::numbers::pi;
 
     addConstraintP2PDistance(a.end, center, radius, tagId, driving);
-    double incrAngle = *(a.startAngle) < *(a.endAngle) ? -pi / 2 : pi / 2;
+    double incrAngle = *(a.startAngle) < *(a.endAngle) ? -M_PI / 2 : M_PI / 2;
     double tangAngle = *a.endAngle + incrAngle;
     double dx = *(a.end.x) - *(center.x);
     double dy = *(a.end.y) - *(center.y);
@@ -1767,12 +1883,12 @@ void System::initSolution(Algorithm alg)
 
     std::vector<Constraint*> clistR;
     if (!redundant.empty()) {
-        std::ranges::copy_if(clist, std::back_inserter(clistR), [this](auto constr) {
+        std::copy_if(clist.begin(), clist.end(), std::back_inserter(clistR), [this](auto constr) {
             return this->redundant.count(constr) == 0 && constr->isDriving();
         });
     }
     else {
-        std::ranges::copy_if(clist, std::back_inserter(clistR), [](auto constr) {
+        std::copy_if(clist.begin(), clist.end(), std::back_inserter(clistR), [](auto constr) {
             return constr->isDriving();
         });
     }
@@ -1820,7 +1936,7 @@ void System::initSolution(Algorithm alg)
             reducedConstrs.insert(constr);
             double* p_kept = reducedParams[it1->second];
             double* p_replaced = reducedParams[it2->second];
-            std::ranges::replace(reducedParams, p_replaced, p_kept);
+            std::replace(reducedParams.begin(), reducedParams.end(), p_replaced, p_kept);
         }
         for (size_t i = 0; i < plist.size(); ++i) {
             if (plist[i] != reducedParams[i]) {
@@ -1857,8 +1973,8 @@ void System::initSolution(Algorithm alg)
     subSystemsAux.resize(clists.size(), nullptr);
     for (std::size_t cid = 0; cid < clists.size(); ++cid) {
         std::vector<Constraint*> clist0, clist1;
-        std::ranges::partition_copy(
-            clists[cid],
+        std::partition_copy(
+            clists[cid].begin(), clists[cid].end(),
             std::back_inserter(clist0),
             std::back_inserter(clist1),
             [](auto constr) { return constr->getTag() >= 0; }
@@ -2266,6 +2382,680 @@ int System::solve_LM(SubSystem* subsys, bool isRedundantsolving)
     return (stop == 1) ? Success : Failed;
 }
 
+///////////////////////////////////////
+// Pebble Game Implementation (§2.2)
+///////////////////////////////////////
+
+void PebbleGameState::buildVertexSet(SubSystem* subsys)
+{
+    // Collect all parameters known to the subsystem
+    VEC_pD plist;
+    subsys->getParamList(plist);
+    std::set<double*> plist_set(plist.begin(), plist.end());
+
+    // Collect all constraints for scanning
+    std::vector<Constraint*> constraints;
+    subsys->getConstraintList(constraints);
+
+    // Map: parameter pointer → vertex index
+    // Each vertex represents one geometric Point object (2 scalar DOF)
+    std::map<double*, int> param_to_vertex;
+
+    for (auto* constraint : constraints) {
+        // Skip non-driving constraints and Equal/Difference (already reduced)
+        if (!constraint->isDriving()) {
+            continue;
+        }
+        ConstraintType ctype = constraint->getTypeId();
+        if (ctype == Equal || ctype == Difference) {
+            continue;
+        }
+
+        const VEC_pD& pvec = constraint->params();
+        int n = static_cast<int>(pvec.size());
+
+        // Point parameters always appear in consecutive (x,y) even–odd pairs.
+        // Pair indices (2k, 2k+1) for k = 0, 1, ..., floor((n-1)/2).
+        // Any unpaired trailing parameter (e.g. distance scalar) is ignored.
+        for (int i = 0; i + 1 < n; i += 2) {
+            double* px = pvec[i];
+            double* py = pvec[i + 1];
+
+            // Only treat as Point pair if both parameters exist in plist
+            bool px_in = (plist_set.find(px) != plist_set.end());
+            bool py_in = (plist_set.find(py) != plist_set.end());
+            if (!px_in || !py_in) {
+                continue;
+            }
+
+            auto it_x = param_to_vertex.find(px);
+            auto it_y = param_to_vertex.find(py);
+
+            if (it_x == param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                // Neither parameter mapped — create a new vertex
+                int v = static_cast<int>(param_to_vertex.size()) / 2;
+                param_to_vertex[px] = v;
+                param_to_vertex[py] = v;
+            }
+            else if (it_x != param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                param_to_vertex[py] = it_x->second;
+            }
+            else if (it_x == param_to_vertex.end() && it_y != param_to_vertex.end()) {
+                param_to_vertex[px] = it_y->second;
+            }
+            // else: both already mapped — nothing to do
+        }
+    }
+
+    num_vertices = static_cast<int>(param_to_vertex.size()) / 2;
+
+    // Pre-allocate vertex state
+    vertex_pebbles.assign(num_vertices, 2);       // 2 pebbles per 2D point (Laman condition)
+
+    // Pebble ownership: pebble j (0 ≤ j < 2*num_vertices) is owned by vertex j/2
+    pebble_owner.resize(2 * num_vertices);
+    for (int v = 0; v < num_vertices; v++) {
+        pebble_owner[2 * v]     = v;
+        pebble_owner[2 * v + 1] = v;
+    }
+
+    // Build reverse mapping: vertex index -> {px, py} for ClusterInfo construction (§4.2)
+    vertex_params.assign(num_vertices, {nullptr, nullptr});
+    for (const auto& [param, v] : param_to_vertex) {
+        if (vertex_params[v].first == nullptr) {
+            vertex_params[v].first = param;
+        } else {
+            vertex_params[v].second = param;
+        }
+    }
+
+    // Pre-allocate DFS workspace
+    dfs_parent.assign(num_vertices, -1);
+    dfs_edge_to_parent.assign(num_vertices, -1);
+    dfs_visited.assign(num_vertices, false);
+    dfs_stack.assign(num_vertices, 0);
+}
+
+void PebbleGameState::buildEdgeSet(SubSystem* subsys)
+{
+    // Collect all parameters known to the subsystem
+    VEC_pD plist;
+    subsys->getParamList(plist);
+    std::set<double*> plist_set(plist.begin(), plist.end());
+
+    // Collect all constraints
+    std::vector<Constraint*> constraints;
+    subsys->getConstraintList(constraints);
+
+    // Build vertex-to-param reverse map: vertex_index → {px, py}
+    // needed to determine which vertices are incident to each edge
+    // Re-scan constraints to build the reverse map
+    std::map<double*, int> param_to_vertex;
+    for (auto* constraint : constraints) {
+        if (!constraint->isDriving()) {
+            continue;
+        }
+        ConstraintType ctype = constraint->getTypeId();
+        if (ctype == Equal || ctype == Difference) {
+            continue;
+        }
+        const VEC_pD& pvec = constraint->params();
+        int n = static_cast<int>(pvec.size());
+        for (int i = 0; i + 1 < n; i += 2) {
+            double* px = pvec[i];
+            double* py = pvec[i + 1];
+            if (plist_set.find(px) != plist_set.end()
+                && plist_set.find(py) != plist_set.end()) {
+                auto it_x = param_to_vertex.find(px);
+                auto it_y = param_to_vertex.find(py);
+                if (it_x == param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                    int v = static_cast<int>(param_to_vertex.size()) / 2;
+                    param_to_vertex[px] = v;
+                    param_to_vertex[py] = v;
+                }
+                else if (it_x != param_to_vertex.end() && it_y == param_to_vertex.end()) {
+                    param_to_vertex[py] = it_x->second;
+                }
+                else if (it_x == param_to_vertex.end() && it_y != param_to_vertex.end()) {
+                    param_to_vertex[px] = it_y->second;
+                }
+            }
+        }
+    }
+
+    // Now build edge set
+    edge_vertices.clear();
+    edge_vertices.reserve(constraints.size());
+    edge_constraint_index.clear();
+    edge_constraint_index.reserve(constraints.size());
+
+    int cidx = 0;  // index into subsys->clist
+    for (auto* constraint : constraints) {
+        if (!constraint->isDriving()) {
+            cidx++;
+            continue;
+        }
+        ConstraintType ctype = constraint->getTypeId();
+        if (ctype == Equal || ctype == Difference) {
+            cidx++;
+            continue;
+        }
+
+        const VEC_pD& pvec = constraint->params();
+        int n = static_cast<int>(pvec.size());
+
+        // Collect unique vertex indices incident to this edge
+        std::set<int> incident_vertices;
+        for (int i = 0; i + 1 < n; i += 2) {
+            double* px = pvec[i];
+            double* py = pvec[i + 1];
+            auto it_x = param_to_vertex.find(px);
+            auto it_y = param_to_vertex.find(py);
+            if (it_x != param_to_vertex.end()) {
+                incident_vertices.insert(it_x->second);
+            }
+            else if (it_y != param_to_vertex.end()) {
+                incident_vertices.insert(it_y->second);
+            }
+        }
+
+        if (!incident_vertices.empty()) {
+            edge_vertices.push_back(
+                std::vector<int>(incident_vertices.begin(), incident_vertices.end()));
+            edge_constraint_index.push_back(cidx);  // persist constraint index for ClusterInfo (§4.2)
+        }
+
+        cidx++;
+    }
+
+    num_edges = static_cast<int>(edge_vertices.size());
+
+    // Allocate edge state
+    edge_covered.assign(num_edges, false);
+    edge_pebble.assign(num_edges, -1);
+    edge_donor_vertex.assign(num_edges, -1);
+    overconstrained_edges.clear();
+}
+
+void PebbleGameState::initialize(SubSystem* subsys)
+{
+    // 1. Build vertex set from subsys->plist (geometric points only)
+    buildVertexSet(subsys);
+
+    // 2. Build edge set from subsys->clist (exclude Equal/Difference already reduced)
+    buildEdgeSet(subsys);
+
+    // 3. Greedy orientation: for each edge, try to collect 1 pebble from incident vertices
+    for (int e = 0; e < num_edges; e++) {
+        bool found = false;
+        for (int v : edge_vertices[e]) {
+            if (vertex_pebbles[v] > 0) {
+                // Assign one pebble from vertex v to edge e
+                vertex_pebbles[v]--;
+                edge_covered[e]     = true;
+                edge_donor_vertex[e] = v;
+
+                // Find a pebble owned by vertex v (not on any edge)
+                for (int p = 0; p < 2 * num_vertices; p++) {
+                    if (pebble_owner[p] == v) {
+                        // Verify it's not already on an edge
+                        bool on_edge = false;
+                        for (int ee = 0; ee < num_edges; ee++) {
+                            if (edge_pebble[ee] == p) {
+                                on_edge = true;
+                                break;
+                            }
+                        }
+                        if (!on_edge) {
+                            edge_pebble[e] = p;
+                            pebble_owner[p] = -1;  // pebble now held by edge
+                            break;
+                        }
+                    }
+                }
+                found = true;
+                break;
+            }
+        }
+        // If no free pebble found, edge remains uncovered
+    }
+
+    // 4. DFS flip phase: attempt to cover remaining uncovered edges
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) {
+            collectPebble(e);
+        }
+    }
+
+    // 5. Detect overconstrained edges
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) {
+            overconstrained_edges.push_back(e);
+        }
+    }
+
+    // Pre-size DAG construction workspace (upper bound: num_components ≤ num_vertices)
+    free_pebbles_per_cluster.reserve(num_vertices);
+    dag_insert_ptr.reserve(num_vertices + 1);
+    kahn_queue.reserve(num_vertices);
+    kahn_in_degree.reserve(num_vertices);
+    recip.reserve(num_vertices);
+}
+
+bool PebbleGameState::collectPebble(int target_edge)
+{
+    // ---- Phase 1: DFS from target_edge incident vertices ----
+    // Reset DFS workspace (no heap allocation; reuse pre-allocated vectors)
+    std::fill(dfs_visited.begin(), dfs_visited.end(), false);
+    std::fill(dfs_parent.begin(), dfs_parent.end(), -1);
+    std::fill(dfs_edge_to_parent.begin(), dfs_edge_to_parent.end(), -1);
+
+    // Seed DFS from all incident vertices of target_edge as DFS roots
+    int dfs_stack_top = 0;
+    for (int v : edge_vertices[target_edge]) {
+        dfs_visited[v]       = true;
+        dfs_parent[v]         = -1;  // root of DFS tree
+        dfs_stack[dfs_stack_top++] = v;
+    }
+
+    int src_vertex = -1;  // vertex WITH free pebbles found by DFS (the "leaf")
+
+    while (dfs_stack_top > 0) {
+        int u = dfs_stack[--dfs_stack_top];
+
+        // v3 FIX: Check CURRENT vertex (u) for free pebbles
+        if (vertex_pebbles[u] > 0) {
+            src_vertex = u;
+            break;
+        }
+
+        // Explore covered edges incident to u
+        for (int e = 0; e < num_edges; e++) {
+            if (!edge_covered[e]) {
+                continue;  // only traverse covered edges
+            }
+
+            // Check if u is incident to this edge
+            bool u_in_edge = false;
+            for (int w : edge_vertices[e]) {
+                if (w == u) {
+                    u_in_edge = true;
+                    break;
+                }
+            }
+            if (!u_in_edge) {
+                continue;
+            }
+
+            // Traverse to the other endpoint(s) of this edge
+            for (int w : edge_vertices[e]) {
+                if (w == u || dfs_visited[w]) {
+                    continue;
+                }
+                dfs_visited[w]        = true;
+                dfs_parent[w]          = u;
+                dfs_edge_to_parent[w]  = e;
+                dfs_stack[dfs_stack_top++] = w;
+            }
+        }
+    }
+
+    if (src_vertex == -1) {
+        return false;  // No pebble found; edge is overconstrained
+    }
+
+    // ---- Phase 2: Pebble flip cascade (v3: leaf→root direction) ----
+    // Walk from src_vertex (leaf, has pebbles) toward the DFS root.
+    // At each step:
+    //   1. Take a free pebble from `current` (guaranteed to have one)
+    //   2. Move it to edge `dfs_edge_to_parent[current]`
+    //   3. Move the old edge pebble to `parent`
+    //
+    // Net effect after cascade: src loses 1 pebble, DFS root gains 1 pebble.
+    // All intermediate vertices keep their original pebble counts.
+    int current = src_vertex;
+    while (dfs_parent[current] != -1) {
+        int parent   = dfs_parent[current];
+        int edge_idx = dfs_edge_to_parent[current];
+
+        // Find a FREE pebble owned by `current` (not on any edge)
+        int current_free_pebble = -1;
+        for (int p = 0; p < 2 * num_vertices; p++) {
+            if (pebble_owner[p] == current) {
+                // Verify it's not on any edge
+                bool on_edge = false;
+                for (int ee = 0; ee < num_edges; ee++) {
+                    if (edge_pebble[ee] == p) {
+                        on_edge = true;
+                        break;
+                    }
+                }
+                if (!on_edge) {
+                    current_free_pebble = p;
+                    break;
+                }
+            }
+        }
+        // Invariant: current has free pebbles (guaranteed by DFS)
+#ifndef NDEBUG
+        assert(current_free_pebble != -1);
+#endif
+        if (current_free_pebble == -1) {
+            // Should not happen; defensive fallback
+            return false;
+        }
+
+        // The old pebble on the edge will move to parent
+        int old_edge_pebble = edge_pebble[edge_idx];
+
+        // ---- ATOMIC OWNERSHIP TRANSFER (v3 FIX) ----
+        // current's free pebble → edge
+        pebble_owner[current_free_pebble] = -1;
+        edge_pebble[edge_idx]              = current_free_pebble;
+        vertex_pebbles[current]--;
+
+        // Old edge pebble → parent
+        pebble_owner[old_edge_pebble] = parent;
+        vertex_pebbles[parent]++;
+
+        current = parent;
+    }
+    // After loop: `current` is the DFS root (an incident vertex of target_edge).
+    // The root now has +1 pebble from the cascade.
+
+    int dfs_root = current;  // incident vertex of target_edge that gained a pebble
+
+    // ---- Phase 3: Cover target_edge using the root's pebble ----
+    for (int p = 0; p < 2 * num_vertices; p++) {
+        if (pebble_owner[p] == dfs_root) {
+            // Verify it's not on any edge
+            bool on_edge = false;
+            for (int ee = 0; ee < num_edges; ee++) {
+                if (edge_pebble[ee] == p) {
+                    on_edge = true;
+                    break;
+                }
+            }
+            if (!on_edge) {
+                pebble_owner[p]        = -1;
+                edge_pebble[target_edge] = p;
+                edge_covered[target_edge] = true;
+                edge_donor_vertex[target_edge] = dfs_root;
+                vertex_pebbles[dfs_root]--;
+                return true;
+            }
+        }
+    }
+
+    return false;  // Should not reach here if cascade succeeded
+}
+
+// ---- §3: Cluster Decomposition & DAG Construction ----
+
+bool PebbleGameState::buildClusterDAG(std::vector<int>& solve_order)
+{
+    solve_order.clear();
+
+    if (num_vertices == 0 || num_edges == 0) {
+        return false;
+    }
+
+    // ---- §3.1: Connected Components on Covered Subgraph ----
+    // Assign each vertex to a cluster via BFS over covered edges.
+    component_id.assign(num_vertices, -1);
+    num_components = 0;
+
+    // Pre-allocate BFS queue (sized once, no realloc in loop)
+    bfs_queue.resize(num_vertices);
+
+    for (int v = 0; v < num_vertices; v++) {
+        if (component_id[v] != -1) continue;
+
+        // Seed new component with vertex v
+        component_id[v] = num_components;
+        int head = 0;
+        int tail = 0;
+        bfs_queue[tail++] = v;
+
+        while (head < tail) {
+            int u = bfs_queue[head++];
+
+            // Walk all covered edges incident to u
+            for (int e = 0; e < num_edges; e++) {
+                if (!edge_covered[e]) continue;
+
+                bool u_in = false;
+                for (int w : edge_vertices[e]) {
+                    if (w == u) { u_in = true; break; }
+                }
+                if (!u_in) continue;
+
+                // Add unvisited neighbors in this edge
+                for (int w : edge_vertices[e]) {
+                    if (component_id[w] == -1) {
+                        component_id[w] = num_components;
+                        bfs_queue[tail++] = w;
+                    }
+                }
+            }
+        }
+        num_components++;
+    }
+
+    // ---- §3.3.2: Free Pebble Counting per Cluster ----
+    free_pebbles_per_cluster.assign(num_components, 0);
+    for (int p = 0; p < 2 * num_vertices; p++) {
+        int owner = pebble_owner[p];
+        if (owner < 0 || owner >= num_vertices) continue;
+        int cid = component_id[owner];
+        if (cid < 0) continue;
+
+        // Verify this pebble is not on any edge
+        bool on_edge = false;
+        for (int e = 0; e < num_edges; e++) {
+            if (edge_pebble[e] == p) {
+                on_edge = true;
+                break;
+            }
+        }
+        if (!on_edge) {
+            free_pebbles_per_cluster[cid]++;
+        }
+    }
+
+    // ---- §3.2: DAG Construction — Inter-Cluster Dependencies ----
+    // Covered edges spanning multiple clusters create directed dependencies.
+    // The donor cluster (edge_donor_vertex's cluster) is solved first.
+
+    // Phase 2a: Count out-degrees per cluster
+    dag_in_degree.assign(num_components, 0);
+    dag_out_degree.assign(num_components, 0);
+
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) continue;
+
+        int donor_vertex = edge_donor_vertex[e];
+        if (donor_vertex < 0) continue;  // defensive: no donor recorded
+
+        int donor_cluster = component_id[donor_vertex];
+        if (donor_cluster < 0) continue;
+
+        // Collect unique recipient clusters
+        for (int v : edge_vertices[e]) {
+            int c = component_id[v];
+            if (c >= 0 && c != donor_cluster) {
+                // Check if this dependency is already counted for this edge
+                // (multiple vertices in same recipient cluster = still one dependency)
+                // We guard against double-counting by checking dag_in_degree increment.
+                // Since we only count out-degree per cluster per edge once, use a
+                // simple duplicate guard: mark recipient clusters locally.
+            }
+        }
+
+        // Second pass over edge vertices to count unique recipients.
+        // recip[] is a pre-allocated member (PebbleGameState::recip) sized
+        // to num_components — no per-call allocation.
+        recip.assign(num_components, -1);
+        int nrecip = 0;
+
+        for (int v : edge_vertices[e]) {
+            int c = component_id[v];
+            if (c >= 0 && c != donor_cluster) {
+                bool dup = false;
+                for (int r = 0; r < nrecip; r++) {
+                    if (recip[r] == c) { dup = true; break; }
+                }
+                if (!dup && nrecip < num_components) {
+                    recip[nrecip++] = c;
+                }
+            }
+        }
+
+        for (int r = 0; r < nrecip; r++) {
+            dag_out_degree[donor_cluster]++;
+            dag_in_degree[recip[r]]++;
+        }
+    }
+
+    // Phase 2b: Build CSR layout
+    dag_out_start.assign(num_components + 1, 0);
+    for (int c = 0; c < num_components; c++) {
+        dag_out_start[c + 1] = dag_out_start[c] + dag_out_degree[c];
+    }
+    int total_out_edges = dag_out_start[num_components];
+    dag_out_edges.assign(total_out_edges, -1);
+
+    // Reset working copy of out-degree for insertion pointer
+    dag_insert_ptr = dag_out_start;  // copy prefix offsets
+
+    for (int e = 0; e < num_edges; e++) {
+        if (!edge_covered[e]) continue;
+
+        int donor_vertex = edge_donor_vertex[e];
+        if (donor_vertex < 0) continue;
+
+        int donor_cluster = component_id[donor_vertex];
+        if (donor_cluster < 0) continue;
+
+        recip.assign(num_components, -1);
+        int nrecip = 0;
+
+        for (int v : edge_vertices[e]) {
+            int c = component_id[v];
+            if (c >= 0 && c != donor_cluster) {
+                bool dup = false;
+                for (int r = 0; r < nrecip; r++) {
+                    if (recip[r] == c) { dup = true; break; }
+                }
+                if (!dup && nrecip < num_components) {
+                    recip[nrecip++] = c;
+                }
+            }
+        }
+
+        for (int r = 0; r < nrecip; r++) {
+            dag_out_edges[dag_insert_ptr[donor_cluster]++] = recip[r];
+        }
+    }
+
+    // ---- §3.3.1: Kahn Topological Sort ----
+    // Pre-allocated fixed-size queue with head/tail pointers.
+    // No std::queue — zero allocations in sort path.
+    kahn_queue.assign(num_components, 0);
+    int qhead = 0;
+    int qtail = 0;
+
+    // Working copy of in-degree (mutated by Kahn)
+    kahn_in_degree = dag_in_degree;
+
+    // Enqueue all clusters with zero in-degree
+    for (int c = 0; c < num_components; c++) {
+        if (kahn_in_degree[c] == 0) {
+            kahn_queue[qtail++] = c;
+        }
+    }
+
+    while (qhead < qtail) {
+        int c = kahn_queue[qhead++];
+        solve_order.push_back(c);
+
+        // Decrement in-degree of all successors
+        int edge_start = dag_out_start[c];
+        int edge_end   = dag_out_start[c + 1];
+        for (int ei = edge_start; ei < edge_end; ei++) {
+            int next_c = dag_out_edges[ei];
+            kahn_in_degree[next_c]--;
+            if (kahn_in_degree[next_c] == 0) {
+                kahn_queue[qtail++] = next_c;
+            }
+        }
+    }
+
+    // ---- §3.3.3: Cycle Detection ----
+    if (static_cast<int>(solve_order.size()) < num_components) {
+        solve_order.clear();
+#ifndef NDEBUG
+        throw std::logic_error(
+            "GCS: Cyclic inter-cluster dependency detected in pebble game DAG");
+#endif
+        return false;
+    }
+
+    // ---- Overconstrained/Underconstrained Fallback ----
+    // Check per-cluster pebble counts for early bail-out signals.
+    // These are advisory; the caller may still choose to proceed.
+    // Well-constrained = exactly 3 free pebbles in 2D.
+    for (int c = 0; c < num_components; c++) {
+        if (free_pebbles_per_cluster[c] < 3) {
+            // Overconstrained: fewer than 3 pebbles (redundant constraints)
+            // The caller maps these to System::redundant
+            return false;
+        }
+        if (free_pebbles_per_cluster[c] > 3) {
+            // Underconstrained: more than 3 pebbles (conflicting DOF)
+            // The caller maps these to System::conflictingTags
+            return false;
+        }
+    }
+
+    // ---- §4.2: Populate ClusterInfo metadata ----
+    // Map component_id → ClusterInfo with param_pointers and constraint_indices.
+    // Built after Kahn sort succeeds so clusters are exactly the well-constrained
+    // components with 3 free pebbles each.
+    clusters.resize(num_components);
+    for (int c = 0; c < num_components; c++) {
+        ClusterInfo& ci = clusters[c];
+        ci.free_pebbles = free_pebbles_per_cluster[c];
+
+        // Count vertices and collect geometric-point parameters for this cluster
+        int vertex_count = 0;
+        for (int v = 0; v < num_vertices; v++) {
+            if (component_id[v] == c) {
+                vertex_count++;
+                ci.param_pointers.push_back(vertex_params[v].first);
+                ci.param_pointers.push_back(vertex_params[v].second);
+            }
+        }
+        ci.vertex_count = vertex_count;
+        ci.param_count = static_cast<int>(ci.param_pointers.size());
+
+        // Collect constraint indices for edges fully contained in this cluster.
+        // An edge belongs to the cluster iff all its incident vertices are in it.
+        for (int e = 0; e < num_edges; e++) {
+            if (!edge_covered[e]) continue;
+            bool all_in = true;
+            for (int v : edge_vertices[e]) {
+                if (component_id[v] != c) { all_in = false; break; }
+            }
+            if (all_in) {
+                ci.constraint_indices.push_back(edge_constraint_index[e]);
+            }
+        }
+    }
+
+    return !solve_order.empty();
+}
+
 int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 {
 #ifdef _GCS_EXTRACT_SOLVER_SUBSYSTEM_
@@ -2299,8 +3089,10 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
                << ", dogLegGaussStep: "
                << (dogLegGaussStep == FullPivLU
                        ? "FullPivLU"
-                       : (dogLegGaussStep == LeastNormFullPivLU ? "LeastNormFullPivLU"
-                                                                : "LeastNormLdlt"))
+                       : (dogLegGaussStep == LeastNormFullPivLU
+                              ? "LeastNormFullPivLU"
+                              : (dogLegGaussStep == LeastNormLdlt ? "LeastNormLdlt"
+                                                                  : "SparseLDLT")))
                << ", xsize: " << xsize << ", csize: " << csize << ", maxIter: " << maxIterNumber
                << "\n";
 
@@ -2308,10 +3100,264 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
         Base::Console().log(tmp.c_str());
     }
 
+    // Sparse LDLT solver infrastructure. Jx is assembled directly as a sparse
+    // matrix so J^T*J and the linear solve stay banded (O(N*bw^2)) instead of the
+    // O(N^2)/O(N^3) dense path — the dominant cost for dense/banded sketches.
+    Eigen::SparseMatrix<double> A_sparse;
+    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>, Eigen::Upper> sparse_ldlt;
+    bool sparse_pattern_analyzed = false;  // analyzePattern() done once (topology is fixed per solve)
+
     Eigen::VectorXd x(xsize), x_new(xsize);
     Eigen::VectorXd fx(csize), fx_new(csize);
-    Eigen::MatrixXd Jx(csize, xsize), Jx_new(csize, xsize);
+    Eigen::SparseMatrix<double> Jx(csize, xsize), Jx_new(csize, xsize);
     Eigen::VectorXd g(xsize), h_sd(xsize), h_gn(xsize), h_dl(xsize);
+
+    // ---- Stage 5: Production Cluster Decomposition Gate ----
+    // Two-layer gate: (1) size floor avoids overhead on trivial systems;
+    // (2) buildClusterDAG() success is the true activation signal.
+    // PebbleGameState initialization and DAG construction only occur when
+    // both conditions are met, avoiding overhead on the monolithic path.
+    PebbleGameState pg;
+    std::vector<int> solve_order;  // topological ordering of clusters
+    bool use_clusters = false;
+    if (useClusters && xsize >= 6) {
+        pg.initialize(subsys);
+        use_clusters = pg.buildClusterDAG(solve_order);
+    }
+
+    // ---- Cluster-local workspace (pre-allocated, zero heap in hot loop) ----
+    // Copy parent constraint list once — per-cluster constraint vectors are
+    // built from this by index lookup inside the cluster loop.
+    std::vector<Constraint*> parent_clist;
+    subsys->getConstraintList(parent_clist);
+
+    if (use_clusters) {
+        // ================================================================
+        // Stage 4C: Per-Cluster Scoped Residual/Jacobian Evaluation
+        // ================================================================
+
+        // ---- Pre-allocate max-cluster workspace (§4.2 constraint) ----
+        int max_cl_xsize = 0, max_cl_csize = 0;
+        for (int ci_idx : solve_order) {
+            const ClusterInfo& ci = pg.clusters[ci_idx];
+            max_cl_xsize = std::max(max_cl_xsize, ci.param_count);
+            max_cl_csize = std::max(max_cl_csize,
+                                    static_cast<int>(ci.constraint_indices.size()));
+        }
+        Eigen::MatrixXd Jx_c(max_cl_csize, max_cl_xsize);
+        Eigen::MatrixXd Jx_new_c(max_cl_csize, max_cl_xsize);
+        Eigen::VectorXd fx_c(max_cl_csize), fx_new_c(max_cl_csize);
+        Eigen::VectorXd x_c(max_cl_xsize), x_new_c(max_cl_xsize), g_c(max_cl_xsize);
+        Eigen::VectorXd h_sd_c(max_cl_xsize), h_gn_c(max_cl_xsize), h_dl_c(max_cl_xsize);
+        Eigen::VectorXd b_work(max_cl_xsize);  // dogleg blending workspace
+
+        int overall_stop = 0;
+
+        for (int ci_idx : solve_order) {
+            const ClusterInfo& ci = pg.clusters[ci_idx];
+
+            int cl_xsize = ci.param_count;
+            int cl_csize = static_cast<int>(ci.constraint_indices.size());
+            if (cl_csize == 0) continue;
+
+            // ---- Build cluster-local constraint and parameter lists ----
+            std::vector<Constraint*> cluster_clist;
+            cluster_clist.reserve(cl_csize);
+            for (int idx : ci.constraint_indices) {
+                cluster_clist.push_back(parent_clist[idx]);
+            }
+            VEC_pD cluster_params = ci.param_pointers;  // cheap pointer copy
+
+            // ---- Construct temporary per-cluster SubSystem ----
+            SubSystem cluster_subsys(cluster_clist, cluster_params);
+            cluster_subsys.redirectParams();
+
+            // ---- Size workspace vectors for this cluster ----
+            // conservativeResize is zero-allocation when new_size ≤ capacity;
+            // all clusters are ≤ max_cl_* so these never trigger heap allocation.
+            x_c.conservativeResize(cl_xsize);
+            x_new_c.conservativeResize(cl_xsize);
+            g_c.conservativeResize(cl_xsize);
+            h_sd_c.conservativeResize(cl_xsize);
+            h_gn_c.conservativeResize(cl_xsize);
+            h_dl_c.conservativeResize(cl_xsize);
+            b_work.conservativeResize(cl_xsize);
+            fx_c.conservativeResize(cl_csize);
+            fx_new_c.conservativeResize(cl_csize);
+
+            // ---- Read initial params from temp SubSystem ----
+            cluster_subsys.getParams(x_c);
+
+            // ---- §4.2.4: Cluster-local dogleg iteration ----
+            double cl_tolg = tolg, cl_tolx = tolx, cl_tolf = tolf;
+            int cl_maxIter = maxIterNumber;
+            double delta = 0.1, nu = 2.0;
+            int cl_iter = 0, cl_stop = 0, cl_reduce = 0;
+            double cl_err;
+
+            // Initial per-cluster residual + Jacobian evaluation
+            // CRITICAL: calcResidual asserts r.size()==csize; fx_c must be
+            // pre-sized via conservativeResize above. calcJacobi calls
+            // setZero(csize, nparams) which resizes Jx_c automatically.
+            cluster_subsys.calcResidual(fx_c, cl_err);
+            cluster_subsys.calcJacobi(Jx_c);
+
+            g_c.noalias() = Jx_c.transpose() * (-fx_c);
+            double cl_divergingLim = 1e6 * cl_err + 1e12;
+
+            while (!cl_stop) {
+                double fx_inf = fx_c.lpNorm<Eigen::Infinity>();
+                double g_inf = g_c.lpNorm<Eigen::Infinity>();
+
+                // Convergence checks
+                if (fx_inf <= cl_tolf) {
+                    cl_stop = 1;
+                    break;
+                }
+                if (g_inf <= cl_tolg) {
+                    cl_stop = 2;
+                    break;
+                }
+                if (delta <= cl_tolx * (cl_tolx + x_c.norm())) {
+                    cl_stop = 2;
+                    break;
+                }
+                if (cl_iter >= cl_maxIter) {
+                    cl_stop = 4;
+                    break;
+                }
+                if (cl_err > cl_divergingLim || cl_err != cl_err) {
+                    cl_stop = 6;
+                    break;
+                }
+
+                // Steepest descent direction
+                double Jxg_c_sq = (Jx_c * g_c).squaredNorm();
+                double alpha = (Jxg_c_sq > 0.0) ? g_c.squaredNorm() / Jxg_c_sq : 0.0;
+                h_sd_c.noalias() = alpha * g_c;
+
+                // Gauss-Newton step
+                switch (dogLegGaussStep) {
+                    case FullPivLU:
+                        h_gn_c = Jx_c.fullPivLu().solve(-fx_c);
+                        break;
+                    case LeastNormFullPivLU:
+                        h_gn_c = Jx_c.adjoint()
+                                 * (Jx_c * Jx_c.adjoint()).fullPivLu().solve(-fx_c);
+                        break;
+                    case LeastNormLdlt:
+                        h_gn_c = Jx_c.adjoint()
+                                 * (Jx_c * Jx_c.adjoint()).ldlt().solve(-fx_c);
+                        break;
+                    case SparseLDLT:
+                        // Cluster matrices are small; fall through to dense FullPivLU
+                        h_gn_c = Jx_c.fullPivLu().solve(-fx_c);
+                        break;
+                }
+
+                double rel_error = (Jx_c * h_gn_c + fx_c).norm() / fx_c.norm();
+                if (rel_error > 1e15) {
+                    cl_stop = 3;
+                    break;
+                }
+
+                // Dogleg blending
+                if (h_gn_c.norm() < delta) {
+                    h_dl_c = h_gn_c;
+                    if (h_dl_c.norm() <= cl_tolx * (cl_tolx + x_c.norm())) {
+                        cl_stop = 5;
+                        break;
+                    }
+                }
+                else if (alpha * g_c.norm() >= delta) {
+                    h_dl_c = (delta / (alpha * g_c.norm())) * h_sd_c;
+                }
+                else {
+                    double beta = 0;
+                    b_work = h_gn_c - h_sd_c;
+                    double bb = (b_work.transpose() * b_work).norm();
+                    double gb = (h_sd_c.transpose() * b_work).norm();
+                    double c = (delta + h_sd_c.norm()) * (delta - h_sd_c.norm());
+
+                    if (gb > 0) {
+                        beta = c / (gb + sqrt(gb * gb + c * bb));
+                    }
+                    else {
+                        beta = (sqrt(gb * gb + c * bb) - gb) / bb;
+                    }
+
+                    h_dl_c = h_sd_c + beta * b_work;
+                }
+
+                // Update and re-evaluate (per-cluster scoped)
+                double cl_err_new;
+                x_new_c.noalias() = x_c + h_dl_c;
+                cluster_subsys.setParams(x_new_c);
+                // CRITICAL: calcResidual asserts r.size()==csize; fx_new_c must
+                // be pre-sized. conservativeResize above set it to cl_csize,
+                // but setParams may have conservatively re-allocated if capacity
+                // was insufficient (should not happen since cl_csize ≤ max_cl_csize).
+                fx_new_c.conservativeResize(cl_csize);
+                cluster_subsys.calcResidual(fx_new_c, cl_err_new);
+                cluster_subsys.calcJacobi(Jx_new_c);
+
+                // Linear model and update ratio
+                double dL = cl_err - 0.5 * (fx_c + Jx_c * h_dl_c).squaredNorm();
+                double dF = cl_err - cl_err_new;
+                double rho = dL / dF;
+
+                if (dF > 0 && dL > 0) {
+                    x_c = x_new_c;
+                    fx_c = fx_new_c;
+                    cl_err = cl_err_new;
+                    Jx_c = Jx_new_c;  // deep copy; both pre-sized to cl_csize×cl_xsize by calcJacobi
+
+                    g_c.noalias() = Jx_c.transpose() * (-fx_c);
+                }
+                else {
+                    rho = -1;
+                }
+
+                // Trust-region radius update
+                if (fabs(rho - 1.) < 0.2 && h_dl_c.norm() > delta / 3.
+                    && cl_reduce <= 0) {
+                    delta = 3 * delta;
+                    nu = 2;
+                    cl_reduce = 0;
+                }
+                else if (rho < 0.25) {
+                    delta = delta / nu;
+                    nu = 2 * nu;
+                    cl_reduce = 2;
+                }
+                else {
+                    cl_reduce--;
+                }
+
+                cl_iter++;
+            }
+
+            // ---- Post-solve writeback: temp SubSystem → original params ----
+            cluster_subsys.applySolution();
+            cluster_subsys.revertParams();
+            // ~cluster_subsys destructor runs here (Constraint* pointers are
+            // not owned by temp SubSystem; parent_clist retains ownership)
+
+            if (cl_stop > overall_stop) {
+                overall_stop = cl_stop;
+            }
+        }
+
+        // ---- Refresh parent pvals from solved original params ----
+        // MANDATORY: per-cluster applySolution() wrote to original params,
+        // but parent SubSystem pvals are stale. redirectParams() copies
+        // original → pvals and re-redirects constraint pvec → pvals so
+        // that System::applySolution() sees the correct values.
+        subsys->redirectParams();
+
+        return (overall_stop <= 2) ? Success : Failed;
+    }
+    // Fall through to monolithic DogLeg path below
 
     subsys->redirectParams();
 
@@ -2332,6 +3378,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     double alpha = 0.;
     double nu = 2.;
     int iter = 0, stop = 0, reduce = 0;
+    int iteration_count = 0;
     while (!stop) {
         // check if finished
         if (fx_inf <= tolf) {
@@ -2358,22 +3405,82 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
         }
 
         // get the steepest descent direction
-        alpha = g.squaredNorm() / (Jx * g).squaredNorm();
-        h_sd = alpha * g;
+        // Guard the denominator: if g lies in ker(J) (possible for rank-deficient J)
+        // then Jx*g == 0 and alpha would be inf/nan; fall back to alpha = 0 so the
+        // dogleg relies on the Gauss-Newton step instead of a degenerate SD step.
+        double Jxg_sq = (Jx * g).squaredNorm();
+        alpha = (Jxg_sq > 0.0) ? g.squaredNorm() / Jxg_sq : 0.0;
+        h_sd.noalias() = alpha * g;
 
         // get the gauss-newton step
         // https://forum.freecad.org/viewtopic.php?f=10&t=12769&start=50#p106220
         // https://forum.kde.org/viewtopic.php?f=74&t=129439#p346104
         switch (dogLegGaussStep) {
             case FullPivLU:
-                h_gn = Jx.fullPivLu().solve(-fx);
+                h_gn = Jx.toDense().fullPivLu().solve(-fx);
                 break;
-            case LeastNormFullPivLU:
-                h_gn = Jx.adjoint() * (Jx * Jx.adjoint()).fullPivLu().solve(-fx);
+            case LeastNormFullPivLU: {
+                Eigen::MatrixXd Jd = Jx.toDense();
+                h_gn = Jd.adjoint() * (Jd * Jd.adjoint()).fullPivLu().solve(-fx);
                 break;
-            case LeastNormLdlt:
-                h_gn = Jx.adjoint() * (Jx * Jx.adjoint()).ldlt().solve(-fx);
+            }
+            case LeastNormLdlt: {
+                Eigen::MatrixXd Jd = Jx.toDense();
+                h_gn = Jd.adjoint() * (Jd * Jd.adjoint()).ldlt().solve(-fx);
                 break;
+            }
+            case SparseLDLT: {
+                // Sparse Gauss-Newton step. Sketch systems are usually
+                // UNDER-constrained (csize < xsize: many free DOFs during a normal
+                // recompute or drag), which makes the normal-equations matrix
+                // J^T J (xsize x xsize) rank-deficient and SimplicialLDLT fail —
+                // the old path then fell back to a dense fullPivLU every iteration
+                // (O(N^3), the real bottleneck for dense sketches).
+                //
+                // Instead take the least-norm step via the smaller, full-rank
+                // system: solve (J J^T) y = -fx  (csize x csize, banded, SPD for
+                // independent constraints) with sparse LDLT, then h_gn = J^T y.
+                // For the over/at-constrained case (csize >= xsize) J^T J is the
+                // full-rank one, so use the normal equations there.
+                //
+                // The non-zero pattern is fixed for the whole solve (topology does
+                // not change), so analyzePattern() runs once. No LM damping: the
+                // dogleg trust region controls step length via delta.
+                //
+                // Robustness: SimplicialLDLT::info() only flags an EXACT zero pivot,
+                // so a merely rank-deficient (redundant/over-constrained) matrix can
+                // factorize "successfully" with ~1e-16 pivots and blow the solve up to
+                // NaN/Inf. We therefore also validate that h_gn is finite and fall
+                // back to a dense fullPivLU (which pivots through rank deficiency)
+                // whenever the sparse step is not usable.
+                bool underdetermined = (csize < xsize);
+                if (underdetermined) {
+                    A_sparse = Jx * Jx.transpose();  // csize x csize
+                }
+                else {
+                    A_sparse = Jx.transpose() * Jx;  // xsize x xsize
+                }
+                if (!sparse_pattern_analyzed) {
+                    sparse_ldlt.analyzePattern(A_sparse);
+                    sparse_pattern_analyzed = true;
+                }
+                sparse_ldlt.factorize(A_sparse);
+                if (sparse_ldlt.info() != Eigen::Success) {
+                    h_gn = Jx.toDense().fullPivLu().solve(-fx);
+                }
+                else if (underdetermined) {
+                    Eigen::VectorXd y = sparse_ldlt.solve(-fx);
+                    h_gn = Jx.transpose() * y;
+                }
+                else {
+                    h_gn = sparse_ldlt.solve(g);
+                }
+                if (!h_gn.allFinite()) {
+                    // Rank-deficient normal matrix slipped past info(); use dense.
+                    h_gn = Jx.toDense().fullPivLu().solve(-fx);
+                }
+                break;
+            }
         }
 
         double rel_error = (Jx * h_gn + fx).norm() / fx.norm();
@@ -2413,7 +3520,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
         // get the new values
         double err_new;
-        x_new = x + h_dl;
+        x_new.noalias() = x + h_dl;
         subsys->setParams(x_new);
         subsys->calcResidual(fx_new, err_new);
         subsys->calcJacobi(Jx_new);
@@ -2467,6 +3574,7 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
         // count this iteration and start again
         iter++;
+        iteration_count++;
     }
 
     subsys->revertParams();
@@ -4557,7 +5665,7 @@ int System::solve(SubSystem* subsysA, SubSystem* subsysB, bool /*isFine*/, bool 
     Eigen::VectorXd lambda(csizeA), lambda0(csizeA), lambdadir(csizeA);
     Eigen::VectorXd x(xsize), x0(xsize), xdir(xsize), xdir1(xsize);
     Eigen::VectorXd grad(xsize);
-    Eigen::VectorXd h(xsize);
+    Eigen::VectorXd h = Eigen::VectorXd::Zero(xsize);
     Eigen::VectorXd y(xsize);
     Eigen::VectorXd Bh(xsize);
 
@@ -4671,6 +5779,7 @@ int System::solve(SubSystem* subsysA, SubSystem* subsysB, bool /*isFine*/, bool 
         }
 
         double err = subsysA->error();
+
         if (h.norm() <= (isRedundantsolving ? convergenceRedundant : convergence) && err <= smallF) {
             break;
         }
@@ -4724,35 +5833,27 @@ void System::undoSolution()
     resetToReference();
 }
 
-void System::makeReducedJacobian(
-    Eigen::MatrixXd& J,
-    std::map<int, int>& jacobianconstraintmap,
+void System::prepareDiagnosis(
     GCS::VEC_pD& pdiagnoselist,
-    std::map<int, int>& tagmultiplicity
+    std::map<int, int>& tagmultiplicity,
+    std::vector<int>& jacobianRows
 )
 {
     // construct specific parameter list for diagonose ignoring driven constraint parameters
     for (int j = 0; j < int(plist.size()); j++) {
-        auto result1 = std::ranges::find(pdrivenlist, plist[j]);
+        auto result1 = std::find(pdrivenlist.begin(), pdrivenlist.end(), plist[j]);
 
         if (result1 == std::end(pdrivenlist)) {
             pdiagnoselist.push_back(plist[j]);
         }
     }
 
-
-    J = Eigen::MatrixXd::Zero(clist.size(), pdiagnoselist.size());
-
-    int jacobianconstraintcount = 0;
     int allcount = 0;
     for (auto& constr : clist) {
         constr->revertParams();
         ++allcount;
         if (constr->getTag() >= 0 && constr->isDriving()) {
-            jacobianconstraintcount++;
-            for (int j = 0; j < int(pdiagnoselist.size()); j++) {
-                J(jacobianconstraintcount - 1, j) = constr->grad(pdiagnoselist[j]);
-            }
+            jacobianRows.push_back(allcount - 1);
 
             // parallel processing: create tag multiplicity map
             if (tagmultiplicity.find(constr->getTag()) == tagmultiplicity.end()) {
@@ -4761,13 +5862,127 @@ void System::makeReducedJacobian(
             else {
                 tagmultiplicity[constr->getTag()]++;
             }
+        }
+    }
+}
 
-            jacobianconstraintmap[jacobianconstraintcount - 1] = allcount - 1;
+void System::fillReducedJacobian(
+    const std::vector<int>& jacobianRows,
+    const GCS::VEC_pD& pdiagnoselist,
+    Eigen::MatrixXd& J,
+    std::map<int, int>& jacobianconstraintmap
+)
+{
+    J = Eigen::MatrixXd::Zero(jacobianRows.size(), pdiagnoselist.size());
+
+    int row = 0;
+    for (int ci : jacobianRows) {
+        for (int j = 0; j < int(pdiagnoselist.size()); j++) {
+            J(row, j) = clist[ci]->grad(pdiagnoselist[j]);
+        }
+        jacobianconstraintmap[row] = ci;
+        ++row;
+    }
+}
+
+void System::splitDiagnoseComponents(
+    const GCS::VEC_pD& pdiagnoselist,
+    const std::vector<int>& jacobianRows,
+    std::vector<DiagnoseComponent>& components
+)
+{
+    const int nparams = static_cast<int>(pdiagnoselist.size());
+
+    std::unordered_map<double*, int> paramIndex;
+    paramIndex.reserve(pdiagnoselist.size() * 2);
+    for (int i = 0; i < nparams; ++i) {
+        paramIndex.emplace(pdiagnoselist[i], i);
+    }
+
+    // union-find with path halving over pdiagnoselist indices
+    std::vector<int> parent(nparams);
+    std::iota(parent.begin(), parent.end(), 0);
+    auto find = [&parent](int i) {
+        while (parent[i] != i) {
+            parent[i] = parent[parent[i]];
+            i = parent[i];
+        }
+        return i;
+    };
+
+    for (int ci : jacobianRows) {
+        int first = -1;
+        for (double* p : clist[ci]->params()) {
+            auto it = paramIndex.find(p);
+            if (it == paramIndex.end()) {
+                continue;  // driven-value or otherwise non-diagnosed parameter
+            }
+            int root = find(it->second);
+            if (first < 0) {
+                first = root;
+            }
+            else if (root != first) {
+                parent[root] = first;
+            }
         }
     }
 
-    if (jacobianconstraintcount == 0) {  // only driven constraints
-        J.resize(0, 0);
+    // group parameters by root, components ordered by first parameter occurrence
+    std::unordered_map<int, int> rootToComponent;
+    for (int i = 0; i < nparams; ++i) {
+        int root = find(i);
+        auto [it, isNew] = rootToComponent.emplace(root, static_cast<int>(components.size()));
+        if (isNew) {
+            components.emplace_back();
+        }
+        components[it->second].params.push_back(pdiagnoselist[i]);
+    }
+
+    // assign driving constraints to their component, keeping global row order
+    for (int ci : jacobianRows) {
+        int comp = -1;
+        for (double* p : clist[ci]->params()) {
+            auto it = paramIndex.find(p);
+            if (it != paramIndex.end()) {
+                comp = rootToComponent.at(find(it->second));
+                break;
+            }
+        }
+        if (comp < 0) {
+            // constraint touches no diagnosed parameter: a zero row in the
+            // reduced Jacobian; isolate it in an empty pseudo-component
+            components.emplace_back();
+            comp = static_cast<int>(components.size()) - 1;
+        }
+        components[comp].constraintIndices.push_back(ci);
+    }
+}
+
+void System::makeComponentReducedJacobian(
+    const DiagnoseComponent& comp,
+    Eigen::MatrixXd& J,
+    std::map<int, int>& jacobianconstraintmap
+)
+{
+    J = Eigen::MatrixXd::Zero(comp.constraintIndices.size(), comp.params.size());
+
+    std::unordered_map<double*, int> col;
+    col.reserve(comp.params.size() * 2);
+    for (int j = 0; j < int(comp.params.size()); ++j) {
+        col.emplace(comp.params[j], j);
+    }
+
+    int row = 0;
+    for (int ci : comp.constraintIndices) {
+        Constraint* constr = clist[ci];
+        for (double* p : constr->params()) {
+            auto it = col.find(p);
+            if (it != col.end()) {
+                J(row, it->second) = constr->grad(p);
+            }
+        }
+        jacobianconstraintmap[row] = ci;
+        ++row;
     }
 }
 
@@ -4814,19 +6029,17 @@ int System::diagnose(Algorithm alg)
     conflictingTags.clear();
     redundantTags.clear();
     partiallyRedundantTags.clear();
+    // Defensive: in the normal setUpSketch flow System::clear() has already
+    // emptied these; clearing here keeps a repeated diagnose() deterministic.
+    pDependentParameters.clear();
+    pDependentParametersGroups.clear();
 
     // This QR diagnosis uses a reduced Jacobian matrix to calculate the rank of the system
     // and identify conflicting and redundant constraints.
     //
-    // reduced Jacobian matrix
-    // The Jacobian has been reduced to:
-    // 1. only contain driving constraints, but keep a full size (zero padded).
+    // The Jacobian is reduced to:
+    // 1. only contain driving constraints.
     // 2. remove the parameters of the values of driven constraints.
-    Eigen::MatrixXd J;
-
-    // maps the index of the rows of the reduced jacobian matrix (solver constraints) to
-    // the index those constraints would have in a full size Jacobian matrix
-    std::map<int, int> jacobianconstraintmap;
 
     // list of parameters to be diagnosed in this routine (removes value parameters from driven
     // constraints)
@@ -4837,7 +6050,11 @@ int System::diagnose(Algorithm alg)
     // like 0 and -1.
     std::map<int, int> tagmultiplicity;
 
-    makeReducedJacobian(J, jacobianconstraintmap, pdiagnoselist, tagmultiplicity);
+    // indices into clist of the driving (tag >= 0) constraints, i.e. the rows of the
+    // reduced Jacobian in order
+    std::vector<int> jacobianRows;
+
+    prepareDiagnosis(pdiagnoselist, tagmultiplicity, jacobianRows);
 
     // this function will exit with a diagnosis and, unless overridden by functions below, with full
     // DoFs
@@ -4909,12 +6126,72 @@ int System::diagnose(Algorithm alg)
     }
 #endif
 
-    if (J.rows() == 0) {
+    if (jacobianRows.empty()) {
+        // only driven constraints; nothing to diagnose
         return dofs;
     }
 
-    // From here on, presuming `J.rows() > 0`.
+    // From here on, presuming at least one driving constraint.
     emptyDiagnoseMatrix = false;
+
+    // Environment gates for the component-decomposed diagnosis:
+    //  GCS_DIAG_MONOLITHIC — force the legacy single-QR path (kill switch)
+    //  GCS_DIAG_SELFCHECK  — run BOTH paths and warn on any result mismatch
+    static const bool envForceMonolithic = (std::getenv("GCS_DIAG_MONOLITHIC") != nullptr);
+    static const bool selfCheck = (std::getenv("GCS_DIAG_SELFCHECK") != nullptr);
+    static const bool diagProf = (std::getenv("GCS_DIAGPROF") != nullptr);
+
+    const bool forceMonolithic = envForceMonolithic || !useComponentDiagnose;
+
+    const auto profStart = diagProf ? std::chrono::steady_clock::now()
+                                    : std::chrono::steady_clock::time_point {};
+
+    std::vector<DiagnoseComponent> components;
+    if (!forceMonolithic || selfCheck) {
+        splitDiagnoseComponents(pdiagnoselist, jacobianRows, components);
+    }
+
+    const char* path = "monolithic";
+    int result;
+    if (components.size() > 1 && selfCheck) {
+        path = "selfcheck";
+        result = diagnoseSelfCheck(alg, pdiagnoselist, tagmultiplicity, jacobianRows, components);
+    }
+    else if (components.size() > 1 && !forceMonolithic) {
+        path = "componentwise";
+        result = diagnoseComponentwise(alg, pdiagnoselist, tagmultiplicity, components);
+    }
+    else {
+        result = diagnoseMonolithic(alg, pdiagnoselist, tagmultiplicity, jacobianRows);
+    }
+
+    if (diagProf) {
+        const auto profEnd = std::chrono::steady_clock::now();
+        std::cerr << "[DIAGPROF] path=" << path << " params=" << pdiagnoselist.size()
+                  << " rows=" << jacobianRows.size() << " components=" << components.size()
+                  << " ms="
+                  << std::chrono::duration<double, std::milli>(profEnd - profStart).count()
+                  << std::endl;
+    }
+
+    return result;
+}
+
+int System::diagnoseMonolithic(
+    Algorithm alg,
+    GCS::VEC_pD& pdiagnoselist,
+    const std::map<int, int>& tagmultiplicity,
+    const std::vector<int>& jacobianRows
+)
+{
+    // reduced Jacobian matrix: rows are the driving constraints, columns pdiagnoselist
+    Eigen::MatrixXd J;
+
+    // maps the index of the rows of the reduced jacobian matrix (solver constraints) to
+    // the index those constraints would have in a full size Jacobian matrix
+    std::map<int, int> jacobianconstraintmap;
+
+    fillReducedJacobian(jacobianRows, pdiagnoselist, J, jacobianconstraintmap);
 
     if (qrAlgorithm == EigenDenseQR) {
 #ifdef PROFILE_DIAGNOSE
@@ -5072,6 +6349,230 @@ int System::diagnose(Algorithm alg)
 #endif
 
     return dofs;
+}
+
+int System::diagnoseComponentwise(
+    Algorithm alg,
+    GCS::VEC_pD& pdiagnoselist,
+    const std::map<int, int>& tagmultiplicity,
+    const std::vector<DiagnoseComponent>& components
+)
+{
+    // The reduced Jacobian of independent components is block-diagonal, so the
+    // global QR results decompose exactly: rank(J) = Σ rank(J_i), the dependent
+    // (conflicting/redundant) columns are the union of the per-component ones,
+    // and likewise for the dependent-parameter groups. Only the resolution phase
+    // (redundant solving + tag outputs) is global, exactly as in the monolithic
+    // path.
+    int rankTotal = 0;
+    int constrTotal = 0;
+    std::vector<std::vector<Constraint*>> conflictGroups;
+
+    for (const auto& comp : components) {
+        constrTotal += static_cast<int>(comp.constraintIndices.size());
+
+        if (comp.constraintIndices.empty()) {
+            // Unconstrained parameters: zero columns of the monolithic Jacobian,
+            // each reported as a single-parameter dependent group.
+            for (double* p : comp.params) {
+                pDependentParametersGroups.emplace_back(1, p);
+                pDependentParameters.push_back(p);
+            }
+            continue;
+        }
+
+        if (comp.params.empty()) {
+            // Driving constraints with no diagnosed parameters: zero rows of the
+            // monolithic Jacobian, i.e. rank-deficient singleton groups.
+            for (int ci : comp.constraintIndices) {
+                conflictGroups.push_back({clist[ci]});
+            }
+            continue;
+        }
+
+        Eigen::MatrixXd Jcomp;
+        std::map<int, int> compconstraintmap;
+        makeComponentReducedJacobian(comp, Jcomp, compconstraintmap);
+
+        bool useDenseQR = autoChooseAlgorithm
+            ? (static_cast<int>(comp.params.size()) < autoQRThreshold)
+            : (qrAlgorithm == EigenDenseQR);
+#ifndef EIGEN_SPARSEQR_COMPATIBLE
+        useDenseQR = true;
+#endif
+
+        int rank = 0;
+        Eigen::MatrixXd R;
+        const int constrNum = static_cast<int>(comp.constraintIndices.size());
+
+        if (useDenseQR) {
+            Eigen::FullPivHouseholderQR<Eigen::MatrixXd> qrJT;
+            makeDenseQRDecomposition(Jcomp, compconstraintmap, qrJT, rank, R, true, true);
+            if (constrNum > rank) {
+                collectConflictGroups(qrJT, compconstraintmap, R, constrNum, rank, conflictGroups);
+            }
+            identifyDependentParametersDenseQR(Jcomp, compconstraintmap, comp.params, true);
+        }
+#ifdef EIGEN_SPARSEQR_COMPATIBLE
+        else {
+            Eigen::SparseQR<Eigen::SparseMatrix<double>, Eigen::COLAMDOrdering<int>> SqrJT;
+            makeSparseQRDecomposition(Jcomp, compconstraintmap, SqrJT, rank, R, true, true);
+            if (constrNum > rank) {
+                collectConflictGroups(SqrJT, compconstraintmap, R, constrNum, rank, conflictGroups);
+            }
+            identifyDependentParametersSparseQR(Jcomp, compconstraintmap, comp.params, true);
+        }
+#endif
+
+        rankTotal += rank;
+    }
+
+    const int paramsNum = static_cast<int>(pdiagnoselist.size());
+    dofs = paramsNum - rankTotal;  // unless overconstraint, overridden below
+
+    if (constrTotal > rankTotal) {
+        int nonredundantconstrNum = constrTotal;
+        resolveConflictingRedundantConstraints(
+            alg,
+            conflictGroups,
+            tagmultiplicity,
+            pdiagnoselist,
+            constrTotal,
+            nonredundantconstrNum
+        );
+
+        if (paramsNum == rankTotal && nonredundantconstrNum > rankTotal) {
+            // over-constrained
+            dofs = paramsNum - nonredundantconstrNum;
+        }
+    }
+
+    return dofs;
+}
+
+int System::diagnoseSelfCheck(
+    Algorithm alg,
+    GCS::VEC_pD& pdiagnoselist,
+    const std::map<int, int>& tagmultiplicity,
+    const std::vector<int>& jacobianRows,
+    const std::vector<DiagnoseComponent>& components
+)
+{
+    // Differential validation: run the component-decomposed path, snapshot every
+    // diagnosis output, reset, run the monolithic path, and compare. The
+    // monolithic result is the one kept. Any mismatch is loudly reported.
+    //
+    // Note on dependentGroups: the raw partition into groups is QR-pivot-dependent
+    // and not unique (the monolithic path itself produces different partitions for
+    // DenseQR vs SparseQR). The consumer (Sketch::calculateDependentParametersElements)
+    // merges groups sharing an element, so the comparison below is on that merged
+    // transitive closure, which is well-defined.
+    struct Snapshot
+    {
+        int dofs;
+        VEC_I conflicting, redundantT, partiallyRedundantT;
+        std::set<Constraint*> redundantSet;
+        std::set<double*> dependentParams;
+        std::multiset<std::set<double*>> dependentGroups;  // merged transitive closure
+    };
+
+    auto takeSnapshot = [this]() {
+        Snapshot s;
+        s.dofs = dofs;
+        s.conflicting = conflictingTags;
+        s.redundantT = redundantTags;
+        s.partiallyRedundantT = partiallyRedundantTags;
+        s.redundantSet = redundant;
+        s.dependentParams.insert(pDependentParameters.begin(), pDependentParameters.end());
+
+        // merge groups that share a parameter (transitive closure via union-find)
+        std::unordered_map<double*, int> id;
+        std::vector<int> parent;
+        auto find = [&parent](int i) {
+            while (parent[i] != i) {
+                parent[i] = parent[parent[i]];
+                i = parent[i];
+            }
+            return i;
+        };
+        auto idOf = [&id, &parent](double* p) {
+            auto [it, isNew] = id.emplace(p, static_cast<int>(parent.size()));
+            if (isNew) {
+                parent.push_back(it->second);
+            }
+            return it->second;
+        };
+        for (const auto& group : pDependentParametersGroups) {
+            int first = -1;
+            for (double* p : group) {
+                int root = find(idOf(p));
+                if (first < 0) {
+                    first = root;
+                }
+                else if (root != first) {
+                    parent[root] = first;
+                }
+            }
+        }
+        std::map<int, std::set<double*>> closures;
+        for (const auto& [p, i] : id) {
+            closures[find(i)].insert(p);
+        }
+        for (auto& [root, params] : closures) {
+            s.dependentGroups.insert(params);
+        }
+        return s;
+    };
+
+    diagnoseComponentwise(alg, pdiagnoselist, tagmultiplicity, components);
+    Snapshot comp = takeSnapshot();
+
+    redundant.clear();
+    conflictingTags.clear();
+    redundantTags.clear();
+    partiallyRedundantTags.clear();
+    pDependentParameters.clear();
+    pDependentParametersGroups.clear();
+
+    int ret = diagnoseMonolithic(alg, pdiagnoselist, tagmultiplicity, jacobianRows);
+    Snapshot mono = takeSnapshot();
+
+    std::string mismatches;
+    if (comp.dofs != mono.dofs) {
+        mismatches += " dofs(comp=" + std::to_string(comp.dofs)
+            + ",mono=" + std::to_string(mono.dofs) + ")";
+    }
+    if (comp.conflicting != mono.conflicting) {
+        mismatches += " conflictingTags";
+    }
+    if (comp.redundantT != mono.redundantT) {
+        mismatches += " redundantTags";
+    }
+    if (comp.partiallyRedundantT != mono.partiallyRedundantT) {
+        mismatches += " partiallyRedundantTags";
+    }
+    if (comp.redundantSet != mono.redundantSet) {
+        mismatches += " redundantSet";
+    }
+    if (comp.dependentParams != mono.dependentParams) {
+        mismatches += " dependentParams(comp=" + std::to_string(comp.dependentParams.size())
+            + ",mono=" + std::to_string(mono.dependentParams.size()) + ")";
+    }
+    if (comp.dependentGroups != mono.dependentGroups) {
+        mismatches += " dependentGroups(comp=" + std::to_string(comp.dependentGroups.size())
+            + ",mono=" + std::to_string(mono.dependentGroups.size()) + ")";
+    }
+
+    if (!mismatches.empty()) {
+        Base::Console().warning(
+            "[GCS_DIAG_SELFCHECK MISMATCH] components=%d params=%d:%s\n",
+            static_cast<int>(components.size()),
+            static_cast<int>(pdiagnoselist.size()),
+            mismatches.c_str()
+        );
+    }
+
+    return ret;
 }
 
 void System::makeDenseQRDecomposition(
@@ -5318,19 +6819,22 @@ void System::identifyDependentParameters(
     }
 #endif
 
-    pDependentParametersGroups.resize(qrJ.cols() - rank);
+    // append (rather than overwrite) so the component-decomposed diagnosis can
+    // accumulate per-component groups; the monolithic path starts empty
+    const size_t base = pDependentParametersGroups.size();
+    pDependentParametersGroups.resize(base + (qrJ.cols() - rank));
     for (int j = rank; j < qrJ.cols(); j++) {
         for (int row = 0; row < rank; row++) {
             if (fabs(Rparams(row, j)) > 1e-10) {
                 int origCol = qrJ.colsPermutation().indices()[row];
 
-                pDependentParametersGroups[j - rank].push_back(pdiagnoselist[origCol]);
+                pDependentParametersGroups[base + j - rank].push_back(pdiagnoselist[origCol]);
                 pDependentParameters.push_back(pdiagnoselist[origCol]);
             }
         }
         int origCol = qrJ.colsPermutation().indices()[j];
 
-        pDependentParametersGroups[j - rank].push_back(pdiagnoselist[origCol]);
+        pDependentParametersGroups[base + j - rank].push_back(pdiagnoselist[origCol]);
         pDependentParameters.push_back(pdiagnoselist[origCol]);
     }
 
@@ -5469,22 +6973,56 @@ void System::identifyConflictingRedundantConstraints(
     int& nonredundantconstrNum
 )
 {
+    std::vector<std::vector<Constraint*>> conflictGroups;
+    collectConflictGroups(qrJT, jacobianconstraintmap, R, constrNum, rank, conflictGroups);
+    resolveConflictingRedundantConstraints(
+        alg,
+        conflictGroups,
+        tagmultiplicity,
+        pdiagnoselist,
+        constrNum,
+        nonredundantconstrNum
+    );
+}
+
+template<typename T>
+void System::collectConflictGroups(
+    const T& qrJT,
+    const std::map<int, int>& jacobianconstraintmap,
+    Eigen::MatrixXd& R,
+    int constrNum,
+    int rank,
+    std::vector<std::vector<Constraint*>>& conflictGroups
+)
+{
     eliminateNonZerosOverPivotInUpperTriangularMatrix(R, rank);
 
-    std::vector<std::vector<Constraint*>> conflictGroups(constrNum - rank);
+    const size_t base = conflictGroups.size();
+    conflictGroups.resize(base + (constrNum - rank));
     for (int j = rank; j < constrNum; j++) {
         for (int row = 0; row < rank; row++) {
             if (fabs(R(row, j)) > 1e-10) {
                 int origCol = qrJT.colsPermutation().indices()[row];
 
-                conflictGroups[j - rank].push_back(clist[jacobianconstraintmap.at(origCol)]);
+                conflictGroups[base + j - rank].push_back(
+                    clist[jacobianconstraintmap.at(origCol)]);
             }
         }
         int origCol = qrJT.colsPermutation().indices()[j];
 
-        conflictGroups[j - rank].push_back(clist[jacobianconstraintmap.at(origCol)]);
+        conflictGroups[base + j - rank].push_back(clist[jacobianconstraintmap.at(origCol)]);
     }
+}
 
+void System::resolveConflictingRedundantConstraints(
+    Algorithm alg,
+    std::vector<std::vector<Constraint*>>& conflictGroups,
+    const std::map<int, int>& tagmultiplicity,
+    GCS::VEC_pD& pdiagnoselist,
+    int constrNum,
+    int& nonredundantconstrNum
+)
+{
     // Augment the information regarding the group of constraints that are conflicting or redundant.
     if (debugMode == IterationLevel) {
         SolverReportingManager::Manager().LogGroupOfConstraints(
