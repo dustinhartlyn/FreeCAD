@@ -156,6 +156,17 @@ public:
         return MalformedConstraints;
     }
 
+    // Stage 2 v6: Persistent Delta-Update — diagnosis cache management
+    inline bool wasDiagnosisRestored() const
+    {
+        return hasCachedDiagnosis;
+    }
+    inline void invalidateDiagnosisCache()
+    {
+        hasValidDiagnosis = false;
+        hasCachedDiagnosis = false;
+    }
+
 public:
     std::set<std::pair<int, Sketcher::PointPos>> getDependencyGroup(int geoId, PointPos pos) const;
 
@@ -182,6 +193,7 @@ public:
     /** Resets the initialization of a point or curve drag
      */
     void resetInitMove();
+    inline bool isInitMoveActive() const { return isInitMove; }
 
     /** Limits a b-spline drag to the segment around `firstPoint`.
      */
@@ -613,6 +625,13 @@ private:
     std::vector<int> PartiallyRedundant;
     std::vector<int> MalformedConstraints;
 
+    // Stage 2 v6: Persistent Delta-Update — fingerprint for diagnosis cache
+    int lastEffectiveCount = 0;
+    size_t lastTopologyHash = 0;
+    bool hasValidDiagnosis = false;
+    GCS::DiagnosisCache cachedDiagnosis;
+    bool hasCachedDiagnosis = false;
+
     std::vector<double*> pDependentParametersList;
 
     // map of geoIds to corresponding solverextensions. This is useful when solved geometry is NOT
@@ -683,6 +702,17 @@ public:
     inline void setDogLegGaussStep(GCS::DogLegGaussStep mode)
     {
         GCSsys.dogLegGaussStep = mode;
+    }
+    // Stage 5B: Accessors for useClusters flag. GCSsys is private, so SketchObject
+    // (which owns a Sketch) must toggle useClusters through these accessors to
+    // suppress cluster decomposition during the drag lifecycle.
+    inline void setUseClusters(bool val)
+    {
+        GCSsys.useClusters = val;
+    }
+    inline bool getUseClusters() const
+    {
+        return GCSsys.useClusters;
     }
     inline void setDebugMode(GCS::DebugMode mode)
     {

@@ -29,6 +29,7 @@
 #include <App/PropertyFile.h>
 #include <Base/Axis.h>
 #include <Base/Bitmask.h>
+#include <Base/BoundBox.h>
 #include <Mod/Part/App/Part2DObject.h>
 #include <Mod/Part/App/PropertyGeometryList.h>
 #include <Mod/Sketcher/App/PropertyConstraintList.h>
@@ -817,6 +818,8 @@ public: /* Solver exposed interface */
         Base::Vector3d toPoint,
         bool relative = false
     );
+
+
     /// forwards a request to update an extension of a geometry of the solver to the solver.
     inline void updateSolverExtension(int geoId, std::unique_ptr<Part::GeometryExtension>&& ext)
     {
@@ -1219,6 +1222,13 @@ private:
     bool managedoperation;  // indicates whether changes to properties are the deed of SketchObject
                             // or not (for input validation)
 
+    // Tracks whether an interactive drag (moveGeometriesTemporary) is currently active.
+    // When true and solverNeedsUpdate is false, solve() skips setUpSketch() to preserve
+    // the solver's drag state instead of rebuilding from stale committed geometry.
+    bool isDragActive = false;
+    std::vector<GeoElementId> dragGeoEltIds;  // saved during initTemporaryMove() for re-init after setUpSketch()
+
+
     // mapping from ExternalGeometry[*] to ExternalGeo[*].Id
     // Some external geometry may generate more than one projection
     std::map<std::string, std::vector<long>> externalGeoRefMap;
@@ -1242,15 +1252,110 @@ private:
     std::unique_ptr<GeoHistory> geoHistory;
 
     mutable std::map<std::string, std::string> internalElementMap;
+
+    // buildShape() skip-cache (transient, never persisted): the solved geometry
+    // the current Shape/InternalShape property values were built from. When the
+    // next execute() produces content-identical geometry (Geometry::isSame),
+    // the whole OCC rebuild (edges, wires, FaceMaker, WireJoiner) is skipped —
+    // it dominates recompute cost on dense sketches. A content compare is used
+    // instead of explicit invalidation so a stale cache can only cost a rebuild,
+    // never produce a wrong shape.
+    std::vector<std::unique_ptr<Part::Geometry>> builtShapeGeometry;
+    std::vector<std::pair<std::unique_ptr<Part::Geometry>, bool>> builtShapeExternal;
+    bool builtShapeMakeInternals = false;
+    bool builtShapeValid = false;
+
+    // Island-local rebuild (transient): the sketch's edges partition into
+    // bounding-box-disjoint clusters that cannot interact in makeElementWires
+    // (needs coincident endpoints), FaceMaker (nesting needs bbox containment)
+    // or WireJoiner (splits only at intersections). When a value edit moves the
+    // geometry of some clusters only, their wires/faces are rebuilt in
+    // isolation and spliced positionally into the previous compounds — the
+    // full build defines the sub-shape order, splicing preserves it. Strict
+    // preconditions (single wire+face per changed cluster, no open wires, no
+    // vertices/external geometry, boxes stay disjoint) fall back to the full
+    // rebuild.
+    struct ShapeIslandCache
+    {
+        bool valid = false;
+        std::map<int, int> geoToCluster;               // absolute geo index -> cluster
+        std::vector<std::vector<int>> clusterGeos;     // absolute geo indices per cluster
+        std::vector<Base::BoundBox3d> clusterBoxes;    // inflated, pairwise disjoint
+        std::vector<Part::TopoShape> wireShapes;       // Shape compound children in order
+        std::vector<Part::TopoShape> faceShapes;       // InternalShape children in order
+        std::vector<std::vector<int>> clusterWires;    // indices into wireShapes per cluster
+        std::vector<std::vector<int>> clusterFaces;    // indices into faceShapes per cluster
+    };
+    ShapeIslandCache islandCache;
+
+    bool trySpliceIslands(
+        const std::vector<Part::Geometry*>& geometries,
+        Part::TopoShape& newResult,
+        Part::TopoShape& newInternal
+    );
+
+    // pure whole-island deletion: drop the deleted clusters' wires/faces from
+    // the previous compounds instead of rebuilding everything
+    bool trySpliceIslandDeletion(
+        const std::vector<Part::Geometry*>& geometries,
+        Part::TopoShape& newResult,
+        Part::TopoShape& newInternal
+    );
+
+    void rebuildIslandCache(
+        const std::vector<std::pair<int, Base::BoundBox3d>>& geoBoxes,
+        const Part::TopoShape& result,
+        const Part::TopoShape& internal,
+        bool spliceable
+    );
 };
 
 inline int SketchObject::initTemporaryMove(std::vector<GeoElementId> moved, bool fine /*=true*/)
 {
-    if (solverNeedsUpdate) {
-        solve();
-    }
+    // Force the drag setup (setUpSketch + initMove) through the non-cluster
+    // path so the drag is seeded from a rank-healthy configuration rather than
+    // a cluster-converged one that biases the SQP drag solver toward the
+    // degenerate Y=0 minimum. Restored to the saved value afterward.
+    bool savedUseClusters = solvedSketch.getUseClusters();
+    solvedSketch.setUseClusters(false);
 
-    return solvedSketch.initMove(moved, fine);
+    try {
+        // Rebuild GCS from current geometry if stale.
+        // Called with isDragActive == false (set AFTER initMove succeeds below).
+        // This is safe: the guard at SketchObjectConstraints.cpp:90 is in
+        // SketchObject::solve(), not Sketch::setUpSketch(). We are calling
+        // setUpSketch() directly — there is no guard to bypass.
+        //
+        // NOTE: this->setUpSketch() calls SketchObject::setUpSketch() (zero-arg
+        // overload at SketchObjectConstraints.cpp:835), which internally calls
+        // solvedSketch.setUpSketch(getCompleteGeometry(), Constraints.getValues(),
+        // getExternalGeometryCount()). Do NOT call solvedSketch.setUpSketch()
+        // directly — that is Sketch::setUpSketch() which requires 2 mandatory
+        // args (GeoList, ConstraintList) at Sketch.h:78.
+        if (solverNeedsUpdate) {
+            this->setUpSketch();
+        }
+
+        // Add drag constraints. initMove() populates subSystemsAux (tag=-1)
+        // and sets isInitMove=true.
+        int result = solvedSketch.initMove(moved, fine);
+
+        // Set drag-active state ONLY after initMove() succeeds.
+        // If initMove() threw, isDragActive stays false.
+        if (result >= 0) {
+            isDragActive = true;
+            dragGeoEltIds = moved;
+        }
+
+        solvedSketch.setUseClusters(savedUseClusters);
+        return result;
+    }
+    catch (...) {
+        // Restore useClusters on any exception. Do NOT set isDragActive —
+        // drag initialization failed, next solve should rebuild from scratch.
+        solvedSketch.setUseClusters(savedUseClusters);
+        throw;
+    }
 }
 
 inline int SketchObject::initTemporaryMove(int geoId, PointPos pos, bool fine /*=true*/)
