@@ -211,11 +211,6 @@ public:
     virtual void evaluate()
     {}
 
-    double getScale() const
-    {
-        return scale;
-    }
-
     // Finds first occurrence of param in pvec. This is useful to test if a constraint depends
     // on the parameter (it may not actually depend on it, e.g. angle-via-point doesn't depend
     // on ellipse's b (radmin), but b will be included within the constraint anyway.

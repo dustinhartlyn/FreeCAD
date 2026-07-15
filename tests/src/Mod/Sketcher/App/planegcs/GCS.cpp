@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-#define _USE_MATH_DEFINES
-
 #include <gtest/gtest.h>
 
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <numbers>
 #include <set>
 
 #include "Mod/Sketcher/App/planegcs/GCS.h"
@@ -66,7 +65,7 @@ TEST(ClusterDifferentialTest, decoupledLineSegments)  // NOLINT
     // --- Monolithic solve ---
     GCS::System sys;
     double x1a = 0, y1a = 0, x1b = 5, y1b = 5, x2a = 20, y2a = 0, x2b = 25, y2b = 5;
-    double d1 = 14.14, d2 = 14.14, a1 = M_PI / 4, a2 = M_PI / 4;
+    double d1 = 14.14, d2 = 14.14, a1 = std::numbers::pi / 4, a2 = std::numbers::pi / 4;
 
     GCS::Point p1a(&x1a, &y1a), p1b(&x1b, &y1b), p2a(&x2a, &y2a), p2b(&x2b, &y2b);
     sys.addConstraintP2PDistance(p1a, p1b, &d1);
@@ -85,7 +84,7 @@ TEST(ClusterDifferentialTest, decoupledLineSegments)  // NOLINT
     // --- Cluster solve (fresh System) ---
     GCS::System sys2;
     x1a = 0; y1a = 0; x1b = 5; y1b = 5; x2a = 20; y2a = 0; x2b = 25; y2b = 5;
-    d1 = 14.14; d2 = 14.14; a1 = M_PI / 4; a2 = M_PI / 4;
+    d1 = 14.14; d2 = 14.14; a1 = std::numbers::pi / 4; a2 = std::numbers::pi / 4;
 
     GCS::Point p1a2(&x1a, &y1a), p1b2(&x1b, &y1b), p2a2(&x2a, &y2a), p2b2(&x2b, &y2b);
     sys2.addConstraintP2PDistance(p1a2, p1b2, &d1);
@@ -122,7 +121,7 @@ TEST(ClusterDifferentialTest, clusterPathVacuityDetector)  // NOLINT
     // --- Monolithic solve ---
     GCS::System sys;
     double x1a = 0.0, y1a = 0.0, x1b = 5.0, y1b = 5.0, x2a = 20.0, y2a = 0.0, x2b = 25.0, y2b = 5.0;
-    double d1 = 14.14, d2 = 14.14, a1 = M_PI / 4.0, a2 = M_PI / 4.0;
+    double d1 = 14.14, d2 = 14.14, a1 = std::numbers::pi / 4.0, a2 = std::numbers::pi / 4.0;
 
     GCS::Point p1a(&x1a, &y1a), p1b(&x1b, &y1b), p2a(&x2a, &y2a), p2b(&x2b, &y2b);
     sys.addConstraintP2PDistance(p1a, p1b, &d1);
@@ -141,7 +140,7 @@ TEST(ClusterDifferentialTest, clusterPathVacuityDetector)  // NOLINT
     // --- Cluster solve with perturbation (fresh System) ---
     GCS::System sys2;
     x1a = 0.0; y1a = 0.0; x1b = 5.0; y1b = 5.0; x2a = 20.0; y2a = 0.0; x2b = 25.0; y2b = 5.0;
-    d1 = 14.14; d2 = 14.14; a1 = M_PI / 4.0; a2 = M_PI / 4.0;
+    d1 = 14.14; d2 = 14.14; a1 = std::numbers::pi / 4.0; a2 = std::numbers::pi / 4.0;
 
     GCS::Point p1a2(&x1a, &y1a), p1b2(&x1b, &y1b), p2a2(&x2a, &y2a), p2b2(&x2b, &y2b);
     sys2.addConstraintP2PDistance(p1a2, p1b2, &d1);

@@ -49,11 +49,10 @@
 #endif
 
 #include <algorithm>
-#define _USE_MATH_DEFINES
-#include <cmath>
 #include <future>
 #include <iostream>
 #include <limits>
+#include <numbers>
 #include <numeric>
 #include <stdexcept>
 #include <unordered_map>
@@ -560,30 +559,40 @@ DiagnosisCache System::saveDiagnosis() const
     cache.partiallyRedundantTags = partiallyRedundantTags;
     cache.dofs = dofs;
     cache.emptyDiagnoseMatrix = emptyDiagnoseMatrix;
+    cache.clistSize = clist.size();
+    cache.plistSize = plist.size();
+
+    std::unordered_map<Constraint*, int> constraintIndex;
+    constraintIndex.reserve(clist.size() * 2);
+    for (size_t i = 0; i < clist.size(); ++i) {
+        constraintIndex.emplace(clist[i], static_cast<int>(i));
+    }
+    std::unordered_map<double*, int> paramIndex;
+    paramIndex.reserve(plist.size() * 2);
+    for (size_t i = 0; i < plist.size(); ++i) {
+        paramIndex.emplace(plist[i], static_cast<int>(i));
+    }
 
     for (auto* c : redundant) {
-        auto it = std::find(clist.begin(), clist.end(), c);
-        if (it != clist.end()) {
-            cache.redundantIndices.push_back(
-                static_cast<int>(std::distance(clist.begin(), it)));
+        auto it = constraintIndex.find(c);
+        if (it != constraintIndex.end()) {
+            cache.redundantIndices.push_back(it->second);
         }
     }
 
     for (auto* p : pDependentParameters) {
-        auto it = std::find(plist.begin(), plist.end(), p);
-        if (it != plist.end()) {
-            cache.dependentParamIndices.push_back(
-                static_cast<int>(std::distance(plist.begin(), it)));
+        auto it = paramIndex.find(p);
+        if (it != paramIndex.end()) {
+            cache.dependentParamIndices.push_back(it->second);
         }
     }
 
     cache.dependentParamGroupsIndices.resize(pDependentParametersGroups.size());
     for (size_t g = 0; g < pDependentParametersGroups.size(); ++g) {
         for (auto* p : pDependentParametersGroups[g]) {
-            auto it = std::find(plist.begin(), plist.end(), p);
-            if (it != plist.end()) {
-                cache.dependentParamGroupsIndices[g].push_back(
-                    static_cast<int>(std::distance(plist.begin(), it)));
+            auto it = paramIndex.find(p);
+            if (it != paramIndex.end()) {
+                cache.dependentParamGroupsIndices[g].push_back(it->second);
             }
         }
     }
@@ -593,6 +602,22 @@ DiagnosisCache System::saveDiagnosis() const
 
 void System::restoreDiagnosis(const DiagnosisCache& cache)
 {
+    // The cached entries are indices into clist/plist captured at save time.
+    // The caller's topology fingerprint keeps the constraint wiring and the
+    // geometry structure stable between save and restore, but cannot see
+    // everything (e.g. an edit that changes a geometry's parameter count), so
+    // a size mismatch — or any out-of-range index — means the mapping is
+    // stale and the restore must be abandoned in favor of a fresh diagnose().
+    auto abortRestore = [this]() {
+        redundant.clear();
+        invalidatedDiagnosis();
+    };
+
+    if (cache.clistSize != clist.size() || cache.plistSize != plist.size()) {
+        abortRestore();
+        return;
+    }
+
     conflictingTags = cache.conflictingTags;
     redundantTags = cache.redundantTags;
     partiallyRedundantTags = cache.partiallyRedundantTags;
@@ -601,63 +626,31 @@ void System::restoreDiagnosis(const DiagnosisCache& cache)
 
     redundant.clear();
     for (int idx : cache.redundantIndices) {
-        if (idx >= 0 && idx < static_cast<int>(clist.size())) {
-            GCS::Constraint* restored = clist[idx];
-            // Stage 2 v6 remediation (Concern 3): Guard the stable-ordering
-            // invariant. saveDiagnosis() derived idx via
-            // std::distance(clist.begin(), find(clist.begin(), clist.end(), c)).
-            // If clist ordering shifted between save and restore, idx now points
-            // at a different constraint. Re-derive and assert identity.
-            auto it = std::find(clist.begin(), clist.end(), restored);
-            if (it == clist.end()
-                || static_cast<int>(std::distance(clist.begin(), it)) != idx) {
-                // Ordering shifted — cache is stale. Abort restore.
-                hasDiagnosis = false;
-                redundant.clear();
-                pDependentParameters.clear();
-                pDependentParametersGroups.clear();
-                return;
-            }
-            redundant.insert(restored);
+        if (idx < 0 || idx >= static_cast<int>(clist.size())) {
+            abortRestore();
+            return;
         }
+        redundant.insert(clist[idx]);
     }
 
     pDependentParameters.clear();
     for (int idx : cache.dependentParamIndices) {
-        if (idx >= 0 && idx < static_cast<int>(plist.size())) {
-            double* restored = plist[idx];
-            auto it = std::find(plist.begin(), plist.end(), restored);
-            if (it == plist.end()
-                || static_cast<int>(std::distance(plist.begin(), it)) != idx) {
-                // Ordering shifted — cache is stale. Abort restore.
-                hasDiagnosis = false;
-                redundant.clear();
-                pDependentParameters.clear();
-                pDependentParametersGroups.clear();
-                return;
-            }
-            pDependentParameters.push_back(restored);
+        if (idx < 0 || idx >= static_cast<int>(plist.size())) {
+            abortRestore();
+            return;
         }
+        pDependentParameters.push_back(plist[idx]);
     }
 
     pDependentParametersGroups.clear();
     pDependentParametersGroups.resize(cache.dependentParamGroupsIndices.size());
     for (size_t g = 0; g < cache.dependentParamGroupsIndices.size(); ++g) {
         for (int idx : cache.dependentParamGroupsIndices[g]) {
-            if (idx >= 0 && idx < static_cast<int>(plist.size())) {
-                double* restored = plist[idx];
-                auto it = std::find(plist.begin(), plist.end(), restored);
-                if (it == plist.end()
-                    || static_cast<int>(std::distance(plist.begin(), it)) != idx) {
-                    // Ordering shifted — cache is stale. Abort restore.
-                    hasDiagnosis = false;
-                    redundant.clear();
-                    pDependentParameters.clear();
-                    pDependentParametersGroups.clear();
-                    return;
-                }
-                pDependentParametersGroups[g].push_back(restored);
+            if (idx < 0 || idx >= static_cast<int>(plist.size())) {
+                abortRestore();
+                return;
             }
+            pDependentParametersGroups[g].push_back(plist[idx]);
         }
     }
 
@@ -699,12 +692,10 @@ int System::addConstraint(Constraint* constr)
 
 void System::removeConstraint(Constraint* constr)
 {
-    auto it = std::remove(clist.begin(), clist.end(), constr);
-    if (it == clist.end()) {
+    if (std::erase(clist, constr) == 0) {
         return;
     }
-    clist.erase(it, clist.end());
-    drivenConstraints.erase(std::remove(drivenConstraints.begin(), drivenConstraints.end(), constr), drivenConstraints.end());
+    std::erase(drivenConstraints, constr);
 
     if (constr->getTag() >= 0) {
         hasDiagnosis = false;
@@ -712,7 +703,7 @@ void System::removeConstraint(Constraint* constr)
     clearSubSystems();
 
     for (const auto& param : c2p[constr]) {
-        p2c[param].erase(std::find(p2c[param].begin(), p2c[param].end(), constr));
+        p2c[param].erase(std::ranges::find(p2c[param], constr));
     }
     c2p.erase(constr);
 
@@ -1158,6 +1149,7 @@ int System::addConstraintPointOnArc(Point& p, Arc& a, int tagId, bool driving)
 
 int System::addConstraintPerpendicularLine2Arc(Point& p1, Point& p2, Arc& a, int tagId, bool driving)
 {
+    using std::numbers::pi;
 
     addConstraintP2PCoincident(p2, a.start, tagId, driving);
     double dx = *(p2.x) - *(p1.x);
@@ -1166,12 +1158,13 @@ int System::addConstraintPerpendicularLine2Arc(Point& p1, Point& p2, Arc& a, int
         return addConstraintP2PAngle(p1, p2, a.startAngle, 0, tagId, driving);
     }
     else {
-        return addConstraintP2PAngle(p1, p2, a.startAngle, M_PI, tagId, driving);
+        return addConstraintP2PAngle(p1, p2, a.startAngle, pi, tagId, driving);
     }
 }
 
 int System::addConstraintPerpendicularArc2Line(Arc& a, Point& p1, Point& p2, int tagId, bool driving)
 {
+    using std::numbers::pi;
 
     addConstraintP2PCoincident(p1, a.end, tagId, driving);
     double dx = *(p2.x) - *(p1.x);
@@ -1180,15 +1173,16 @@ int System::addConstraintPerpendicularArc2Line(Arc& a, Point& p1, Point& p2, int
         return addConstraintP2PAngle(p1, p2, a.endAngle, 0, tagId, driving);
     }
     else {
-        return addConstraintP2PAngle(p1, p2, a.endAngle, M_PI, tagId, driving);
+        return addConstraintP2PAngle(p1, p2, a.endAngle, pi, tagId, driving);
     }
 }
 
 int System::addConstraintPerpendicularCircle2Arc(Point& center, double* radius, Arc& a, int tagId, bool driving)
 {
+    using std::numbers::pi;
 
     addConstraintP2PDistance(a.start, center, radius, tagId, driving);
-    double incrAngle = *(a.startAngle) < *(a.endAngle) ? M_PI / 2 : -M_PI / 2;
+    double incrAngle = *(a.startAngle) < *(a.endAngle) ? pi / 2 : -pi / 2;
     double tangAngle = *a.startAngle + incrAngle;
     double dx = *(a.start.x) - *(center.x);
     double dy = *(a.start.y) - *(center.y);
@@ -1202,9 +1196,10 @@ int System::addConstraintPerpendicularCircle2Arc(Point& center, double* radius, 
 
 int System::addConstraintPerpendicularArc2Circle(Arc& a, Point& center, double* radius, int tagId, bool driving)
 {
+    using std::numbers::pi;
 
     addConstraintP2PDistance(a.end, center, radius, tagId, driving);
-    double incrAngle = *(a.startAngle) < *(a.endAngle) ? -M_PI / 2 : M_PI / 2;
+    double incrAngle = *(a.startAngle) < *(a.endAngle) ? -pi / 2 : pi / 2;
     double tangAngle = *a.endAngle + incrAngle;
     double dx = *(a.end.x) - *(center.x);
     double dy = *(a.end.y) - *(center.y);
@@ -1881,12 +1876,12 @@ void System::initSolution(Algorithm alg)
 
     std::vector<Constraint*> clistR;
     if (!redundant.empty()) {
-        std::copy_if(clist.begin(), clist.end(), std::back_inserter(clistR), [this](auto constr) {
+        std::ranges::copy_if(clist, std::back_inserter(clistR), [this](auto constr) {
             return this->redundant.count(constr) == 0 && constr->isDriving();
         });
     }
     else {
-        std::copy_if(clist.begin(), clist.end(), std::back_inserter(clistR), [](auto constr) {
+        std::ranges::copy_if(clist, std::back_inserter(clistR), [](auto constr) {
             return constr->isDriving();
         });
     }
@@ -1934,7 +1929,7 @@ void System::initSolution(Algorithm alg)
             reducedConstrs.insert(constr);
             double* p_kept = reducedParams[it1->second];
             double* p_replaced = reducedParams[it2->second];
-            std::replace(reducedParams.begin(), reducedParams.end(), p_replaced, p_kept);
+            std::ranges::replace(reducedParams, p_replaced, p_kept);
         }
         for (size_t i = 0; i < plist.size(); ++i) {
             if (plist[i] != reducedParams[i]) {
@@ -1971,8 +1966,8 @@ void System::initSolution(Algorithm alg)
     subSystemsAux.resize(clists.size(), nullptr);
     for (std::size_t cid = 0; cid < clists.size(); ++cid) {
         std::vector<Constraint*> clist0, clist1;
-        std::partition_copy(
-            clists[cid].begin(), clists[cid].end(),
+        std::ranges::partition_copy(
+            clists[cid],
             std::back_inserter(clist0),
             std::back_inserter(clist1),
             [](auto constr) { return constr->getTag() >= 0; }
@@ -3376,7 +3371,6 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
     double alpha = 0.;
     double nu = 2.;
     int iter = 0, stop = 0, reduce = 0;
-    int iteration_count = 0;
     while (!stop) {
         // check if finished
         if (fx_inf <= tolf) {
@@ -3572,7 +3566,6 @@ int System::solve_DL(SubSystem* subsys, bool isRedundantsolving)
 
         // count this iteration and start again
         iter++;
-        iteration_count++;
     }
 
     subsys->revertParams();
@@ -5839,7 +5832,7 @@ void System::prepareDiagnosis(
 {
     // construct specific parameter list for diagonose ignoring driven constraint parameters
     for (int j = 0; j < int(plist.size()); j++) {
-        auto result1 = std::find(pdrivenlist.begin(), pdrivenlist.end(), plist[j]);
+        auto result1 = std::ranges::find(pdrivenlist, plist[j]);
 
         if (result1 == std::end(pdrivenlist)) {
             pdiagnoselist.push_back(plist[j]);

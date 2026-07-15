@@ -50,6 +50,8 @@ private:
     std::map<double*, std::vector<int>> p2c_rows_;    // parameter -> row (clist index) of each
                                                       // constraint in p2c, aligned 1:1 with p2c;
                                                       // used for sparse Jacobian assembly
+    std::vector<Eigen::Triplet<double>> jacobiTriplets_;  // reused across the sparse calcJacobi()
+                                                          // calls of a solve (one per iteration)
     void initialize(VEC_pD& params, MAP_pD_pD& reductionmap);  // called by the constructors
 public:
     SubSystem(std::vector<Constraint*>& clist_, VEC_pD& params);
