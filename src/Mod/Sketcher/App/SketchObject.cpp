@@ -123,14 +123,18 @@ inline bool islandsDisabled()
 // intersection tolerance of FaceMaker/WireJoiner (both Precision::Confusion)
 constexpr double islandBoxTolerance = 1e-5;
 
-inline bool boxesOverlap(const Base::BoundBox3d& a, const Base::BoundBox3d& b)
+// the single definition of geometric identity used by the buildShape()
+// skip-cache and the island splicer: same type, same construction flag, same
+// content within OCC modeling tolerance
+bool isSameGeometryElement(const Part::Geometry* a, const Part::Geometry* b)
 {
-    return !(a.MaxX < b.MinX || b.MaxX < a.MinX || a.MaxY < b.MinY || b.MaxY < a.MinY
-             || a.MaxZ < b.MinZ || b.MaxZ < a.MinZ);
+    return a->getTypeId() == b->getTypeId()
+        && Sketcher::GeometryFacade::getConstruction(a)
+            == Sketcher::GeometryFacade::getConstruction(b)
+        && a->isSame(*b, Precision::Confusion(), Precision::Angular());
 }
 
-// content compare for the buildShape() skip-cache; tolerances follow the
-// codebase convention for geometric identity (OCC modeling tolerance)
+// content compare for the buildShape() skip-cache
 bool isSameShapeGeometry(const std::vector<std::unique_ptr<Part::Geometry>>& cached,
                          const std::vector<Part::Geometry*>& current)
 {
@@ -138,16 +142,7 @@ bool isSameShapeGeometry(const std::vector<std::unique_ptr<Part::Geometry>>& cac
         return false;
     }
     for (std::size_t i = 0; i < cached.size(); ++i) {
-        const Part::Geometry* a = cached[i].get();
-        const Part::Geometry* b = current[i];
-        if (a->getTypeId() != b->getTypeId()) {
-            return false;
-        }
-        if (Sketcher::GeometryFacade::getConstruction(a)
-            != Sketcher::GeometryFacade::getConstruction(b)) {
-            return false;
-        }
-        if (!a->isSame(*b, Precision::Confusion(), Precision::Angular())) {
+        if (!isSameGeometryElement(cached[i].get(), current[i])) {
             return false;
         }
     }
@@ -774,7 +769,7 @@ void SketchObject::rebuildIslandCache(
     };
     for (int i = 0; i < n; ++i) {
         for (int j = i + 1; j < n; ++j) {
-            if (boxesOverlap(geoBoxes[i].second, geoBoxes[j].second)) {
+            if (geoBoxes[i].second.Intersect(geoBoxes[j].second)) {
                 int a = find(i);
                 int b = find(j);
                 if (a != b) {
@@ -806,7 +801,7 @@ void SketchObject::rebuildIslandCache(
         merged = false;
         for (std::size_t a = 0; a < memberIdx.size() && !merged; ++a) {
             for (std::size_t b = a + 1; b < memberIdx.size() && !merged; ++b) {
-                if (boxesOverlap(boxes[a], boxes[b])) {
+                if (boxes[a].Intersect(boxes[b])) {
                     memberIdx[a].insert(memberIdx[a].end(), memberIdx[b].begin(),
                                         memberIdx[b].end());
                     boxes[a].Add(boxes[b]);
@@ -842,7 +837,7 @@ void SketchObject::rebuildIslandCache(
             Base::BoundBox3d box = children[i].getBoundBox();
             int owner = -1;
             for (std::size_t c = 0; c < cache.clusterBoxes.size(); ++c) {
-                if (boxesOverlap(box, cache.clusterBoxes[c])) {
+                if (box.Intersect(cache.clusterBoxes[c])) {
                     if (owner >= 0) {
                         return false;  // ambiguous
                     }
@@ -895,10 +890,7 @@ bool SketchObject::trySpliceIslandDeletion(
     std::size_t j = 0;
     for (std::size_t i = 0; i < builtShapeGeometry.size(); ++i) {
         const Part::Geometry* cached = builtShapeGeometry[i].get();
-        if (j < geometries.size() && cached->getTypeId() == geometries[j]->getTypeId()
-            && GeometryFacade::getConstruction(cached)
-                == GeometryFacade::getConstruction(geometries[j])
-            && cached->isSame(*geometries[j], Precision::Confusion(), Precision::Angular())) {
+        if (j < geometries.size() && isSameGeometryElement(cached, geometries[j])) {
             ++j;
         }
         else {
@@ -926,7 +918,38 @@ bool SketchObject::trySpliceIslandDeletion(
     }
 
     if (deletedClusters.empty()) {
-        // only construction geometry was deleted: the shapes are unchanged
+        // Only construction geometry was deleted: the shapes are unchanged,
+        // but the surviving geometries' absolute indices shifted, so the
+        // cache's geo indexing must be re-keyed (the caller re-bases
+        // builtShapeGeometry to the new list).
+        std::map<int, int> oldToNew;
+        {
+            std::set<int> deletedSet(deletedOld.begin(), deletedOld.end());
+            int nj = 0;
+            for (std::size_t i = 0; i < builtShapeGeometry.size(); ++i) {
+                if (deletedSet.find(static_cast<int>(i)) == deletedSet.end()) {
+                    oldToNew[static_cast<int>(i)] = nj++;
+                }
+            }
+        }
+        std::map<int, int> geoToCluster;
+        std::vector<std::vector<int>> clusterGeos(islandCache.clusterGeos.size());
+        for (std::size_t c = 0; c < islandCache.clusterGeos.size(); ++c) {
+            for (int gi : islandCache.clusterGeos[c]) {
+                auto it = oldToNew.find(gi);
+                if (it == oldToNew.end()) {
+                    // a cluster references a deleted geometry; cannot happen for
+                    // construction-only deletions, but never keep a stale cache
+                    islandCache = ShapeIslandCache {};
+                    return false;
+                }
+                geoToCluster[it->second] = static_cast<int>(c);
+                clusterGeos[c].push_back(it->second);
+            }
+        }
+        islandCache.geoToCluster = std::move(geoToCluster);
+        islandCache.clusterGeos = std::move(clusterGeos);
+
         newResult = Shape.getShape();
         newInternal = InternalShape.getShape();
         return true;
@@ -1193,7 +1216,7 @@ bool SketchObject::trySpliceIslands(
                         break;
                     }
                 }
-                if (boxesOverlap(rb.box, *other)) {
+                if (rb.box.Intersect(*other)) {
                     return false;
                 }
             }

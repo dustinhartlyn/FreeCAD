@@ -39,6 +39,7 @@
 #include <Base/Exception.h>
 #include <Base/Reader.h>
 #include <Base/TimeInfo.h>
+#include <Base/Tools.h>
 #include <Base/VectorPy.h>
 #include <Base/Writer.h>
 #include <Mod/Part/App/ArcOfCirclePy.h>
@@ -196,68 +197,34 @@ int Sketch::setUpSketch(
 {
     Base::TimeElapsed start_time;
 
-    // Stage 2 v6: Persistent Delta-Update — compute effective constraint fingerprint
-    // before clear() destroys the current solver state.  We count only "effective"
-    // constraints (driving, active, non-Group, non-Text, non-Block, enforceable) and
-    // hash the per-element geometry type sequence.  If both match the previous call,
-    // the topology is unchanged and we can reuse the cached diagnosis.
-    int effectiveCount = 0;
-    size_t topologyHash = 0;
-    for (size_t i = 0; i < ConstraintList.size(); ++i) {
-        const auto* c = ConstraintList[i];
-        if (!c || c->Type == Group || c->Type == Text || c->Type == Block
-            || !c->isActive || !c->isDriving) {
-            continue;
-        }
-        // unenforceableConstraints isn't computed yet, but we can approximate:
-        // if the constraint references a geo in a group, skip it.
-        // We'll compute inGroupGeoIds first for this purpose.
-        ++effectiveCount;
-    }
-    // Compute inGroupGeoIds early for fingerprint
-    std::set<int> fp_inGroupGeoIds;
+    // The geometries that are in groups are going to be ignored by the solver.
+    std::set<int> inGroupGeoIds;
     for (const auto& c : ConstraintList) {
         if (c->Type == Group || c->Type == Text) {
+            // Start from index 1, as 0 is the frame.
             for (int i = 1; c->hasElement(i); ++i) {
-                fp_inGroupGeoIds.insert(c->getGeoId(i));
+                inGroupGeoIds.insert(c->getGeoId(i));
             }
         }
     }
-    // Recompute effectiveCount with group-awareness
-    effectiveCount = 0;
-    for (size_t i = 0; i < ConstraintList.size(); ++i) {
-        const auto* c = ConstraintList[i];
+
+    // Persistent diagnosis cache: fingerprint the constraint topology before
+    // clear() destroys the current solver state. The hash covers the wiring
+    // (Type, geoId, posId) of every effective constraint (driving, active,
+    // non-Group/Text/Block, not referencing grouped geometry) and the geometry
+    // type sequence. If it matches the previous call, the topology is
+    // unchanged and the cached diagnosis can be reused.
+    size_t topologyHash = 0;
+    for (const auto* c : ConstraintList) {
         if (!c || c->Type == Group || c->Type == Text || c->Type == Block
             || !c->isActive || !c->isDriving) {
             continue;
         }
+        // unenforceableConstraints isn't computed yet; approximate it — a
+        // constraint referencing grouped geometry is not enforced.
         bool inGroup = false;
         for (int j = 0; c->hasElement(j); ++j) {
-            if (fp_inGroupGeoIds.count(c->getGeoId(j))) {
-                inGroup = true;
-                break;
-            }
-        }
-        if (!inGroup) {
-            ++effectiveCount;
-        }
-    }
-    // Stage 2 v6 remediation (Defect 2): Hash constraint wiring — (Type, geoId,
-    // posId) per effective constraint — BEFORE the geometry type sequence. The
-    // prior fingerprint hashed only geometry types, so a constraint-type change
-    // (e.g. Distance -> Angle) with unchanged geometry count/types produced an
-    // identical topologyHash, yielding a false cache hit and a stale diagnosis.
-    // Iteration order matches the effectiveCount loop above (group-aware, driving,
-    // active, non-Group/Text/Block) so the hash is consistent with the count.
-    for (size_t i = 0; i < ConstraintList.size(); ++i) {
-        const auto* c = ConstraintList[i];
-        if (!c || c->Type == Group || c->Type == Text || c->Type == Block
-            || !c->isActive || !c->isDriving) {
-            continue;
-        }
-        bool inGroup = false;
-        for (int j = 0; c->hasElement(j); ++j) {
-            if (fp_inGroupGeoIds.count(c->getGeoId(j))) {
+            if (inGroupGeoIds.count(c->getGeoId(j))) {
                 inGroup = true;
                 break;
             }
@@ -265,29 +232,29 @@ int Sketch::setUpSketch(
         if (inGroup) {
             continue;
         }
-        // Fold constraint type
-        topologyHash ^= static_cast<size_t>(static_cast<int>(c->Type)) + 0x9e3779b9
-            + (topologyHash << 6) + (topologyHash >> 2);
-        // Fold per-element wiring (geoId, posId)
+        Base::hash_combine(topologyHash, static_cast<int>(c->Type));
         for (int j = 0; c->hasElement(j); ++j) {
-            int geoId = c->getGeoId(j);
-            int posId = c->getPosIdAsInt(j);
-            topologyHash ^= static_cast<size_t>(geoId) + 0x9e3779b9
-                + (topologyHash << 6) + (topologyHash >> 2);
-            topologyHash ^= static_cast<size_t>(posId) + 0x9e3779b9
-                + (topologyHash << 6) + (topologyHash >> 2);
+            Base::hash_combine(topologyHash, c->getGeoId(j));
+            Base::hash_combine(topologyHash, c->getPosIdAsInt(j));
         }
     }
-    // Hash geometry type sequence
     for (const auto* g : GeoList) {
-        if (g) {
-            topologyHash ^= static_cast<size_t>(g->getTypeId().getKey()) + 0x9e3779b9
-                + (topologyHash << 6) + (topologyHash >> 2);
+        if (!g) {
+            continue;
+        }
+        Base::hash_combine(topologyHash, g->getTypeId().getKey());
+        // The typeId alone misses parameter-count changes within a type;
+        // B-splines are the only sketcher geometry with a variable parameter
+        // count, and a knot/pole edit must not hit the cache.
+        if (const auto* bsp = dynamic_cast<const GeomBSplineCurve*>(g)) {
+            Base::hash_combine(topologyHash, bsp->countPoles());
+            Base::hash_combine(topologyHash, bsp->countKnots());
+            Base::hash_combine(topologyHash, bsp->getDegree());
+            Base::hash_combine(topologyHash, bsp->isPeriodic());
         }
     }
 
-    bool topologyUnchanged = (effectiveCount == lastEffectiveCount)
-        && (topologyHash == lastTopologyHash) && hasValidDiagnosis;
+    bool topologyUnchanged = (topologyHash == lastTopologyHash) && hasValidDiagnosis;
 
     // Save diagnosis cache before clear() destroys the solver state
     if (topologyUnchanged) {
@@ -299,17 +266,6 @@ int Sketch::setUpSketch(
     }
 
     clear();
-
-    // The geometries that are in groups are going to be ignored by the solver.
-    std::set<int> inGroupGeoIds;
-    for (const auto& c : ConstraintList) {
-        if (c->Type == Group || c->Type == Text) {
-            // Start from index 1, as 0 is the frame.
-            for (int i = 1; c->hasElement(i); ++i) {
-                inGroupGeoIds.insert(c->getGeoId(i));
-            }
-        }
-    }
 
     std::vector<Part::Geometry*> intGeoList, extGeoList;
     std::copy(GeoList.begin(), GeoList.end() - extGeoCount, std::back_inserter(intGeoList));
@@ -404,7 +360,6 @@ int Sketch::setUpSketch(
     GCSsys.initSolution(defaultSolverRedundant);
 
     // Stage 2 v6: Update fingerprint state after successful initSolution
-    lastEffectiveCount = effectiveCount;
     lastTopologyHash = topologyHash;
     hasValidDiagnosis = true;
 

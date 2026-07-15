@@ -818,7 +818,19 @@ public: /* Solver exposed interface */
         Base::Vector3d toPoint,
         bool relative = false
     );
-
+    /** Cancels an interactive drag without committing it (e.g. undo/redo fired
+     * mid-drag). Clears the drag state so the next solve() rebuilds the solver
+     * from the current Geometry property instead of writing back stale
+     * drag-era solver geometry.
+     */
+    inline void cancelTemporaryMove()
+    {
+        if (isDragActive) {
+            isDragActive = false;
+            solverNeedsUpdate = true;
+            solvedSketch.resetInitMove();
+        }
+    }
 
     /// forwards a request to update an extension of a geometry of the solver to the solver.
     inline void updateSolverExtension(int geoId, std::unique_ptr<Part::GeometryExtension>&& ext)
@@ -1226,8 +1238,6 @@ private:
     // When true and solverNeedsUpdate is false, solve() skips setUpSketch() to preserve
     // the solver's drag state instead of rebuilding from stale committed geometry.
     bool isDragActive = false;
-    std::vector<GeoElementId> dragGeoEltIds;  // saved during initTemporaryMove() for re-init after setUpSketch()
-
 
     // mapping from ExternalGeometry[*] to ExternalGeo[*].Id
     // Some external geometry may generate more than one projection
@@ -1347,7 +1357,6 @@ inline int SketchObject::initTemporaryMove(std::vector<GeoElementId> moved, bool
         // If initMove() threw, isDragActive stays false.
         if (result >= 0) {
             isDragActive = true;
-            dragGeoEltIds = moved;
         }
 
         solvedSketch.setUseClusters(savedUseClusters);

@@ -626,7 +626,6 @@ private:
     std::vector<int> MalformedConstraints;
 
     // Stage 2 v6: Persistent Delta-Update — fingerprint for diagnosis cache
-    int lastEffectiveCount = 0;
     size_t lastTopologyHash = 0;
     bool hasValidDiagnosis = false;
     GCS::DiagnosisCache cachedDiagnosis;

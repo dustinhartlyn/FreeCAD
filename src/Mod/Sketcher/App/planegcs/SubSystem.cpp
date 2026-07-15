@@ -307,7 +307,8 @@ void SubSystem::calcJacobi(Eigen::MatrixXd& jacobi)
 void SubSystem::calcJacobi(VEC_pD& params, Eigen::SparseMatrix<double>& jacobi)
 {
     int nparams = int(params.size());
-    std::vector<Eigen::Triplet<double>> triplets;
+    // called once per solver iteration: reuse the triplet buffer's capacity
+    jacobiTriplets_.clear();
 
     for (int j = 0; j < nparams; j++) {
         MAP_pD_pD::const_iterator pmapfind = pmap.find(params[j]);
@@ -323,12 +324,12 @@ void SubSystem::calcJacobi(VEC_pD& params, Eigen::SparseMatrix<double>& jacobi)
         const std::vector<Constraint*>& constrs = cit->second;
         const std::vector<int>& rows = p2c_rows_.find(pval)->second;  // 1:1 with constrs
         for (std::size_t k = 0; k < constrs.size(); ++k) {
-            triplets.emplace_back(rows[k], j, constrs[k]->grad(pval));
+            jacobiTriplets_.emplace_back(rows[k], j, constrs[k]->grad(pval));
         }
     }
 
     jacobi.resize(csize, nparams);
-    jacobi.setFromTriplets(triplets.begin(), triplets.end());
+    jacobi.setFromTriplets(jacobiTriplets_.begin(), jacobiTriplets_.end());
 }
 
 void SubSystem::calcJacobi(Eigen::SparseMatrix<double>& jacobi)
