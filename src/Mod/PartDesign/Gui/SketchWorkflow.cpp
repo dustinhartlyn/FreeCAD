@@ -522,12 +522,12 @@ public:
         , activeBody(activeBody)
     {}
 
-    void findSupport(bool preferAttachmentDialog)
+    void findSupport()
     {
         try {
             // Start command early, so undo will undo any Body creation
             guidocument->openCommand(QT_TRANSLATE_NOOP("Command", "New Sketch"));
-            tryFindSupport(preferAttachmentDialog);
+            tryFindSupport();
         }
         catch (const RejectException&) {
             guidocument->abortCommand();
@@ -540,20 +540,11 @@ public:
     }
 
 private:
-    void tryFindSupport(bool preferAttachmentDialog)
+    void tryFindSupport()
     {
         createBodyOrThrow();
 
-        // Match stock FreeCAD 1.1: with no meaningful preselection, offer the origin
-        // planes and let a single click create the sketch (auto-accepting picker).
-        // Only route to the attachment dialog for the cases it was intended for
-        // (Shift, multiple references, a non-planar face, or a sketch preselected).
-        if (preferAttachmentDialog) {
-            createSketchAndShowAttachment();
-        }
-        else {
-            findAndSelectPlane();
-        }
+        createSketchAndShowAttachment();
     }
 
     void createBodyOrThrow()
@@ -895,17 +886,11 @@ void SketchWorkflow::tryCreateSketch()
     auto filters = getFilters();
     SketchPreselection sketchOnFace {guidocument, activeBody, filters};
 
-    // The attachment dialog is used only for the cases it was designed for: the
-    // preference is on, Shift is held, or a preselection exists that is not a single
-    // planar face/plane (multiple references or a sketch). With no preselection (or a
-    // single planar face/plane) we keep the stock FreeCAD 1.1 behavior: create on the
-    // support immediately (fast path below) or offer the auto-accepting plane picker.
-    bool preferAttachmentDialog =
-        useAttachment || shiftHeld || (sketchOnFace.matches() && !sketchOnFace.isSingleFaceOrPlane());
-
     // Fast path: single face or datum plane, preference off, Shift not held.
     // If the face turns out to be non-planar or otherwise invalid, fall through
     // to the attachment dialog instead of showing an error.
+    // A selected sketch, multiple references, no selection, Shift, or preference on
+    // all go through the attachment dialog.
     if (!useAttachment && !shiftHeld && sketchOnFace.isSingleFaceOrPlane()) {
         try {
             sketchOnFace.createSupport();
@@ -913,18 +898,18 @@ void SketchWorkflow::tryCreateSketch()
             return;
         }
         catch (const WrongSupportException&) {
-            preferAttachmentDialog = true;  // Fall through to attachment dialog
+            // Fall through to attachment dialog
         }
         catch (const WrongSelectionException&) {
-            preferAttachmentDialog = true;  // Fall through to attachment dialog
+            // Fall through to attachment dialog
         }
         catch (const SupportNotPlanarException&) {
-            preferAttachmentDialog = true;  // Fall through to attachment dialog
+            // Fall through to attachment dialog
         }
     }
 
     SketchRequestSelection requestSelection {guidocument, activeBody};
-    requestSelection.findSupport(preferAttachmentDialog);
+    requestSelection.findSupport();
 }
 
 std::tuple<bool, PartDesign::Body*> SketchWorkflow::shouldCreateBody()
