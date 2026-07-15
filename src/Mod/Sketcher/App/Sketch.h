@@ -702,17 +702,6 @@ public:
     {
         GCSsys.dogLegGaussStep = mode;
     }
-    // Stage 5B: Accessors for useClusters flag. GCSsys is private, so SketchObject
-    // (which owns a Sketch) must toggle useClusters through these accessors to
-    // suppress cluster decomposition during the drag lifecycle.
-    inline void setUseClusters(bool val)
-    {
-        GCSsys.useClusters = val;
-    }
-    inline bool getUseClusters() const
-    {
-        return GCSsys.useClusters;
-    }
     inline void setDebugMode(GCS::DebugMode mode)
     {
         debugMode = mode;
