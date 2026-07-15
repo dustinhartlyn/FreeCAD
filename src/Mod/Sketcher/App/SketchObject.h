@@ -1325,49 +1325,25 @@ private:
 
 inline int SketchObject::initTemporaryMove(std::vector<GeoElementId> moved, bool fine /*=true*/)
 {
-    // Force the drag setup (setUpSketch + initMove) through the non-cluster
-    // path so the drag is seeded from a rank-healthy configuration rather than
-    // a cluster-converged one that biases the SQP drag solver toward the
-    // degenerate Y=0 minimum. Restored to the saved value afterward.
-    bool savedUseClusters = solvedSketch.getUseClusters();
-    solvedSketch.setUseClusters(false);
-
-    try {
-        // Rebuild GCS from current geometry if stale.
-        // Called with isDragActive == false (set AFTER initMove succeeds below).
-        // This is safe: the guard at SketchObjectConstraints.cpp:90 is in
-        // SketchObject::solve(), not Sketch::setUpSketch(). We are calling
-        // setUpSketch() directly — there is no guard to bypass.
-        //
-        // NOTE: this->setUpSketch() calls SketchObject::setUpSketch() (zero-arg
-        // overload at SketchObjectConstraints.cpp:835), which internally calls
-        // solvedSketch.setUpSketch(getCompleteGeometry(), Constraints.getValues(),
-        // getExternalGeometryCount()). Do NOT call solvedSketch.setUpSketch()
-        // directly — that is Sketch::setUpSketch() which requires 2 mandatory
-        // args (GeoList, ConstraintList) at Sketch.h:78.
-        if (solverNeedsUpdate) {
-            this->setUpSketch();
-        }
-
-        // Add drag constraints. initMove() populates subSystemsAux (tag=-1)
-        // and sets isInitMove=true.
-        int result = solvedSketch.initMove(moved, fine);
-
-        // Set drag-active state ONLY after initMove() succeeds.
-        // If initMove() threw, isDragActive stays false.
-        if (result >= 0) {
-            isDragActive = true;
-        }
-
-        solvedSketch.setUseClusters(savedUseClusters);
-        return result;
+    // Rebuild the solver from the current geometry if stale. Called with
+    // isDragActive == false (set only AFTER initMove succeeds below).
+    // NOTE: this->setUpSketch() is the SketchObject zero-arg overload, which
+    // internally calls solvedSketch.setUpSketch(getCompleteGeometry(), ...).
+    if (solverNeedsUpdate) {
+        this->setUpSketch();
     }
-    catch (...) {
-        // Restore useClusters on any exception. Do NOT set isDragActive —
-        // drag initialization failed, next solve should rebuild from scratch.
-        solvedSketch.setUseClusters(savedUseClusters);
-        throw;
+
+    // Add drag constraints. initMove() populates subSystemsAux (tag=-1)
+    // and sets isInitMove=true.
+    int result = solvedSketch.initMove(moved, fine);
+
+    // Set drag-active state ONLY after initMove() succeeds; if it threw or
+    // failed, the next solve() must rebuild from scratch.
+    if (result >= 0) {
+        isDragActive = true;
     }
+
+    return result;
 }
 
 inline int SketchObject::initTemporaryMove(int geoId, PointPos pos, bool fine /*=true*/)
